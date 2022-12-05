@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager: MonoBehaviour
@@ -9,9 +7,12 @@ public class GameManager: MonoBehaviour
 
     // 手札を置ける場所情報
     [SerializeField] Transform playerHandTransform, enemyHandTransform;
+    [SerializeField] Transform playerFieldTransform, enemyFieldTransform;
 
     // プレイヤーのターンかどうか識別する
-    bool isPlayerTurn;
+    [System.NonSerialized] public bool isPlayerTurn;
+
+    [SerializeField] TurnInfoAnimation turnInfoAnimation;
 
     void Start()
     {
@@ -20,15 +21,19 @@ public class GameManager: MonoBehaviour
 
     void StartGame()
     {
-        SettingInitHand(5);
+        SettingInitHand(3);
         isPlayerTurn = true;
+
         TurnCalc();
     }
+
 
     void SettingInitHand(int initHandNum)
     {
         for (int i = 0; i < initHandNum; i++)
         {
+            // 手札置き場（Hand）、FieldともにHorizontalLayoutGroupに属していないとカードが重なってしまう
+            // （カードはAlignmentでCenterに置くべき）
             CreateCard(playerHandTransform);
             CreateCard(enemyHandTransform);
         }
@@ -43,6 +48,8 @@ public class GameManager: MonoBehaviour
 
     void TurnCalc()
     {
+        StartCoroutine(turnInfoAnimation.ShowPanel(isPlayerTurn));
+
         if(isPlayerTurn)
         {
             PlayerTurn();
@@ -63,6 +70,12 @@ public class GameManager: MonoBehaviour
     void EnemyTurn()
     {
         Debug.Log("Enemyのターン");
+        // 手札のカードリストを取得
+        CardController[] cardList = enemyHandTransform.GetComponentsInChildren<CardController>();
+        // 場に出すカードを選択
+        CardController card = cardList[0];
+        // カードを移動
+        card.movement.SetCardTransform(enemyFieldTransform);
         ChangeTurn();
     }
 }
