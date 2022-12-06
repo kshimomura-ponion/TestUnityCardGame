@@ -1,3 +1,6 @@
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager: MonoBehaviour
@@ -12,8 +15,19 @@ public class GameManager: MonoBehaviour
     // プレイヤーのターンかどうか識別する
     [System.NonSerialized] public bool isPlayerTurn;
 
-    [SerializeField] TurnInfoAnimation turnInfoAnimation;
+    [SerializeField] TurnController turnController;
 
+	// シングルトン化（どこからでもアクセス可能にする）
+    public static GameManager instance;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+    
     void Start()
     {
         StartGame();
@@ -46,36 +60,9 @@ public class GameManager: MonoBehaviour
         card.Init(1);
     }
 
-    void TurnCalc()
+    public void TurnCalc()
     {
-        StartCoroutine(turnInfoAnimation.ShowPanel(isPlayerTurn));
-
-        if(isPlayerTurn)
-        {
-            PlayerTurn();
-        } else {
-            EnemyTurn();
-        }
-    }
-    public void ChangeTurn()
-    {
-        isPlayerTurn = !isPlayerTurn;
-        TurnCalc();
-    }
-
-    void PlayerTurn()
-    {
-        Debug.Log("Playerのターン");
-    }
-    void EnemyTurn()
-    {
-        Debug.Log("Enemyのターン");
-        // 手札のカードリストを取得
-        CardController[] cardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-        // 場に出すカードを選択
-        CardController card = cardList[0];
-        // カードを移動
-        card.movement.SetCardTransform(enemyFieldTransform);
-        ChangeTurn();
+        IEnumerator enumerator = turnController.StartTurn(isPlayerTurn, (result)=> enumerator = result);
+        StartCoroutine(enumerator);
     }
 }
