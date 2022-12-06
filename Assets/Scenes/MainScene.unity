@@ -318,7 +318,9 @@ MonoBehaviour:
   enemyHandTransform: {fileID: 678666474}
   playerFieldTransform: {fileID: 1472715460}
   enemyFieldTransform: {fileID: 772077311}
-  turnController: {fileID: 1852694721}
+  turnInfoPanel: {fileID: 1150062348}
+  turnInfoTransform: {fileID: 1319306708}
+  turnInfoText: {fileID: 509310794}
 --- !u!82 &126480469
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2705,57 +2707,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1834634333}
   m_CullTransparentMesh: 1
---- !u!1 &1852694720
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1852694722}
-  - component: {fileID: 1852694721}
-  m_Layer: 0
-  m_Name: TurnController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1852694721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852694720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 341c24a0433a544f6817769c40eb56ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turnInfoTransform: {fileID: 1319306708}
-  turnInfoText: {fileID: 509310794}
-  playerHandTransform: {fileID: 1745639888}
-  enemyHandTransform: {fileID: 678666474}
-  playerFieldTransform: {fileID: 1472715460}
-  enemyFieldTransform: {fileID: 772077311}
-  turnInfoPanel: {fileID: 1150062348}
---- !u!4 &1852694722
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852694720}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.4029801, y: -0.12461208, z: 5.673609}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1985080226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2919,8 +2870,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852694721}
-        m_TargetAssemblyTypeName: TurnController, Assembly-CSharp
+      - m_Target: {fileID: 126480468}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: ChangeTurn
         m_Mode: 1
         m_Arguments:

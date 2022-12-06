@@ -10,6 +10,6 @@ public class AttackedCard : MonoBehaviour, IDropHandler
     {
         CardController attacker = eventData.pointerDrag.GetComponent<CardController>();
         CardController defender = GetComponent<CardController>();
-        TurnController.instance.CardsBattle(attacker, defender);
+        GameManager.instance.CardsBattle(attacker, defender);
     }
 }

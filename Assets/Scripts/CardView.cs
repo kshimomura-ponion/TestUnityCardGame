@@ -10,6 +10,10 @@ public class CardView : MonoBehaviour
     [SerializeField] TextMeshProUGUI atText;
     [SerializeField] TextMeshProUGUI costText;
     [SerializeField] Image iconImage;
+
+    // セレクト可能なカードにはオーラをつける
+    [SerializeField] GameObject selectablePanel;
+
     public ParticleSystem explosionParticle;
     public GameObject damageInfo;
     public TextMeshProUGUI damageInfoText;
@@ -27,5 +31,10 @@ public class CardView : MonoBehaviour
     {
         hpText.text = cardModel.hp.ToString();
         atText.text = cardModel.at.ToString();
+    }
+
+    public void SetActiveSelectablePanel(bool flag)
+    {
+        selectablePanel.SetActive(flag);
     }
 }
