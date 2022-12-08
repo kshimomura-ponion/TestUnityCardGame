@@ -1,55 +1,73 @@
-using System.IO;
+using System.Security.AccessControl;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
-using DG.Tweening;
+
+using System.Text;
+using System.Linq;
 
 public class GameManager: MonoBehaviour
 {
-    // 手札にカードを生成
+
+    // Card Prefab
     [SerializeField] CardController cardPrefab;
 
     // 手札を置ける場所情報
-    [SerializeField] Transform playerHandTransform, enemyHandTransform;
-    [SerializeField] Transform playerFieldTransform, enemyFieldTransform;
+    public Transform player1HandTransform, player2HandTransform;
+    public Transform player1FieldTransform, player2FieldTransform;
 
-    // ターン情報パネル
-    [SerializeField] GameObject turnInfoPanel;
-    [SerializeField] Transform turnInfoTransform;
-    [SerializeField] TextMeshProUGUI turnInfoText;
+    // Heroを置ける場所情報
+    public Transform player1HeroPanel, player2HeroPanel;
 
-    float turnInfoPanelXDestination = 0f;
+    // Turn Control Class
+    public TurnController turnController;
 
-    // プレイヤーのターンかどうか識別する
-    [System.NonSerialized] public bool isPlayerTurn;
+    // 結果表示パネル、ボタンの表示・非表示クラス
+    public UIManager uiManager;
+
+    // Hero選択画面（スタート画面）
+    public SelectHeroController selectHeroController;
+
+    // プレイヤー2はAIか否か
+    public bool isPlayer2AI;
+
+    // Heroの実体
+    [System.NonSerialized] public HeroController player1Hero, player2Hero;
 
 	// シングルトン化（どこからでもアクセス可能にする）
     public static GameManager instance;
 
     private void Awake()
     {
-        if(instance == null)
-        {
+        if(instance == null){
             instance = this;
         }
     }
 
     void Start()
     {
-        StartGame();
+        // ヒーロー選択
+        StartCoroutine(selectHeroController.SelectHeroAndGameStart());
     }
 
-    void StartGame()
+    public void StartGame()
     {
+        uiManager.ShowMainView();
+
+        // 手札の準備
         SettingInitHand(3);
-        isPlayerTurn = true;
+        
+        // リスタートボタンを非表示にし、ターンエンドボタンを表示にする
+        uiManager.restartButtonActivate(false);
+        uiManager.turnendButtonActivate(true);
 
-        TurnCalc();
+        turnController.isPlayer1Turn = true;
+        turnController.TurnStart();
     }
-
 
     void SettingInitHand(int initHandNum)
     {
@@ -57,105 +75,100 @@ public class GameManager: MonoBehaviour
         {
             // 手札置き場（Hand）、FieldともにHorizontalLayoutGroupに属していないとカードが重なってしまう
             // （カードはAlignmentでCenterに置くべき）
-            CreateCard(playerHandTransform);
-            CreateCard(enemyHandTransform);
+            GiveCardToHand(player1Hero, player1HandTransform, PLAYER.PLAYER1);
+            GiveCardToHand(player2Hero, player2HandTransform, PLAYER.PLAYER2);
         }
+    }
+
+    // デッキからカードを取得
+    public void GiveCardToHand(HeroController hero, Transform hand, PLAYER player)
+    {
+        List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
+        if (deck.Count == 0){
+            return;
+        }
+        // デッキの上から値を削除していく
+        (int, CARDTYPE) cardInfo = deck[0];
+        hero.model.RemoveCard(0);
+
+        CreateCard(cardInfo, hand, player);
     }
 
     // カードをインスタンス化
-    void CreateCard(Transform hand)
+    void CreateCard((int, CARDTYPE) cardInfo, Transform hand, PLAYER player)
     {
         CardController card = Instantiate(cardPrefab, hand, false);
-        card.Init(1);
+
+        // IDとカードタイプを渡してカードを生成する
+        card.Init(cardInfo.Item1, cardInfo.Item2, player);
     }
 
-    public void TurnCalc()
+    // リスタート
+    public void Restart()
     {
-        if(isPlayerTurn == true) {
-            turnInfoText.text = "Your Turn";
+        // 結果表示画面を非表示にする
+        uiManager.HideResultView();
+
+        // handとFiledのカードを削除
+        foreach (Transform card in player1HandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in player1FieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in player2HandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in player2FieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+
+        StartGame();
+    }
+
+    public void CheckHeroHP()
+    {
+        if (GameManager.instance.player1Hero.model.GetHP() <= 0 || GameManager.instance.player2Hero.model.GetHP() <= 0){
+            GameOver(player1Hero.model.GetHP());
+        }
+    }
+
+    void GameOver(int hp)
+    {
+        StopAllCoroutines();
+        uiManager.ShowResultView();
+    }
+
+    public CardController[] GetMyHandCards(PLAYER player)
+    {
+        if(player == PLAYER.PLAYER1){
+            return player1HandTransform.GetComponentsInChildren<CardController>();
         } else {
-            turnInfoText.text = "Enemy Turn";
+            return player2HandTransform.GetComponentsInChildren<CardController>();
         }
-        EnablePanel();
-        turnInfoPanelXDestination = 0.0f;
-        TurnInfoXAxisTransForm();
-        turnInfoPanelXDestination = 2000.0f;
-        Invoke("TurnInfoXAxisTransForm", 2.0f);
+    }
 
-        Invoke("DisablePanel", 3.0f);
-        Invoke("SetFirstPosition", 4.0f);
-
-        if(isPlayerTurn){
-            PlayerTurn();
+    // 現在ターンが回っているHeroにとって味方のフィールドを取得
+    public CardController[] GetFriendFieldCards(PLAYER player)
+    {
+        if(player == PLAYER.PLAYER1){
+            return player1FieldTransform.GetComponentsInChildren<CardController>();
         } else {
-            EnemyTurn();
+            return player2FieldTransform.GetComponentsInChildren<CardController>();
         }
-
     }
 
-    void SetFirstPosition()
+    // 現在ターンが回っているHeroにとって敵のフィールドを取得
+    public CardController[] GetOpponentFieldCards(PLAYER player)
     {
-        // 元の場所に戻す
-        turnInfoTransform.DOLocalMove(new Vector3(-1800.0f,0f,0f), 0f);
-    }
-
-    void TurnInfoXAxisTransForm(){
-        turnInfoTransform.DOLocalMove(new Vector3(turnInfoPanelXDestination,0f,0f), 1.5f);
-    }
-
-    void EnablePanel(){
-        turnInfoPanel.SetActive(true);
-    }
-
-    void DisablePanel(){
-        turnInfoPanel.SetActive(false);
-    }
-    public void PlayerTurn()
-    {
-        Debug.Log("Playerのターン");
-
-    }
-    
-    public void EnemyTurn()
-    {
-        Debug.Log("Enemyのターン");
-        // 手札のカードリストを取得
-        CardController[] cardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-        // 場に出すカードを選択
-        CardController card = cardList[0];
-        // カードを移動
-        card.movement.SetCardTransform(enemyFieldTransform);
-
-        // 攻撃① フィールドのカードリストを取得
-        CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        // 攻撃② pick player's defender cards.
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-
-        if(fieldCardList.Length > 0 && playerFieldCardList.Length > 0){
-            // 攻撃③ pick enemy's attacker cards.
-            CardController attacker = fieldCardList[0];
-            
-            CardController defender = playerFieldCardList[0];
-            // 攻撃④ start combat
-            CardsBattle(attacker, defender);
+        if(player == PLAYER.PLAYER1){
+            return player2FieldTransform.GetComponentsInChildren<CardController>();
+        } else {
+            return player1FieldTransform.GetComponentsInChildren<CardController>();
         }
-        Invoke("ChangeTurn", 5.0f);
     }
-
-    public void CardsBattle(CardController attacker, CardController defender)
-    {
-        // ダメージを計算し、Viewのダメージ情報パネルを更新する
-        defender.view.damageInfoText.text = "-" + defender.Attack(attacker).ToString();
-        attacker.CheckAlive();
-
-        attacker.view.damageInfoText.text = "-" + attacker.Attack(defender).ToString();
-        defender.CheckAlive();
-    }
-
-    public void ChangeTurn()
-    {
-        isPlayerTurn = !isPlayerTurn;
-        TurnCalc();
-    }
-
 }
