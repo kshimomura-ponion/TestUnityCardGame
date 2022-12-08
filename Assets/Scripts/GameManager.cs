@@ -51,7 +51,6 @@ public class GameManager: MonoBehaviour
         }
 
         // プレイヤーセレクト画面以外を非表示にする
-        uiController.HideAlertDialog();
         uiController.HideMainView();
         uiController.HideResultView();
     }
