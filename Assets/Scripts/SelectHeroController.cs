@@ -21,7 +21,7 @@ public class SelectHeroController : MonoBehaviour
 
     // セレクト終了までの時間管理
     [SerializeField] TextMeshProUGUI untilEndOfSelectText;
-    private int maxSeconds = 10;
+    private int maxSeconds = 60;
     private int timeCount;
 
 
@@ -40,6 +40,9 @@ public class SelectHeroController : MonoBehaviour
 
     public IEnumerator SelectHeroAndGameStart()
     {
+        // 音楽を再生
+        gameManager.soundController.PlayBGM(BGMSoundData.BGM.SELECTHERO);
+
         // カウントダウン開始
         timeCount = maxSeconds;
         untilEndOfSelectText.text = timeCount.ToString();
@@ -57,12 +60,11 @@ public class SelectHeroController : MonoBehaviour
 
         yield return new WaitForSeconds(0.05f);
         OnSelectedHeroes();
-        yield return new WaitForSeconds(0.05f);
     }
 
     public void OnSelectedHeroes(){
         // プレイヤーセレクト画面を閉じる
-        gameManager.uiManager.HideSelectHeroView();
+        gameManager.uiController.HideSelectHeroView();
 
         if(hero1ID > 0) {
             // プレイヤー2が決まっていない時はプレイヤー1のHeroを勝手に決めてプレイヤー2をAIにする
@@ -73,13 +75,15 @@ public class SelectHeroController : MonoBehaviour
                 // ゲーム開始
                 SettingHeroes(hero1ID, hero2ID);
                 gameManager.StartGame();
-            } else {
-                // 警告ダイアログを出す
-                gameManager.uiManager.ShowAlertDialog("プレイヤー1を選択してください");
             }
-
+        } else {
+            // 警告ダイアログを出す
+            gameManager.uiController.ShowAlertDialog("プレイヤー1を選択してください");
         }
+        //音楽を停止
+        gameManager.soundController.StopBGM();
     }
+
     void SettingHeroes(int id1, int id2)
     {
         hero1ID = id1;

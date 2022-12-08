@@ -23,17 +23,20 @@ public class GameManager: MonoBehaviour
     // Heroを置ける場所情報
     public Transform player1HeroPanel, player2HeroPanel;
 
-    // Turn Control Class
+    // ターンコントローラー
     public TurnController turnController;
 
-    // 結果表示パネル、ボタンの表示・非表示クラス
-    public UIManager uiManager;
+    // UIコントローラー
+    public UIController uiController;
+
+    // 音楽再生コントローラー
+    public SoundController soundController;
 
     // Hero選択画面（スタート画面）
     public SelectHeroController selectHeroController;
 
     // プレイヤー2はAIか否か
-    public bool isPlayer2AI;
+    [System.NonSerialized] public bool isPlayer2AI;
 
     // Heroの実体
     [System.NonSerialized] public HeroController player1Hero, player2Hero;
@@ -46,6 +49,11 @@ public class GameManager: MonoBehaviour
         if(instance == null){
             instance = this;
         }
+
+        // プレイヤーセレクト画面以外を非表示にする
+        uiController.HideAlertDialog();
+        uiController.HideMainView();
+        uiController.HideResultView();
     }
 
     void Start()
@@ -56,14 +64,16 @@ public class GameManager: MonoBehaviour
 
     public void StartGame()
     {
-        uiManager.ShowMainView();
+        // 音楽を再生
+        soundController.PlayBGM(BGMSoundData.BGM.MAIN);
+        uiController.ShowMainView();
 
         // 手札の準備
         SettingInitHand(3);
         
         // リスタートボタンを非表示にし、ターンエンドボタンを表示にする
-        uiManager.restartButtonActivate(false);
-        uiManager.turnendButtonActivate(true);
+        uiController.restartButtonActivate(false);
+        uiController.turnendButtonActivate(true);
 
         turnController.isPlayer1Turn = true;
         turnController.TurnStart();
@@ -107,7 +117,7 @@ public class GameManager: MonoBehaviour
     public void Restart()
     {
         // 結果表示画面を非表示にする
-        uiManager.HideResultView();
+        uiController.HideResultView();
 
         // handとFiledのカードを削除
         foreach (Transform card in player1HandTransform)
@@ -139,8 +149,11 @@ public class GameManager: MonoBehaviour
 
     void GameOver(int hp)
     {
+        //音楽を停止
+        soundController.StopBGM();
+
         StopAllCoroutines();
-        uiManager.ShowResultView();
+        uiController.ShowResultView();
     }
 
     public CardController[] GetMyHandCards(PLAYER player)
