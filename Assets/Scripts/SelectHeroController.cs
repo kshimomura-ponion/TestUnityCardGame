@@ -24,7 +24,6 @@ public class SelectHeroController : MonoBehaviour
     private int maxSeconds = 60;
     private int timeCount;
 
-
     GameManager gameManager;
 
     private void Start()
@@ -33,21 +32,24 @@ public class SelectHeroController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }
 
     public IEnumerator SelectHeroAndGameStart()
     {
-        // 音楽を再生
-        gameManager.soundController.PlayBGM(BGMSoundData.BGM.SELECTHERO);
-
         // カウントダウン開始
         timeCount = maxSeconds;
         untilEndOfSelectText.text = timeCount.ToString();
+
         while (timeCount > 0)
         {
+            // AlertダイアログのOKボタンが押された時
+            if(gameManager.uiController.isPushedAlertOKButton){
+                timeCount = maxSeconds;
+            }
+
             yield return new WaitForSeconds(1); // 1秒待機
             timeCount--;
             untilEndOfSelectText.text = timeCount.ToString();
@@ -63,10 +65,11 @@ public class SelectHeroController : MonoBehaviour
     }
 
     public void OnSelectedHeroes(){
-        // プレイヤーセレクト画面を閉じる
-        gameManager.uiController.HideSelectHeroView();
 
-        if(hero1ID > 0) {
+        StopAllCoroutines();
+        if(hero1ID > 0) {             
+            gameManager.uiController.HideSelectHeroView();
+
             // プレイヤー2が決まっていない時はプレイヤー1のHeroを勝手に決めてプレイヤー2をAIにする
             if(hero2ID == 0){
                 hero2ID = UnityEngine.Random.Range(1, existHeroNum);
@@ -80,8 +83,6 @@ public class SelectHeroController : MonoBehaviour
             // 警告ダイアログを出す
             gameManager.uiController.ShowAlertDialog("プレイヤー1を選択してください");
         }
-        //音楽を停止
-        gameManager.soundController.StopBGM();
     }
 
     void SettingHeroes(int id1, int id2)
@@ -108,5 +109,4 @@ public class SelectHeroController : MonoBehaviour
         gameManager.player1Hero.Init(hero1ID, player1Deck, PLAYER.PLAYER1);
         gameManager.player2Hero.Init(hero2ID, player2Deck, PLAYER.PLAYER2);
     }
-
 }

@@ -57,7 +57,7 @@ public class TurnController: MonoBehaviour
             Invoke("PlayerTurn", 3.5f);
 
             // ターンエンドボタンを押せるようにする
-            gameManager.uiController.turnendButtonActivate(true);
+            gameManager.uiController.TurnendButtonActivate(true);
         } else {
             // ターン数を表示する
             ShowTurnNumber(gameManager.player2Hero);
@@ -65,7 +65,7 @@ public class TurnController: MonoBehaviour
             StartCoroutine(enemyAI.EnemyTurn());
 
             // ターンエンドボタンを押せなくする
-            gameManager.uiController.turnendButtonActivate(false);
+            gameManager.uiController.TurnendButtonActivate(false);
         }
 
     }

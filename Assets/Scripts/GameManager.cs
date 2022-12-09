@@ -49,14 +49,15 @@ public class GameManager: MonoBehaviour
         if(instance == null){
             instance = this;
         }
-
-        // プレイヤーセレクト画面以外を非表示にする
-        uiController.HideMainView();
-        uiController.HideResultView();
     }
 
     void Start()
     {
+        // ヒーローセレクト画面以外を非表示にする
+        uiController.HideMainView();
+        uiController.HideResultView();
+        uiController.ShowSelectHeroView();
+        
         // ヒーロー選択
         StartCoroutine(selectHeroController.SelectHeroAndGameStart());
     }
@@ -71,8 +72,8 @@ public class GameManager: MonoBehaviour
         SettingInitHand(3);
         
         // リスタートボタンを非表示にし、ターンエンドボタンを表示にする
-        uiController.restartButtonActivate(false);
-        uiController.turnendButtonActivate(true);
+        uiController.RestartButtonActivate(false);
+        uiController.TurnendButtonActivate(true);
 
         turnController.isPlayer1Turn = true;
         turnController.TurnStart();
