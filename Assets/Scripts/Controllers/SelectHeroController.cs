@@ -10,6 +10,10 @@ public class SelectHeroController : MonoBehaviour
 {
     // Hero Prefab
     [SerializeField] HeroController heroPrefab;
+    [SerializeField] HeroInfoView heroInfoPrefab;
+
+    // Player1SelectPanel
+    [SerializeField] Transform player1SelectPanel, player2SelectPanel;
 
     // 現在用意できているヒーロー、カードの種類の数
     private static int existHeroNum = 5;
@@ -29,6 +33,13 @@ public class SelectHeroController : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.instance;
+
+
+        for(int i = 0; i < existHeroNum; i++){
+            HeroInfoView heroInfo = Instantiate(heroInfoPrefab, player1SelectPanel, false);
+        }
+
+        // ランダムセレクトパネルを追加
     }
 
     // Update is called once per frame

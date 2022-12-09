@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e90be33733ca945ae8dd40443fccbe5f, type: 3}
-  m_Name: Hero5
+  m_Name: Hero6
   m_EditorClassIdentifier: 
-  name: Blacksmith
+  name: GunLady
   hp: 30
-  leftIcon: {fileID: 21300000, guid: ed3f58326c0d27f48812f7c488fee474, type: 3}
-  rightIcon: {fileID: 21300000, guid: 7750fc70c5e3fec47b59ceee22f6c926, type: 3}
-  info: "\u935B\u51B6\u5C4B\u3002\u9B54\u6CD5\u306F\u82E6\u624B\u3002"
-  heroType: 2
+  leftIcon: {fileID: 21300000, guid: 379c50fa63cd6d34e981a49dd0f914ec, type: 3}
+  rightIcon: {fileID: 21300000, guid: a32eb60562a87cc41b5a9248cf83bf8b, type: 3}
+  info: "\u9B54\u6CD5\u9283\u58EB\u306E\u5973\u6027\u3002\u30D0\u30E9\u30F3\u30B9\u578B\u3002"
+  heroType: 1

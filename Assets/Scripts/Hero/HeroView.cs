@@ -20,7 +20,7 @@ public class HeroView : MonoBehaviour
     [SerializeField] TextMeshProUGUI reduceManaCostInfoText;
 
     // 現在のターンのHeroにはオーラをつける
-    [SerializeField] GameObject selectablePanel;
+    [SerializeField] GameObject activatedPanel;
 
     public void Show(HeroModel model)
     {
@@ -36,9 +36,9 @@ public class HeroView : MonoBehaviour
         manaCostText.text = model.GetManaCost().ToString();
     }
 
-    public void SetActiveSelectablePanel(bool flag)
+    public void SetActiveActivatedPanel(bool flag)
     {
-        selectablePanel.SetActive(flag);
+        activatedPanel.SetActive(flag);
     }
 
     public void SetDamageInfoText(string text)

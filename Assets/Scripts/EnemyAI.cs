@@ -22,7 +22,7 @@ public class EnemyAI : MonoBehaviour
         // 情報パネルが過ぎるまで待つ
         yield return new WaitForSeconds(4.0f);
 
-        enemyAIHero.view.SetActiveSelectablePanel(true);
+        enemyAIHero.view.SetActiveActivatedPanel(true);
 
         Debug.Log("Enemyのターン");
 

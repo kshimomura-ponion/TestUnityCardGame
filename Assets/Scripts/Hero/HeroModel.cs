@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Linq;
 using System.Collections;
@@ -10,6 +11,7 @@ public class HeroModel
     private int hp;
     private int manaCost;
     private Sprite icon;
+    private HEROTYPE heroType;
     private bool isAlive;
 
     // Cardの種類を把握するために、Tupleでカード情報を持っておくようにする
@@ -26,21 +28,52 @@ public class HeroModel
         } else {
             icon = heroEntity.rightIcon;
         }
+        heroType = heroEntity.heroType;
         isAlive = true;
 
-        // FIXME:カードの奇数をモンスターカード、偶数をスペルカードにする（もっと良い方法があったら変えてください）
+        // ヒーローのタイプによって比率を変える
         List<(int, CARDTYPE)> tmpCardDeck = new List<(int, CARDTYPE)>();
         int monsterCardID = 1;
         int spellCardID = 1;
-        for(int i = 0; i < deck.Count; i++){
-            if(i % 2 != 0)
-            {
-                tmpCardDeck.Add((monsterCardID, CARDTYPE.SPELL));
-                monsterCardID++;
-            } else {
-                tmpCardDeck.Add((spellCardID, CARDTYPE.MONSTER));
-                spellCardID++;
-            }
+        int spellNum = 0;
+        int monsterNum = 0;
+        switch (heroType) {
+            case HEROTYPE.MAGICUSER:
+                spellNum = (int)Math.Floor(deck.Count * 0.8f);
+                monsterNum = deck.Count - spellNum;
+                for(int i = 0; i < spellNum; i++){
+                    tmpCardDeck.Add((spellCardID, CARDTYPE.SPELL));
+                    spellCardID++;
+                }
+                for(int i = 0; i < monsterNum; i++){
+                    tmpCardDeck.Add((monsterCardID, CARDTYPE.MONSTER));
+                    monsterCardID++;
+                }
+            break;
+            case HEROTYPE.MAGICFIGHTER:
+                for(int i = 0; i < deck.Count; i++){
+                    if(i % 2 == 0)
+                    {
+                        tmpCardDeck.Add((spellCardID, CARDTYPE.SPELL));
+                        spellCardID++;
+                    } else {
+                        tmpCardDeck.Add((monsterCardID, CARDTYPE.MONSTER));
+                        monsterCardID++;
+                    }
+                }
+                break;
+            case HEROTYPE.WARRIOR:
+                spellNum = (int)Math.Floor(deck.Count * 0.2f);
+                monsterNum = deck.Count - spellNum;
+                for(int i = 0; i < spellNum; i++){
+                    tmpCardDeck.Add((spellCardID, CARDTYPE.SPELL));
+                    spellCardID++;
+                }
+                for(int i = 0; i < monsterNum; i++){
+                    tmpCardDeck.Add((monsterCardID, CARDTYPE.MONSTER));
+                    monsterCardID++;
+                }
+            break;
         }
 
         // 公平性を期すため、構築後はデッキの内容をシャッフルする（System.Linq）

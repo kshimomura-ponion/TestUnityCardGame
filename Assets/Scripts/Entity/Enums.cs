@@ -8,6 +8,14 @@ public enum PLAYERTYPE
     PLAYER,
     AI
 }
+
+public enum HEROTYPE
+{
+    MAGICUSER,      // スペル80%
+    MAGICFIGHTER,   // スペル、モンスター半々
+    WARRIOR         // モンスター80%
+}
+
 public enum TYPE
 {
     HAND,

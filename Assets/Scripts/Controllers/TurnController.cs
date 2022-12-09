@@ -90,10 +90,10 @@ public class TurnController: MonoBehaviour
     {
         CardController[] playerFieldCardList;
         if(isPlayer1Turn){
-            gameManager.player1Hero.view.SetActiveSelectablePanel(true);
+            gameManager.player1Hero.view.SetActiveActivatedPanel(true);
             playerFieldCardList = gameManager.GetFriendFieldCards(PLAYER.PLAYER1);
         } else {
-            gameManager.player2Hero.view.SetActiveSelectablePanel(true);
+            gameManager.player2Hero.view.SetActiveActivatedPanel(true);
             playerFieldCardList = gameManager.GetFriendFieldCards(PLAYER.PLAYER2);
         }
 
@@ -167,7 +167,7 @@ public class TurnController: MonoBehaviour
             gameManager.player1Hero.AddManaCost(1);
             // カードを手札に加える
             gameManager.GiveCardToHand(gameManager.player1Hero, gameManager.player1HandTransform, PLAYER.PLAYER1);
-            gameManager.player2Hero.view.SetActiveSelectablePanel(false);
+            gameManager.player2Hero.view.SetActiveActivatedPanel(false);
         
             ClosePlayerHandsCard(PLAYER.PLAYER1); // ターンが終わったので手札を隠す
         } else {
@@ -175,7 +175,7 @@ public class TurnController: MonoBehaviour
             gameManager.player2Hero.AddManaCost(1);
             // カードを手札に加える
             gameManager.GiveCardToHand(gameManager.player2Hero, gameManager.player2HandTransform, PLAYER.PLAYER2);
-            gameManager.player1Hero.view.SetActiveSelectablePanel(false);
+            gameManager.player1Hero.view.SetActiveActivatedPanel(false);
 
             ClosePlayerHandsCard(PLAYER.PLAYER2); // ターンが終わったので手札を隠す
         }

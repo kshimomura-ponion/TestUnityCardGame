@@ -16,3 +16,5 @@ MonoBehaviour:
   hp: 30
   leftIcon: {fileID: 21300000, guid: 25852788203bb47459a9a33d03d235b1, type: 3}
   rightIcon: {fileID: 21300000, guid: b1b6cd174ae30b940bd7870bae069132, type: 3}
+  info: "\u738B\u69D8\u3002\u95D8\u3044\u306F\u82E6\u624B\u3002"
+  heroType: 0
