@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bf881b9b734c7282bbf5bb6931bad, type: 3}
+  m_Name: Entities Manager
+  m_EditorClassIdentifier: 
+  heroEntityList:
+  - {fileID: 11400000, guid: 07802381383614fc38c157a6e2ab32ac, type: 2}
+  - {fileID: 11400000, guid: c4ee4d2ee5f3d4b7c8ca2f0e908f22c4, type: 2}
+  - {fileID: 11400000, guid: 069b4fa60fc3e463b93639ee16642ad5, type: 2}
+  - {fileID: 11400000, guid: 58a9eb7acf026441eb83e542ce590e7f, type: 2}
+  - {fileID: 11400000, guid: 3f66c10206352468f829972d82d98d82, type: 2}
+  - {fileID: 11400000, guid: 6af0864cdf4ff44d3984c5ca6a7b5ae5, type: 2}
+  monsterCardEntityList:
+  - {fileID: 11400000, guid: 1f7a33147547846b2880b4dab21fc81a, type: 2}
+  - {fileID: 11400000, guid: 872260c096b50445795393e63358f499, type: 2}
+  - {fileID: 11400000, guid: ec7fbba254f00422784cec60fb5387cd, type: 2}
+  - {fileID: 11400000, guid: e16e92bdcd8da4b79a639828d90219a5, type: 2}
+  - {fileID: 11400000, guid: f2e1ff4026c214cf98f818e6b7e6004c, type: 2}
+  - {fileID: 11400000, guid: 44882bea2e0f4443fb04e2058ead629f, type: 2}
+  - {fileID: 11400000, guid: 90cf3121e63dd4b50ac9158e0687bfc5, type: 2}
+  - {fileID: 11400000, guid: f5c8dc87a97054faf93cfd9d9b65b9c8, type: 2}
+  spellCardEntityList:
+  - {fileID: 11400000, guid: 0fad7098c3266488da33b61e70a26de8, type: 2}
+  - {fileID: 11400000, guid: 01b8cb61f18c741a4821cb1650495d56, type: 2}
+  - {fileID: 11400000, guid: e1ca97e9aa53848db92b379d8bcc1d93, type: 2}
+  - {fileID: 11400000, guid: b5c77c61f83f4407eb7bb48603b858ea, type: 2}
+  - {fileID: 11400000, guid: 1ca609fb8988b479aac5f0fbd183cb69, type: 2}
+  - {fileID: 11400000, guid: c57274ab7cd044d4f9eef61039af0be9, type: 2}
+  - {fileID: 11400000, guid: 9ddb00049188945d1902411397cdbe95, type: 2}
+  - {fileID: 11400000, guid: 27a25fb5ad6c749e4b3701c6cac039f0, type: 2}

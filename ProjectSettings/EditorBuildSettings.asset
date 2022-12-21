@@ -6,7 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/Common.unity
+    guid: 2285afcd00e6643609ecc8918aaab27c
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 1aa96c718a68b4aeb88b3ec6edf012ff
+  - enabled: 1
+    path: Assets/Scenes/HeroSelect.unity
+    guid: 576f5da2bd77c47fcb50591ffed05bc0
+  - enabled: 1
+    path: Assets/Scenes/Battle.unity
+    guid: 74d3a618776d14690a8954375913e594
+  - enabled: 1
+    path: Assets/Scenes/Result.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a937d71d6579c4f77bc858582c0d149f, type: 2}

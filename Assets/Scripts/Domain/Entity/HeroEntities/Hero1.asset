@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90be33733ca945ae8dd40443fccbe5f, type: 3}
+  m_Name: Hero1
+  m_EditorClassIdentifier: 
+  id: 1
+  name: Night
+  hp: 30
+  leftIcon: {fileID: 21300000, guid: 8dde32e9f19ef6d4f9414cd8ea83f8a0, type: 3}
+  rightIcon: {fileID: 21300000, guid: ba725d29d5acae34491f20ef798aad04, type: 3}
+  info: "\u5927\u304D\u306A\u30C9\u30EA\u30EB\u3092\u6301\u3063\u305F\u9A0E\u58EB\u3002\u30D0\u30E9\u30F3\u30B9\u578B\u3002"
+  heroType: 1
