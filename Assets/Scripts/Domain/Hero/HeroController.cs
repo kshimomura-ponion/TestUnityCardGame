@@ -8,6 +8,7 @@ namespace TestUnityCardGame
 {
 public class HeroController : MonoBehaviour
 {
+    [SerializeField] AudioManager audioManager;
     [System.NonSerialized] public HeroView view;
     [System.NonSerialized] public HeroModel model;
     private float xDestination = 0.0f;
@@ -28,7 +29,7 @@ public class HeroController : MonoBehaviour
 
     public void Attacked(CardController attacker)
     {
-        SoundManager.instance.PlaySE(SE.Attack);
+        audioManager.PlaySE(SE.Attack);
         model.Damage(attacker.model.GetAT());
         view.SetDamageInfoText("-" + attacker.model.GetAT().ToString());
         view.GetDamageInfo().SetActive(true);
@@ -39,7 +40,7 @@ public class HeroController : MonoBehaviour
 
     public void Healed(CardController healer)
     {
-        SoundManager.instance.PlaySE(SE.Heal);
+        audioManager.PlaySE(SE.Heal);
         model.Heal(healer.model.GetAT());
         view.SetDamageInfoText("+" + healer.model.GetAT().ToString());
         view.GetDamageInfo().SetActive(true);

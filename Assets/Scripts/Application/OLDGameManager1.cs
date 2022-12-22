@@ -61,7 +61,7 @@ public class GameManager: MonoBehaviour
     public void StartGame()
     {
         // 音楽を再生
-        SoundManager.instance.PlayBGM(BGM.Battle);
+        audioManager.PlayBGM(BGM.Battle);
         uiController.ShowMainView();
 
         // 手札の準備
@@ -114,7 +114,7 @@ public class GameManager: MonoBehaviour
     // リスタート
     public void Restart()
     {
-        SoundManager.instance.PlaySE(SE.OK);
+        audioManager.PlaySE(SE.OK);
         
         uiController.HideResultView();  // 結果表示画面を非表示にする
         CleanUp();  // いらないオブジェクトの破棄
@@ -125,7 +125,7 @@ public class GameManager: MonoBehaviour
     // リセレクト
     public void Reselect()
     {
-        SoundManager.instance.PlaySE(SE.OK);
+        audioManager.PlaySE(SE.OK);
     
         uiController.HideResultView();  // 結果表示画面を非表示にする
         CleanUp();  // いらないオブジェクトの破棄
@@ -167,7 +167,7 @@ public class GameManager: MonoBehaviour
     void GameOver(int hp)
     {
         //音楽を停止
-        SoundManager.instance.StopBGM();
+        audioManager.StopBGM();
 
         StopAllCoroutines();
         uiController.ShowResultView();

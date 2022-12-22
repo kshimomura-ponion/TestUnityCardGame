@@ -19,7 +19,7 @@ namespace TestUnityCardGame.Presenter.Title
         [SerializeField] AudioManager audioManager; // Audio Manager
 
         // Start is called before the first frame update
-        private void Awake()
+        protected override void Awake()
         {
             titleView = GetComponent<TitleView>();
 
@@ -29,7 +29,7 @@ namespace TestUnityCardGame.Presenter.Title
             }
         }
 
-        private void Start()
+        public void Start()
         {
             audioManager.PlayBGM(BGM.Title);
             titleView.buttonEntry.OnClickAsObservable().Delay(TimeSpan.FromSeconds(0.6f)).Subscribe(_ => PushedEnter());

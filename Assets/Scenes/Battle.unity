@@ -320,10 +320,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b41d14e8b83a242b7ba2aeff03b68d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasTransform: {fileID: 137494769}
   turnEndButton: {fileID: 2049448189}
   heroPrefab: {fileID: 4129999835013293162, guid: 3b12342909b294af9b4f4a4617216fde, type: 3}
   cardPrefab: {fileID: -342362979813438491, guid: c2b90b0eff3c24672b73ad46df25a9cd, type: 3}
+  turnInfoViewPrefab: {fileID: 5833300800711736820, guid: caaa6a5f225d84ee98781732a4dc27cf, type: 3}
   turnNumText: {fileID: 1826009354}
 --- !u!1 &136110459
 GameObject:
@@ -1507,7 +1507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee37a9ca0de7a4bc3935d98e4d42280d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnInfoViewController: {fileID: 7850244634561167606, guid: caaa6a5f225d84ee98781732a4dc27cf, type: 3}
+  canvasTransform: {fileID: 137494769}
   untilEndOfTurnText: {fileID: 1909691235}
   enemyAI: {fileID: 1200704571}
 --- !u!1 &1745639887

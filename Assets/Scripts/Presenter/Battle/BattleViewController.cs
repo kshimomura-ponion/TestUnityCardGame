@@ -45,7 +45,7 @@ namespace TestUnityCardGame.Presenter.Battle
         // 前のページから受け渡されるデータ
         public BattleInitialData battleInitialData;
 
-        void Awake()
+        protected override void Awake()
         {
             // Viewの準備
             battleView = GetComponent<BattleView>();
@@ -169,7 +169,7 @@ namespace TestUnityCardGame.Presenter.Battle
         public void GameOver()
         {
             //音楽を停止
-            SoundManager.instance.StopBGM();
+            audioManager.StopBGM();
 
             StopAllCoroutines();
 
@@ -284,6 +284,10 @@ namespace TestUnityCardGame.Presenter.Battle
         public Transform GetPlayer2FieldTransform()
         {
             return player2FieldTransform;
+        }
+        public TurnInfoView GetTurnInfoViewPrefab()
+        {
+            return battleView.GetTurnInfoViewPrefab();
         }
     }
 }

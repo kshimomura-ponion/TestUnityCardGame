@@ -20,7 +20,7 @@ namespace TestUnityCardGame
         // 前のページから受け渡されるデータ
         public ResultInitialData resultInitialData;
 
-        public void Awake()
+        protected override void Awake()
         {
             resultView = GetComponent<ResultView>();
 

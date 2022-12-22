@@ -6,6 +6,7 @@ namespace TestUnityCardGame
 {
     public class CardController : MonoBehaviour
     {
+        [SerializeField] AudioManager audioManager;
         [System.NonSerialized] public CardView view;
         [System.NonSerialized] public CardModel model;
         [System.NonSerialized] public CardMovement movement;
@@ -30,7 +31,7 @@ namespace TestUnityCardGame
 
         public int Attack(CardController enemyCard)
         {
-            SoundManager.instance.PlaySE(SE.Attack);
+            audioManager.PlaySE(SE.Attack);
             int at = model.Attack(enemyCard);
             view.SetActiveSelectablePanel(false);
             SetCanAttack(false);
@@ -39,7 +40,7 @@ namespace TestUnityCardGame
 
         public void Heal(CardController friendCard)
         {
-            SoundManager.instance.PlaySE(SE.Heal);
+            audioManager.PlaySE(SE.Heal);
             model.Heal(friendCard);
             friendCard.view.Refresh(model);
         }
@@ -94,7 +95,7 @@ namespace TestUnityCardGame
 
         void DestroyCard()
         {
-            SoundManager.instance.PlaySE(SE.Died);
+            audioManager.PlaySE(SE.Died);
             Instantiate(view.explosionParticle, transform.position, view.explosionParticle.transform.rotation);
             Destroy(this.gameObject);
         }

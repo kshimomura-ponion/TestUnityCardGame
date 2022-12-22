@@ -11,13 +11,12 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TMPro;
+using TestUnityCardGame.Presenter.Battle;
 
 namespace TestUnityCardGame.View.Battle
 {
     public class BattleView: MonoBehaviour
     {
-        public Transform canvasTransform;  // canvas transform
-
         public Button turnEndButton;
 
         // Hero Prefab
@@ -27,24 +26,15 @@ namespace TestUnityCardGame.View.Battle
         [SerializeField] CardController cardPrefab;
 
         // ターン情報ビュー
-        //[SerializeField] TurnInfoViewController turnInfoViewPrefab;
+        [SerializeField] TurnInfoView turnInfoViewPrefab;
 
         // ターン数（メイン画面）
         [SerializeField] TextMeshProUGUI turnNumText;
 
-        void Awake()
-        {
-            // ターン情報ビューを生成する
-            /*if(turnInfoView == null)
-            {
-                turnInfoView = Instantiate(turnInfoViewPrefab, canvasTransform, false);
-            }*/
-        }
+        void Awake(){}
 
         void Start()
-        {
-
-        }
+        {}
 
         public void TurnendButtonActivate(bool activeState)
         {
@@ -56,10 +46,10 @@ namespace TestUnityCardGame.View.Battle
             turnNumText.text = turnNumString;
         }
 
-       /* public TurnInfoViewController GetTurnInfoViewPrefab()
+        public TurnInfoView GetTurnInfoViewPrefab()
         {
             return turnInfoViewPrefab;
-        }*/
+        }
 
         public HeroController GetHeroPrefab()
         {

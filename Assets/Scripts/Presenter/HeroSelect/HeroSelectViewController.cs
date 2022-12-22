@@ -46,14 +46,14 @@ namespace TestUnityCardGame.Presenter.HeroSelect
         private int maxSeconds = 60;
         private int timeCount;
 
-        private bool isReady = false;
+        //private bool isReady = false;
 
-        private void Awake()
+        protected override void Awake()
         {
             heroSelectView = GetComponent<HeroSelectView>();
         }
 
-        private void Start()
+        public void Start()
         {
             audioManager.PlayBGM(BGM.SelectHero);
 

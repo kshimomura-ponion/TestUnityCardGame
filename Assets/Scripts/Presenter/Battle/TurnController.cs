@@ -13,7 +13,8 @@ namespace TestUnityCardGame.Presenter.Battle
 {
     public class TurnController: SingletonMonoBehaviour<TurnController>
     {
-        [SerializeField] TurnInfoViewController turnInfoViewController;
+        public Transform canvasTransform;  // canvas transform
+        [System.NonSerialized] TurnInfoView turnInfoView;
 
         // プレイヤー1のターンかどうか識別する
         [System.NonSerialized] public bool isPlayer1Turn;
@@ -27,13 +28,29 @@ namespace TestUnityCardGame.Presenter.Battle
         [SerializeField] EnemyAI enemyAI;
 
         // ターン終了フラグ
-        bool isTurnEnd;
+        //bool isTurnEnd;
 
-        private void Awake(){}
+        protected override void Awake()
+        {
+            // ターン情報ビューを生成する
+            if(turnInfoView == null)
+            {
+                turnInfoView = Instantiate(BattleViewController.Instance.GetTurnInfoViewPrefab(), canvasTransform, false);
+            }
+
+        }
+
+        private void OnDestroy()
+        {
+            /*if(turnInfoView != null)
+            {
+                Destroy(turnInfoView.gameObejct);
+            }*/
+        }
 
         public void TurnStart()
         {
-            isTurnEnd = false;
+            //isTurnEnd = false;
             // カウントダウン開始
             StopAllCoroutines();
             StartCoroutine(CountDown());
@@ -41,7 +58,8 @@ namespace TestUnityCardGame.Presenter.Battle
             if(isPlayer1Turn){
                 // ターン数を表示する
                 int turnNum = BattleViewController.Instance.player1Hero.GetTurnNumber();
-                turnInfoViewController.ShowTurnInfoView(turnNum);
+                turnInfoView.ShowTurnInfoView(turnNum);
+                turnInfoView.StartAnimation();
                 BattleViewController.Instance.SetTurnNumText(BattleViewController.Instance.player1Hero.GetTurnNumber().ToString());
 
                 // 情報パネルが過ぎるまで待つ
@@ -49,7 +67,8 @@ namespace TestUnityCardGame.Presenter.Battle
             } else {
                 // ターン数を表示する
                 var turnNum = BattleViewController.Instance.player2Hero.GetTurnNumber();
-                turnInfoViewController.ShowTurnInfoView(turnNum);
+                turnInfoView.ShowTurnInfoView(turnNum);
+                turnInfoView.StartAnimation();
                 BattleViewController.Instance.SetTurnNumText(BattleViewController.Instance.player2Hero.GetTurnNumber().ToString());
 
                 if(BattleViewController.Instance.battleInitialData.isPlayer2AI == true){
@@ -151,7 +170,7 @@ namespace TestUnityCardGame.Presenter.Battle
             // ターンが変わったらタイマーの文字を元に戻す
             untilEndOfTurnText.text = maxSeconds.ToString();
 
-            isTurnEnd = true;
+            //isTurnEnd = true;
             Transform player1FieldTransform = BattleViewController.Instance.GetPlayer1FieldTransform();
             CardController[] player1FieldCardList = player1FieldTransform.GetComponentsInChildren<CardController>();
             SettingCanAttackView(player1FieldCardList, false);

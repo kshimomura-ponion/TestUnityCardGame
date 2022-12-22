@@ -1065,8 +1065,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 8165617843083924619}
-        m_TargetAssemblyTypeName: TestUnityCardGame.HeroInfoDialog, Assembly-CSharp
-        m_MethodName: HideHeroInfoDialog
+        m_TargetAssemblyTypeName: TestUnityCardGame.View.HeroSelect.HeroInfoDialog,
+          Assembly-CSharp
+        m_MethodName: Hide
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

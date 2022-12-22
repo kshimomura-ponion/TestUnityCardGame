@@ -57,7 +57,7 @@ namespace MiniUnidux.SceneTransition
             this.SetStateChanged(state.IsStateChanged);
         }
 
-        public object Clone()
+        public override object Clone()
         {
             return new SceneState<TScene>(this);
         }
