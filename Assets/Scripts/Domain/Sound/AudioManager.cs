@@ -39,7 +39,7 @@ namespace TestUnityCardGame
 
         public void PlaySECancel()
         {
-            PlaySE(SE.CANCEL);
+            PlaySE(SE.Cancel);
         }
 
         public void PlaySE(SE se)

@@ -21,13 +21,13 @@ public class HeroModel
     // Cardの種類を把握するために、Tupleでカード情報を持っておくようにする
     private List<(int, CARDTYPE)> cardDeck = new List<(int, CARDTYPE)>();
 
-    public HeroModel(HeroEntity heroEntity, List<int> deck, PLAYER player)
+    public HeroModel(HeroEntity heroEntity, List<int> deck, Player player)
     {
         heroID = heroEntity.id;
         name = heroEntity.name;
         manaCost = 5;  // Initial Value of Mana Cost.
         hp = heroEntity.hp;
-        if(player == PLAYER.PLAYER1){
+        if(player == Player.Player1){
             icon = heroEntity.leftIcon;
         } else {
             icon = heroEntity.rightIcon;

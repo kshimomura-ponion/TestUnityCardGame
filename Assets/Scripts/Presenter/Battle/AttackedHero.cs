@@ -28,7 +28,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         if (attacker.model.CanAttack())
         {
             // attackerがHeroに攻撃する
-            if(attacker.GetOwner() == PLAYER.PLAYER1){
+            if(attacker.GetOwner() == Player.Player1){
                 // gameManager.player2Hero.Attacked(attacker);
             } else {
                 // gameManager.player1Hero.Attacked(attacker);

@@ -61,7 +61,7 @@ public class GameManager: MonoBehaviour
     public void StartGame()
     {
         // 音楽を再生
-        SoundManager.instance.PlayBGM(BGM.BATTLE);
+        SoundManager.instance.PlayBGM(BGM.Battle);
         uiController.ShowMainView();
 
         // 手札の準備

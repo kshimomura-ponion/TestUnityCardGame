@@ -133,10 +133,11 @@ GameObject:
   m_Component:
   - component: {fileID: 126480467}
   - component: {fileID: 126480468}
+  - component: {fileID: 126480472}
   - component: {fileID: 126480471}
   - component: {fileID: 126480470}
   m_Layer: 0
-  m_Name: TitleViewModel
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +154,8 @@ Transform:
   m_LocalPosition: {x: 0.40298462, y: -0.12461853, z: 5.673609}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 137494769}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -169,7 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94b4471b18d414d539d14d47a0e659f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonEntry: {fileID: 1839286220}
   audioManager: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
 --- !u!114 &126480470
 MonoBehaviour:
@@ -297,6 +298,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &126480472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126480466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd6120137f224a898086beef6986ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonEntry: {fileID: 1839286220}
 --- !u!1 &137494765
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,8 +405,8 @@ RectTransform:
   m_Children:
   - {fileID: 931343888}
   - {fileID: 1839286219}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_Father: {fileID: 126480467}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

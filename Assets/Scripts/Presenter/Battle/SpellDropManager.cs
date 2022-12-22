@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Presenter.Battle
 {
 public class SpellDropManager : MonoBehaviour, IDropHandler
 {
@@ -17,12 +17,12 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
         if (spellCard == null) {
             return;
         }
-        if (spellCard.CanUseSpell()) {
+        if (BattleViewController.Instance.CanUseSpell(target)) {
             // Dropで攻撃するのはプレイヤーのみであるため
-            if(spellCard.GetOwner() == PLAYER.PLAYER1){
-                // spellCard.UseSpellTo(target, gameManager.player1Hero);
+            if(spellCard.GetOwner() == Player.Player1){
+                spellCard.UseSpellTo(target, BattleViewController.Instance.player1Hero);
             } else {
-                // spellCard.UseSpellTo(target, gameManager.player2Hero);
+                spellCard.UseSpellTo(target, BattleViewController.Instance.player2Hero);
             }
         }
     }

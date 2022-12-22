@@ -6,36 +6,36 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using TMPro;
 using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
-using TMPro;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.View.Battle;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Presenter.Battle
 {
-    public class BattleViewModel: SingletonMonoBehaviour<BattleViewModel>
+    public class BattleViewController: SingletonMonoBehaviour<BattleViewController>
     {
 
         [SerializeField] AudioManager audioManager; // Audio Manager
         [SerializeField] EntitiesManager entitiesManager; // Entities Manager
 
-        // Card Prefab
-        [SerializeField] CardController cardPrefab;
-
-        // 手札を置ける場所情報
-        public Transform player1HandTransform, player2HandTransform;
-        public Transform player1FieldTransform, player2FieldTransform;
-
-        // Heroを置ける場所情報
-        public Transform player1HeroPanel, player2HeroPanel;
-
         // ターンコントローラー
         public TurnController turnController;
 
+        // View
+        BattleView battleView;
+
+        // 手札を置ける場所情報
+        [SerializeField] Transform player1HandTransform, player2HandTransform;
+        [SerializeField] Transform player1FieldTransform, player2FieldTransform;
+
+        // Heroを置ける場所情報
+        [SerializeField] Transform player1HeroPanel, player2HeroPanel;
+
         // Hero
-        [SerializeField] HeroController heroPrefab;
         [System.NonSerialized] public HeroController player1Hero, player2Hero;
 
         // 現在用意できているヒーロー、カードの種類の数
@@ -47,6 +47,9 @@ namespace TestUnityCardGame
 
         void Awake()
         {
+            // Viewの準備
+            battleView = GetComponent<BattleView>();
+
             // バトル初期データを受け取る
             battleInitialData = MiniUniduxService.State.Scene.GetData<BattleInitialData>();
         }
@@ -54,7 +57,7 @@ namespace TestUnityCardGame
         void Start()
         {
             // 音楽を再生
-            audioManager.PlayBGM(BGM.BATTLE);
+            audioManager.PlayBGM(BGM.Battle);
 
             StartBattle();
         }
@@ -74,8 +77,8 @@ namespace TestUnityCardGame
 
     void SettingHeroes(int id1, int id2)
         {
-            player1Hero = Instantiate(heroPrefab, player1HeroPanel, false);
-            player2Hero = Instantiate(heroPrefab, player2HeroPanel, false);
+            player1Hero = Instantiate(battleView.GetHeroPrefab(), player1HeroPanel, false);
+            player2Hero = Instantiate(battleView.GetHeroPrefab(), player2HeroPanel, false);
 
             // デッキ 1~8のカードIDから16枚をランダムに生成する
             List<int> player1Deck = new List<int>();
@@ -91,8 +94,8 @@ namespace TestUnityCardGame
             // UnityEngine.Debug.Log(string.Join(",", player2Deck.Select(n => n.ToString())));
 
             // ここで各Heroの持つカード情報を整理しておく
-            player1Hero.Init(entitiesManager.GetHeroEntity(id1), player1Deck, PLAYER.PLAYER1);
-            player2Hero.Init(entitiesManager.GetHeroEntity(id2), player2Deck, PLAYER.PLAYER2);
+            player1Hero.Init(entitiesManager.GetHeroEntity(id1), player1Deck, Player.Player1);
+            player2Hero.Init(entitiesManager.GetHeroEntity(id2), player2Deck, Player.Player2);
         }
 
         public void SettingInitHand(int initHandNum)
@@ -101,13 +104,13 @@ namespace TestUnityCardGame
             {
                 // 手札置き場（Hand）、FieldともにHorizontalLayoutGroupに属していないとカードが重なってしまう
                 // （カードはAlignmentでCenterに置くべき）
-                GiveCardToHand(player1Hero, player1HandTransform, PLAYER.PLAYER1);
-                GiveCardToHand(player2Hero, player2HandTransform, PLAYER.PLAYER2);
+                GiveCardToHand(player1Hero, player1HandTransform, Player.Player1);
+                GiveCardToHand(player2Hero, player2HandTransform, Player.Player2);
             }
         }
 
         // デッキからカードを取得
-        public void GiveCardToHand(HeroController hero, Transform hand, PLAYER player)
+        public void GiveCardToHand(HeroController hero, Transform hand, Player player)
         {
             List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
             if (deck.Count == 0){
@@ -121,14 +124,24 @@ namespace TestUnityCardGame
         }
 
         // カードをインスタンス化
-        void CreateCard((int, CARDTYPE) cardInfo, Transform hand, PLAYER player)
+        void CreateCard((int, CARDTYPE) cardInfo, Transform hand, Player player)
         {
-            CardController card = Instantiate(cardPrefab, hand, false);
+            CardController card = Instantiate(battleView.GetCardPrefab(), hand, false);
 
             // UnityEngine.Debug.Log(cardInfo.Item1.ToString());
             // UnityEngine.Debug.Log(cardInfo.Item2.ToString());
             // カードエンティティを生成し、カードタイプを渡してカードを生成する
             card.Init(entitiesManager.GetCardEntity(cardInfo.Item1, cardInfo.Item2), player);
+        }
+
+        public void CardsBattle(CardController attacker, CardController defender)
+        {
+            // ダメージを計算し、Viewのダメージ情報パネルを更新する
+            defender.view.SetDamageInfoText("-" + defender.Attack(attacker).ToString());
+            attacker.CheckAlive();
+
+            attacker.view.SetDamageInfoText("-" + attacker.Attack(defender).ToString());
+            defender.CheckAlive();
         }
 
         // いらないオブジェクトの破棄
@@ -153,14 +166,7 @@ namespace TestUnityCardGame
             }
         }
 
-        public void CheckHeroHP()
-        {
-            if (player1Hero.model.GetHP() <= 0 || player2Hero.model.GetHP() <= 0){
-                GameOver();
-            }
-        }
-
-        void GameOver()
+        public void GameOver()
         {
             //音楽を停止
             SoundManager.instance.StopBGM();
@@ -180,9 +186,10 @@ namespace TestUnityCardGame
             MiniUniduxService.Dispatch(pushToResultAction);
         }
 
-        public CardController[] GetMyHandCards(PLAYER player)
+        // 自分の手札を取得
+        public CardController[] GetMyHandCards(Player player)
         {
-            if(player == PLAYER.PLAYER1){
+            if(player == Player.Player1){
                 return player1HandTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player2HandTransform.GetComponentsInChildren<CardController>();
@@ -190,9 +197,9 @@ namespace TestUnityCardGame
         }
 
         // 現在ターンが回っているHeroにとって味方のフィールドを取得
-        public CardController[] GetFriendFieldCards(PLAYER player)
+        public CardController[] GetFriendFieldCards(Player player)
         {
-            if(player == PLAYER.PLAYER1){
+            if(player == Player.Player1){
                 return player1FieldTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player2FieldTransform.GetComponentsInChildren<CardController>();
@@ -200,13 +207,83 @@ namespace TestUnityCardGame
         }
 
         // 現在ターンが回っているHeroにとって敵のフィールドを取得
-        public CardController[] GetOpponentFieldCards(PLAYER player)
+        public CardController[] GetOpponentFieldCards(Player player)
         {
-            if(player == PLAYER.PLAYER1){
+            if(player == Player.Player1){
                 return player2FieldTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player1FieldTransform.GetComponentsInChildren<CardController>();
             }
+        }
+
+        public bool ExistsSheldCard(Player player)
+        {
+            //　シールドカードがあればシールドカード以外は攻撃できない
+            CardController[] enemyFieldCards = GetOpponentFieldCards(player);
+
+            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == ABILITY.SHIELD)){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public bool CanUseSpell(CardController spellCard)
+        {
+            CardController[] targetCards = GetOpponentFieldCards(spellCard.GetOwner());
+
+            switch (spellCard.model.GetSpell()) {
+                case SPELL.DAMAGE_ENEMY_CARD:
+                case SPELL.DAMAGE_ENEMY_CARDS:
+                    // 相手フィールドの全てのカードに攻撃する
+                    if (targetCards.Length > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case SPELL.DAMAGE_ENEMY_HERO:
+                case SPELL.HEAL_FRIEND_HERO:
+                    return true;
+                case SPELL.HEAL_FRIEND_CARD:
+                case SPELL.HEAL_FRIEND_CARDS:
+                    if (targetCards.Length > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case SPELL.NONE:
+                    return false;
+            }
+            return false;
+        }
+        
+        public void SetTurnNumText(string turnNumString)
+        {
+            battleView.SetTurnNumText(turnNumString);
+        }
+
+        public void TurnendButtonActivate(bool activeState)
+        {
+            battleView.TurnendButtonActivate(activeState);
+        }
+
+        public Transform GetPlayer1HandTransform()
+        {
+            return player1HandTransform;
+        }
+
+        public Transform GetPlayer2HandTransform()
+        {
+            return player2HandTransform;
+        }
+
+        public Transform GetPlayer1FieldTransform()
+        {
+            return player1FieldTransform;
+        }
+        public Transform GetPlayer2FieldTransform()
+        {
+            return player2FieldTransform;
         }
     }
 }

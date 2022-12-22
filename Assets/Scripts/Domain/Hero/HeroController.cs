@@ -15,7 +15,7 @@ public class HeroController : MonoBehaviour
     // ターン数
     private int turnNumber;
     
-    public void Init(HeroEntity heroEntity, List<int> deck, PLAYER player)
+    public void Init(HeroEntity heroEntity, List<int> deck, Player player)
     {
         // カード情報の生成
         model = new HeroModel(heroEntity, deck, player);
@@ -28,7 +28,7 @@ public class HeroController : MonoBehaviour
 
     public void Attacked(CardController attacker)
     {
-        SoundManager.instance.PlaySE(SE.ATTACK);
+        SoundManager.instance.PlaySE(SE.Attack);
         model.Damage(attacker.model.GetAT());
         view.SetDamageInfoText("-" + attacker.model.GetAT().ToString());
         view.GetDamageInfo().SetActive(true);
@@ -39,7 +39,7 @@ public class HeroController : MonoBehaviour
 
     public void Healed(CardController healer)
     {
-        SoundManager.instance.PlaySE(SE.HEAL);
+        SoundManager.instance.PlaySE(SE.Heal);
         model.Heal(healer.model.GetAT());
         view.SetDamageInfoText("+" + healer.model.GetAT().ToString());
         view.GetDamageInfo().SetActive(true);

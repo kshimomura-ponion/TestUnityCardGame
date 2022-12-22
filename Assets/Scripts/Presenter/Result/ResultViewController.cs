@@ -3,32 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
+using MiniUnidux;
 using MiniUnidux.SceneTransition;
-using TMPro;
+using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.View.Result;
 
 namespace TestUnityCardGame
 {
-    public class ResultViewModel : MonoBehaviour
+    public class ResultViewController : SingletonMonoBehaviour<ResultViewController>
     {
-        // リスタートボタン
-        [SerializeField] Button restartButton;
+        [System.NonSerialized] ResultView resultView;
 
-        // リセレクトボタン
-        [SerializeField] Button reselectButton;
-
-        // 結果表示テキスト
-        [SerializeField] TextMeshProUGUI resultText;
+        [SerializeField] AudioManager audioManager; // Audio Manager
 
         // 前のページから受け渡されるデータ
         public ResultInitialData resultInitialData;
 
-    public void Awake()
+        public void Awake()
         {
+            resultView = GetComponent<ResultView>();
+
             // リザルト初期データを受け取る
             resultInitialData = MiniUniduxService.State.Scene.GetData<ResultInitialData>();
+        }
 
-            reselectButton
+        public void Start()
+        {   
+            // ボタンのセット
+            resultView.reselectButton
             .OnClickAsObservable()
             .Subscribe(_ =>
             {
@@ -45,7 +48,7 @@ namespace TestUnityCardGame
             })
             .AddTo(this);
 
-            restartButton
+            resultView.restartButton
             .OnClickAsObservable()
             .Subscribe(_ =>
             {
@@ -60,16 +63,14 @@ namespace TestUnityCardGame
                 MiniUniduxService.Dispatch(returnToBattleAction);
             })
             .AddTo(this);  
-        }
 
-        public void Start()
-        {   
-            if(resultInitialData.isPlayer1Win){
-                resultText.text = "Player1 WIN!";
-            }
-            else
-            {
-                resultText.text = "Player2 WIN!";
+            // 音楽を再生
+            audioManager.PlayBGM(BGM.Result);
+
+            if(resultInitialData.isPlayer1Win) {
+                resultView.SetResultText("Player1 WIN!");
+            } else {
+                resultView.SetResultText("Player2 WIN!");
             }
         }
     }

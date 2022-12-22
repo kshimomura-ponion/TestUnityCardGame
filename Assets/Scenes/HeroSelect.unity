@@ -358,7 +358,7 @@ RectTransform:
   - {fileID: 1668761383}
   - {fileID: 2072902202}
   - {fileID: 458651153}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1918897750}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1592,39 +1592,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1918897750}
-  - component: {fileID: 1918897749}
   - component: {fileID: 1918897751}
   - component: {fileID: 1918897752}
+  - component: {fileID: 1918897754}
+  - component: {fileID: 1918897753}
   m_Layer: 0
-  m_Name: HeroSelectViewModel
+  m_Name: HeroSelect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1918897749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1918897748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0627cff09ca484bcf83900c871e63a3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleStartButton: {fileID: 458651154}
-  audioManager: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
-  entitiesManager: {fileID: 11400000, guid: 65781a8b689804a769be40164811d5d4, type: 2}
-  canvasTransform: {fileID: 137494769}
-  heroInfoDialogPrefab: {fileID: 8165617843083924619, guid: 6819aff5255dc4bc3a3c351cd105be8a, type: 3}
-  alertDialogPrefab: {fileID: 8049606955661998121, guid: 8bc8a07a7c7954221b82b2c4d487ebe1, type: 3}
-  heroPrefab: {fileID: 4129999835013293162, guid: 3b12342909b294af9b4f4a4617216fde, type: 3}
-  heroInfoPrefab: {fileID: -5121009681194125266, guid: 76d2ce96d4a7d448d94fa1a1abceb618, type: 3}
-  player1SelectTransform: {fileID: 1386044062}
-  player2SelectTransform: {fileID: 1668761383}
-  untilEndOfSelectText: {fileID: 25494920}
 --- !u!4 &1918897750
 Transform:
   m_ObjectHideFlags: 0
@@ -1636,9 +1614,10 @@ Transform:
   m_LocalPosition: {x: 7.5276337, y: 1.0715988, z: 105.08641}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 137494769}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1918897751
 AudioSource:
@@ -1766,6 +1745,41 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1918897753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918897748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5b53a6512f046b48003bbc8bb33ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleStartButton: {fileID: 458651154}
+  canvasTransform: {fileID: 137494769}
+  heroInfoDialogPrefab: {fileID: 8165617843083924619, guid: 6819aff5255dc4bc3a3c351cd105be8a, type: 3}
+  alertDialogPrefab: {fileID: 8049606955661998121, guid: 8bc8a07a7c7954221b82b2c4d487ebe1, type: 3}
+  hero: {fileID: 0}
+  heroInfoPrefab: {fileID: -5121009681194125266, guid: 76d2ce96d4a7d448d94fa1a1abceb618, type: 3}
+  untilEndOfSelectText: {fileID: 25494920}
+--- !u!114 &1918897754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918897748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0627cff09ca484bcf83900c871e63a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioManager: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
+  entitiesManager: {fileID: 11400000, guid: 65781a8b689804a769be40164811d5d4, type: 2}
+  player1SelectTransform: {fileID: 1386044062}
+  player2SelectTransform: {fileID: 1668761383}
 --- !u!1 &2072902201
 GameObject:
   m_ObjectHideFlags: 0

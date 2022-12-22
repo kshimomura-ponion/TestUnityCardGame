@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Presenter.HeroSelect
 {
 public class HeroInfoClick : MonoBehaviour, IPointerClickHandler
 {
@@ -12,7 +12,7 @@ public class HeroInfoClick : MonoBehaviour, IPointerClickHandler
         HeroInfoController heroInfo = eventData.pointerPress.GetComponent<HeroInfoController>();
         if(heroInfo != null)
         {
-            HeroSelectViewModel.Instance.ClickedHeroInfoCard(heroInfo);
+            HeroSelectViewController.Instance.ClickedHeroInfoCard(heroInfo);
         }
     }
 }

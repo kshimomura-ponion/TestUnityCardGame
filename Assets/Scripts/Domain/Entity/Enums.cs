@@ -1,16 +1,16 @@
-public enum PLAYER
+public enum Player
 {
-    PLAYER1,
-    PLAYER2
+    Player1,
+    Player2
 }
-public enum PLAYERTYPE
+public enum PlayerType
 {
-    PLAYER,
+    Player,
     AI
 }
 
-public enum TYPE
+public enum PlaceType
 {
-    HAND,
-    FIELD
+    Hand,
+    Field
 }

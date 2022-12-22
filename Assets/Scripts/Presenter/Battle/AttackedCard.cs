@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Presenter.Battle
 {
 public class AttackedCard : MonoBehaviour, IDropHandler
 {
@@ -25,17 +25,15 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         }
 
         //　シールドカードがあればシールドカード以外は攻撃できない
-        /* CardController[] enemyFieldCards = GameManager.instance.GetOpponentFieldCards(attacker.GetOwner());
-        if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == ABILITY.SHIELD)
-            && defender.model.GetAbility() != ABILITY.SHIELD)
+        if (BattleViewController.Instance.ExistsSheldCard(attacker.GetOwner()) && defender.model.GetAbility() != ABILITY.SHIELD)
         {
             return;
-        }*/
+        }
 
         if (attacker.model.CanAttack())
         {
             // attackerとdefenderを戦わせる
-            // GameManager.instance.turnController.CardsBattle(attacker, defender);
+            BattleViewController.Instance.CardsBattle(attacker, defender);
         }
     }
 }

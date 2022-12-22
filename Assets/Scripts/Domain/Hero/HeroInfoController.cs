@@ -9,11 +9,11 @@ public class HeroInfoController : MonoBehaviour
 {
     [System.NonSerialized] Sprite iconImage;
     [System.NonSerialized] int heroInfoID;  // ランダムは0、その他はHeroIDと同じ
-    [System.NonSerialized] PLAYER owner;
+    [System.NonSerialized] Player owner;
     [System.NonSerialized] public HeroInfoView view;
     [System.NonSerialized] public HeroModel model;
 
-    public void Init(HeroEntity heroEntity, PLAYER player, bool isRandom)
+    public void Init(HeroEntity heroEntity, Player player, bool isRandom)
     {
         List<int> deck = new List<int>();
         model = new HeroModel(heroEntity, deck, player);
@@ -38,7 +38,7 @@ public class HeroInfoController : MonoBehaviour
         return heroInfoID;
     }
 
-    public PLAYER GetOwner()
+    public Player GetOwner()
     {
         return owner;
     }
