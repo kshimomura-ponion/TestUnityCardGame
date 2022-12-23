@@ -9,8 +9,8 @@ namespace TestUnityCardGame
     public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         // ドラッグ中にカードが裏に隠れてしまうため、現在のカメラ位置と3DのZ座標を保持しておく
-        private Camera mainCamera;
-        private float piecePosZ;
+        private Camera subCamera;
+        private float cardPosZ;
 
         // 親コンテナの位置座標
         private Transform defaultParent;
@@ -18,35 +18,34 @@ namespace TestUnityCardGame
         void Start()
         {
             defaultParent = transform.parent;
-            mainCamera = Camera.main;
-            piecePosZ = transform.position.z;
+            subCamera = GameObject.FindGameObjectWithTag("SubCamera").GetComponent<Camera>();
+            cardPosZ = transform.position.z;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             CardController card = GetComponent<CardController>();
-            bool isDraggable = card.IsDraggable();
 
             if(!card.model.IsFieldCard())
             {
-                isDraggable = true;
+                card.SetDraggable(true);
             }
             else if (card.model.IsFieldCard() && card.model.CanAttack())
             {
-                isDraggable = true;
+               card.SetDraggable(true);
             }
             else
             {
-                isDraggable = false;
+                card.SetDraggable(false);
             }
 
-            if(!isDraggable)
+            if(card.IsDraggable() == false)
             {
                 return;
             }
             
-            // 一度親をBattleFieldに変更する
-            transform.SetParent(defaultParent.parent);
+            defaultParent = transform.parent;
+            transform.SetParent(defaultParent.parent, false);
 
             // カードを移動させるときはマウスポインタ（光線）を遮らない
             GetComponent<CanvasGroup>().blocksRaycasts = false;
@@ -57,13 +56,13 @@ namespace TestUnityCardGame
             CardController card = GetComponent<CardController>();
             bool isDraggable = card.IsDraggable();
 
-            if(!isDraggable)
+            if(card.IsDraggable() == false)
             {
                 return;
             }   
-
-            Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = piecePosZ;
+            /* CanvasにアタッチされているsubCameraをOrthographicにしておくことでマウスポインタの動きに追従させる。*/
+            Vector3 mousePos = subCamera.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = cardPosZ;
             transform.position = mousePos;
         }
 

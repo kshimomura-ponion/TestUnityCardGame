@@ -45,6 +45,9 @@ namespace TestUnityCardGame.Presenter.Battle
         // 前のページから受け渡されるデータ
         public BattleInitialData battleInitialData;
 
+        // 手札の保持数の最大値
+        int maxHandCardNum = 5;
+
         protected override void Awake()
         {
             // Viewの準備
@@ -109,18 +112,21 @@ namespace TestUnityCardGame.Presenter.Battle
             }
         }
 
-        // デッキからカードを取得
+        // 手札が保有量を超えなければデッキからカードを取得
         public void GiveCardToHand(HeroController hero, Transform hand, Player player)
         {
-            List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
-            if (deck.Count == 0){
-                return;
-            }
-            // デッキの上から値を削除していく
-            (int, CARDTYPE) cardInfo = deck[0];
-            hero.model.RemoveCard(0);
+            CardController[] currentHandCards = GetMyHandCards(player);
+            if(currentHandCards.Length <= maxHandCardNum){
+                List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
+                if (deck.Count == 0){
+                    return;
+                }
+                // デッキの上から値を削除していく
+                (int, CARDTYPE) cardInfo = deck[0];
+                hero.model.RemoveCard(0);
 
-            CreateCard(cardInfo, hand, player);
+                CreateCard(cardInfo, hand, player);
+            }
         }
 
         // カードをインスタンス化
@@ -226,35 +232,6 @@ namespace TestUnityCardGame.Presenter.Battle
             } else {
                 return false;
             }
-        }
-
-        public bool CanUseSpell(CardController spellCard)
-        {
-            CardController[] targetCards = GetOpponentFieldCards(spellCard.GetOwner());
-
-            switch (spellCard.model.GetSpell()) {
-                case SPELL.DAMAGE_ENEMY_CARD:
-                case SPELL.DAMAGE_ENEMY_CARDS:
-                    // 相手フィールドの全てのカードに攻撃する
-                    if (targetCards.Length > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                case SPELL.DAMAGE_ENEMY_HERO:
-                case SPELL.HEAL_FRIEND_HERO:
-                    return true;
-                case SPELL.HEAL_FRIEND_CARD:
-                case SPELL.HEAL_FRIEND_CARDS:
-                    if (targetCards.Length > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                case SPELL.NONE:
-                    return false;
-            }
-            return false;
         }
         
         public void SetTurnNumText(string turnNumString)

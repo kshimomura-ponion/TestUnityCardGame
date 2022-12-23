@@ -40,14 +40,6 @@ namespace TestUnityCardGame.Presenter.Battle
 
         }
 
-        private void OnDestroy()
-        {
-            /*if(turnInfoView != null)
-            {
-                Destroy(turnInfoView.gameObejct);
-            }*/
-        }
-
         public void TurnStart()
         {
             //isTurnEnd = false;
@@ -62,8 +54,14 @@ namespace TestUnityCardGame.Presenter.Battle
                 turnInfoView.StartAnimation();
                 BattleViewController.Instance.SetTurnNumText(BattleViewController.Instance.player1Hero.GetTurnNumber().ToString());
 
-                // 情報パネルが過ぎるまで待つ
-                Invoke("PlayerTurn", 3.5f);
+                // ターンエンドボタンを押せるようにする
+                BattleViewController.Instance.TurnendButtonActivate(true);
+
+                BattleViewController.Instance.player1Hero.AddTurnNumber();  // Player1のターン数を増やす
+                OpenPlayerHandsCard(Player.Player1);      // Player1の手札を全てOpenにする
+                ClosePlayerHandsCard(Player.Player2);     // Player2の手札を全てOpenにする
+
+                PlayerTurn(); // ターン開始
             } else {
                 // ターン数を表示する
                 var turnNum = BattleViewController.Instance.player2Hero.GetTurnNumber();
@@ -71,15 +69,22 @@ namespace TestUnityCardGame.Presenter.Battle
                 turnInfoView.StartAnimation();
                 BattleViewController.Instance.SetTurnNumText(BattleViewController.Instance.player2Hero.GetTurnNumber().ToString());
 
+                BattleViewController.Instance.player2Hero.AddTurnNumber();  // Player2のターン数を増やす
+                OpenPlayerHandsCard(Player.Player2);      // Player2の手札を全てOpenにする
+                ClosePlayerHandsCard(Player.Player1);     // Player1の手札を全てOpenにする
+
                 if(BattleViewController.Instance.battleInitialData.isPlayer2AI == true){
+                    // マウスカーソルの無効化
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+
+                    BattleViewController.Instance.TurnendButtonActivate(false); // ターンエンドボタンを押せなくする
+
                     StartCoroutine(enemyAI.EnemyTurn());
-                    // ターンエンドボタンを押せなくする
-                    BattleViewController.Instance.TurnendButtonActivate(false);
                 } else {
-                    // 情報パネルが過ぎるまで待つ
-                    Invoke("PlayerTurn", 3.5f);
-                    // ターンエンドボタンを押せるようにする
-                    BattleViewController.Instance.TurnendButtonActivate(true);
+                    BattleViewController.Instance.TurnendButtonActivate(true); // ターンエンドボタンを押せるようにする
+                    
+                    PlayerTurn(); // ターン開始
                 }
             }
         }
@@ -102,6 +107,10 @@ namespace TestUnityCardGame.Presenter.Battle
 
         public void PlayerTurn()
         {
+            // マウスカーソルの有効化
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
             CardController[] playerFieldCardList;
             if(isPlayer1Turn){
                 BattleViewController.Instance.player1Hero.view.SetActiveActivatedPanel(true);
@@ -122,15 +131,6 @@ namespace TestUnityCardGame.Presenter.Battle
 
             // 攻撃表示に変更
             SettingCanAttackView(playerFieldCardList,true);
-            Debug.Log("Playerのターン");
-
-            if(isPlayer1Turn){
-                BattleViewController.Instance.player1Hero.AddTurnNumber();  // Player1のターン数を増やす
-                OpenPlayerHandsCard(Player.Player1);      // Player2の手札を全てOpenにする
-            } else {
-                BattleViewController.Instance.player2Hero.AddTurnNumber();  // Player2のターン数を増やす
-                OpenPlayerHandsCard(Player.Player2);      // Player2の手札を全てOpenにする
-            }
         }
 
         public void OpenPlayerHandsCard(Player player){
@@ -184,7 +184,8 @@ namespace TestUnityCardGame.Presenter.Battle
             if (isPlayer1Turn) {
                 // マナコストを+1してからターン開始
                 BattleViewController.Instance.player1Hero.AddManaCost(1);
-                // カードを手札に加える
+                
+                // 手札が保有量を超えなければカードを手札に加える
                 BattleViewController.Instance.GiveCardToHand(BattleViewController.Instance.player1Hero, BattleViewController.Instance.GetPlayer1HandTransform(), Player.Player1);
                 BattleViewController.Instance.player2Hero.view.SetActiveActivatedPanel(false);
             
@@ -192,7 +193,8 @@ namespace TestUnityCardGame.Presenter.Battle
             } else {
                 // マナコストを+1してからターン開始
                 BattleViewController.Instance.player2Hero.AddManaCost(1);
-                // カードを手札に加える
+
+                // 手札が保有量を超えなければカードを手札に加える
                 BattleViewController.Instance.GiveCardToHand(BattleViewController.Instance.player2Hero, BattleViewController.Instance.GetPlayer2HandTransform(), Player.Player2);
                 BattleViewController.Instance.player1Hero.view.SetActiveActivatedPanel(false);
 
@@ -207,7 +209,7 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             foreach (CardController card in cardList)
             {
-                if(card.model.GetManaCost() <= hero.model.GetManaCost()) {
+                if(card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
                     card.SetDraggable(true);
                 } else {
                     card.SetDraggable(false);

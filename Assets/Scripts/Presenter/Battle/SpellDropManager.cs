@@ -12,17 +12,28 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         CardController spellCard = eventData.pointerDrag.GetComponent<CardController>();
-        CardController target = GetComponent<CardController>(); // nullの可能性もある
+        CardController targetCard = GetComponent<CardController>(); // nullの可能性もある
+        HeroController targetHero = GetComponent<HeroController>(); // nullの可能性もある
 
         if (spellCard == null) {
             return;
         }
-        if (BattleViewController.Instance.CanUseSpell(target)) {
-            // Dropで攻撃するのはプレイヤーのみであるため
+        CardController[] targetCards = BattleViewController.Instance.GetOpponentFieldCards(spellCard.GetOwner());
+
+        if (spellCard.CanUseSpell(targetCards)) {
+            // Dropで攻撃するのはプレイヤーのみ
             if(spellCard.GetOwner() == Player.Player1){
-                spellCard.UseSpellTo(target, BattleViewController.Instance.player1Hero);
+                if(targetCard != null) {
+                    spellCard.UseSpellTo(targetCard, BattleViewController.Instance.player1Hero);
+                } else if(targetHero != null){
+                    spellCard.UseSpellTo(targetHero, BattleViewController.Instance.player1Hero);
+                }
             } else {
-                spellCard.UseSpellTo(target, BattleViewController.Instance.player2Hero);
+                if(targetCard != null) {
+                    spellCard.UseSpellTo(targetCard, BattleViewController.Instance.player2Hero);
+                } else if(targetHero != null){
+                    spellCard.UseSpellTo(targetHero, BattleViewController.Instance.player2Hero);
+                }
             }
         }
     }

@@ -11,9 +11,10 @@ namespace TestUnityCardGame.View.HeroSelect
     {
         [SerializeField] GameObject heroInfoDialog;
 
-        public  Image selectHeroIcon;
-        public  TextMeshProUGUI selectHeroName;
-        public  TextMeshProUGUI selectHeroInfo;
+        public AudioManager audioManager;
+        public Image selectHeroIcon;
+        public TextMeshProUGUI selectHeroName;
+        public TextMeshProUGUI selectHeroInfo;
 
         [System.NonSerialized] public Player owner;
 
@@ -27,11 +28,13 @@ namespace TestUnityCardGame.View.HeroSelect
 
         public void Hide()
         {
+            audioManager.PlaySE(SE.Cancel);
             heroInfoDialog.SetActive(false);
         }
 
        public void PushedHeroInfoOKButton()
         {
+            audioManager.PlaySE(SE.OK);
             HeroInfoController[] hero1InfoList = HeroSelectViewController.Instance.GetHeroInfoList(Player.Player1);
             foreach (HeroInfoController heroInfo in hero1InfoList)
             {

@@ -10,10 +10,6 @@ namespace TestUnityCardGame.Presenter.Battle
     { 
         public IEnumerator EnemyTurn()
         {
-            // マウスカーソルの無効化
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-
             // わかりやすくするため
             HeroController enemyAIHero = BattleViewController.Instance.player2Hero;
             Transform enemyAIHandTransform = BattleViewController.Instance.GetPlayer2HandTransform();
@@ -23,8 +19,6 @@ namespace TestUnityCardGame.Presenter.Battle
             yield return new WaitForSeconds(4.0f);
 
             enemyAIHero.view.SetActiveActivatedPanel(true);
-
-            Debug.Log("Enemyのターン");
 
             // 手札のカードリストを取得
             CardController[] enemyAIHandCardList = enemyAIHandTransform.GetComponentsInChildren<CardController>();
@@ -39,7 +33,8 @@ namespace TestUnityCardGame.Presenter.Battle
                 
                 // スペルカードなら使用する
                 if (card.model.IsSpell()){
-                    StartCoroutine(CastSpellOf(card));
+                    CastSpellOf(card);
+                    yield return new WaitForSeconds(1);
                 } else {
                     // カードを移動して表示状態に変更、マナコストを減らす
                     StartCoroutine(card.movement.MoveToField(enemyAIFieldTransform));
@@ -57,10 +52,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 }
                 yield return new WaitForSeconds(1);
 
-                // スペルカードなら破壊する
-                if (card.model.IsSpell()){
-                    card.DestroyUsedSpellCard();
-                } else {
+                if (card.model.IsSpell() == false){
                     // 攻撃① フィールドのカードリストを取得
                     CardController[] enemyAIFieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
 
@@ -104,11 +96,8 @@ namespace TestUnityCardGame.Presenter.Battle
             }
 
             yield return new WaitForSeconds(1.5f);
-            enemyAIHero.AddTurnNumber();
 
-            // マウスカーソルの有効化
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            enemyAIHero.AddTurnNumber();
 
             BattleViewController.Instance.turnController.ChangeTurn();
         }
@@ -132,7 +121,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     }
                     break;
                 case SPELL.HEAL_FRIEND_CARD:
-                    CardController[] friendCardList =BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                    CardController[] friendCardList = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     if(friendCardList.Length > 0) {
                         target = friendCardList[0];
                         movePosition = target.transform;
@@ -153,15 +142,12 @@ namespace TestUnityCardGame.Presenter.Battle
 
             }
 
-            yield return new WaitForSeconds(0.25f);
-            
             // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
             StartCoroutine(card.movement.MoveToField(movePosition));
-
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(1.0f);
             
             // カードを使用したらMana Costを減らす
-            card.UseSpellTo(target, enemyAIHero);
+            StartCoroutine(card.UseSpellTo(target, enemyAIHero));
         }
     }
 }

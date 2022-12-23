@@ -326,7 +326,7 @@ Canvas:
   m_GameObject: {fileID: 137494765}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
@@ -513,8 +513,8 @@ GameObject:
   - component: {fileID: 458651156}
   - component: {fileID: 458651155}
   - component: {fileID: 458651154}
-  - component: {fileID: 458651157}
   - component: {fileID: 458651158}
+  - component: {fileID: 458651159}
   m_Layer: 5
   m_Name: BattleStartButton
   m_TagString: Untagged
@@ -637,7 +637,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458651152}
   m_CullTransparentMesh: 1
---- !u!82 &458651157
+--- !u!114 &458651158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458651152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30bdbd26dcd5242e7a3be957054bdd68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onAwake:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
+        m_TargetAssemblyTypeName: TestUnityCardGame.AudioManager, Assembly-CSharp
+        m_MethodName: set_seAudioSource
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 458651159}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!82 &458651159
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -733,36 +763,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &458651158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458651152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30bdbd26dcd5242e7a3be957054bdd68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onAwake:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
-        m_TargetAssemblyTypeName: TestUnityCardGame.AudioManager, Assembly-CSharp
-        m_MethodName: set_seAudioSource
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 458651157}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onDestroy:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &498070675
 GameObject:
   m_ObjectHideFlags: 0
@@ -1611,7 +1611,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918897748}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.5276337, y: 1.0715988, z: 105.08641}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1633,7 +1633,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1761,7 +1761,6 @@ MonoBehaviour:
   canvasTransform: {fileID: 137494769}
   heroInfoDialogPrefab: {fileID: 8165617843083924619, guid: 6819aff5255dc4bc3a3c351cd105be8a, type: 3}
   alertDialogPrefab: {fileID: 8049606955661998121, guid: 8bc8a07a7c7954221b82b2c4d487ebe1, type: 3}
-  hero: {fileID: 0}
   heroInfoPrefab: {fileID: -5121009681194125266, guid: 76d2ce96d4a7d448d94fa1a1abceb618, type: 3}
   untilEndOfSelectText: {fileID: 25494920}
 --- !u!114 &1918897754

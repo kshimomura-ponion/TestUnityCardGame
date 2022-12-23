@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TestUnityCardGame.View.Card;
@@ -33,7 +36,6 @@ namespace TestUnityCardGame
         {
             audioManager.PlaySE(SE.Attack);
             int at = model.Attack(enemyCard);
-            view.SetActiveSelectablePanel(false);
             SetCanAttack(false);
             return at;
         }
@@ -59,25 +61,22 @@ namespace TestUnityCardGame
 
         void RefreshOrDestoroy()
         {
-            view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart).OnComplete(MoveXAxis);
-
+            DamageAnimation(view.GetDamageInfo().transform);
             // hpが0になったらオブジェクトを消す
             if(model.IsAlive()) {
-                view.Refresh(model);
+                RefreshView();
             } else {
-                Invoke("DestroyCard", 0.5f);
+                DestroyCard();
             }
         }
 
-        void MoveXAxis(){
-            xDestination = transform.position.x - 25;
-            XAxisTransForm();
-            xDestination = transform.position.x + 25;
-            Invoke("XAxisTransForm", 0.1f);
-            xDestination = transform.position.x + 25;
-            Invoke("XAxisTransForm", 0.1f);
-            xDestination = transform.position.x - 25;
-            Invoke("XAxisTransForm", 0.1f);
+        void DamageAnimation(Transform transform){
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x + 50,0f,0f), 0.02f));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
+      
             RewindDamageInfo();
         }
 
@@ -93,49 +92,77 @@ namespace TestUnityCardGame
             xDestination = 0.0f;
         }
 
+        void RefreshView()
+        {
+            view.Refresh(model);
+        }
+
         void DestroyCard()
         {
             audioManager.PlaySE(SE.Died);
             Instantiate(view.explosionParticle, transform.position, view.explosionParticle.transform.rotation);
-            Destroy(this.gameObject);
+            if(this.gameObject != null)
+            {
+                Destroy(this.gameObject);
+            }
         }
 
-        public void UseSpellTo(CardController targetCard, HeroController ownerHero)
+        public bool CanUseSpell(CardController[] targetCards)
+        {
+            switch (model.GetSpell()) {
+                case SPELL.DAMAGE_ENEMY_CARD:
+                case SPELL.DAMAGE_ENEMY_CARDS:
+                    // 相手フィールドの全てのカードに攻撃する
+                    if (targetCards.Length > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case SPELL.DAMAGE_ENEMY_HERO:
+                case SPELL.HEAL_FRIEND_HERO:
+                    return true;
+                case SPELL.HEAL_FRIEND_CARD:
+                case SPELL.HEAL_FRIEND_CARDS:
+                    if (targetCards.Length > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                case SPELL.NONE:
+                    return false;
+            }
+            return false;
+        }
+
+        public IEnumerator UseSpellTo(CardController targetCard, HeroController ownerHero)
         {
             switch (model.GetSpell()) {
                 case SPELL.DAMAGE_ENEMY_CARD:
                     // 特定の敵を攻撃する
-                    if (targetCard == null)
+                    if (targetCard != null && targetCard.GetOwner() == owner)
                     {
-                        return;
+                        Attack(targetCard);
+                        targetCard.CheckAlive();
                     }
-                    if (targetCard.GetOwner() == owner)
-                    {
-                        return;
-                    }
-                    Attack(targetCard);
-                    targetCard.CheckAlive();
                     break;
                 case SPELL.HEAL_FRIEND_CARD:
-                    if (targetCard == null)
+                    if (targetCard != null && targetCard.GetOwner() != owner)
                     {
-                        return;
+                        Heal(targetCard);
                     }
-                    if (targetCard.GetOwner() != owner)
-                    {
-                        return;
-                    }
-                    Heal(targetCard);
                     break;
                 case SPELL.NONE:
                     break;
             }
+            yield return new WaitForSeconds(0.5f);
+            // カードを破棄する
+            DestroyCard();
 
             // カード所有者のマナコストを減少させる
             ownerHero.model.ReduceManaCost(model.GetManaCost());
         }
 
-        public void UseSpellTo(CardController[] targetCards, HeroController ownerHero)
+        public IEnumerator UseSpellTo(CardController[] targetCards, HeroController ownerHero)
         {
             switch (model.GetSpell()) {
                 case SPELL.DAMAGE_ENEMY_CARDS:
@@ -158,12 +185,16 @@ namespace TestUnityCardGame
                 case SPELL.NONE:
                     break;
             }
+            
+            yield return new WaitForSeconds(0.5f);
+            // カードを破棄する
+            DestroyCard();
 
             // カード所有者のマナコストを減少させる
             ownerHero.model.ReduceManaCost(model.GetManaCost());
         }
 
-        public void UseSpellTo(HeroController target, HeroController ownerHero)
+        public IEnumerator UseSpellTo(HeroController target, HeroController ownerHero)
         {
             switch (model.GetSpell()) {
                 case SPELL.DAMAGE_ENEMY_HERO:
@@ -176,15 +207,12 @@ namespace TestUnityCardGame
                     break;
             }
 
+            yield return new WaitForSeconds(0.5f);
+            // カードを破棄する
+            DestroyCard();
+
             // カード所有者のマナコストを減少させる
             ownerHero.model.ReduceManaCost(model.GetManaCost());
-        }
-
-        public void DestroyUsedSpellCard()
-        {
-            if(model.GetSpell() != SPELL.NONE) {
-                Destroy(this.gameObject);   // スペルカードの破棄
-            }
         }
 
         public Player GetOwner()

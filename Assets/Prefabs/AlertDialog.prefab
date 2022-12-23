@@ -394,9 +394,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
-        m_TargetAssemblyTypeName: TestUnityCardGame.AudioManager, Assembly-CSharp
-        m_MethodName: PlaySECancel
+      - m_Target: {fileID: 8049606955661998121}
+        m_TargetAssemblyTypeName: AlertDialog, Assembly-CSharp
+        m_MethodName: HideAlertDialog
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -406,9 +406,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8049606955661998121}
-        m_TargetAssemblyTypeName: AlertDialog, Assembly-CSharp
-        m_MethodName: HideAlertDialog
+      - m_Target: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
+        m_TargetAssemblyTypeName: TestUnityCardGame.AudioManager, Assembly-CSharp
+        m_MethodName: PlaySEOK
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
