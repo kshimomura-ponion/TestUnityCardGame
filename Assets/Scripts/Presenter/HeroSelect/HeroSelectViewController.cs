@@ -58,7 +58,7 @@ namespace TestUnityCardGame.Presenter.HeroSelect
         {
             audioManager.PlayBGM(BGM.SelectHero);
 
-            for(int i = 1; i <= existHeroNum; i++){
+            for(int i = 1; i <= existHeroNum; i++) {
                 CreateHeroInfo(i, Player.Player1, player1SelectTransform, false);
                 CreateHeroInfo(i, Player.Player2, player2SelectTransform, false);
             }
@@ -75,25 +75,25 @@ namespace TestUnityCardGame.Presenter.HeroSelect
         private void CreateHeroInfo(int id, Player player, Transform panel, bool isRandom)
         {
             HeroInfoController heroInfo = Instantiate(heroSelectView.GetHeroInfoPrefab(), panel, false);
-            if(id == 0) id = 1;
+            if (id == 0) id = 1;
             heroInfo.Init(entitiesManager.GetHeroEntity(id), player, isRandom);
         }
 
         public void ClickedHeroInfoCard(HeroInfoController heroInfo)
         {
-            if(heroInfo != null) {
-                if(heroInfo.GetOwner() == Player.Player1){
+            if (heroInfo != null) {
+                if (heroInfo.GetOwner() == Player.Player1) {
                     int hero1ID = heroInfo.GetHeroInfoID(); // ランダムの場合は0
  
-                    if(hero1ID == 0){
+                    if (hero1ID == 0) {
                         hero1ID = UnityEngine.Random.Range(1, existHeroNum);
                         heroInfo.UpdateModel(entitiesManager.GetHeroEntity(hero1ID));
                     } 
                     // プレイヤーセレクトOKダイアログを表示する
                     heroSelectView.ShowHeroInfoDialog(hero1ID, heroInfo.GetOwner(), heroInfo.model.GetIcon(),heroInfo.model.GetName(),heroInfo.model.GetInfo());
-                } else if(heroInfo.GetOwner() == Player.Player2){
+                } else if (heroInfo.GetOwner() == Player.Player2) {
                     int hero2ID = heroInfo.GetHeroInfoID(); // ランダムの場合は0
-                    if(hero2ID == 0){
+                    if (hero2ID == 0) {
                         hero2ID = UnityEngine.Random.Range(1,  existHeroNum);
                         heroInfo.UpdateModel(entitiesManager.GetHeroEntity(hero2ID));
                     }
@@ -128,9 +128,9 @@ namespace TestUnityCardGame.Presenter.HeroSelect
 
         public void OnSelectedHeroes()
         {
-            if(hero1ID > 0) {
+            if (hero1ID > 0) {
                 // プレイヤー2が決まっていない時はプレイヤー1のHeroを勝手に決めてプレイヤー2をAIにする
-                if(hero2ID == 0){
+                if (hero2ID == 0) {
                     hero2ID = UnityEngine.Random.Range(1, existHeroNum);
                     isPlayer2AI = true;
                 }
@@ -170,7 +170,7 @@ namespace TestUnityCardGame.Presenter.HeroSelect
 
         public HeroInfoController[] GetHeroInfoList(Player player)
         {
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 return player1SelectTransform.GetComponentsInChildren<HeroInfoController>();
             } else {
                 return player2SelectTransform.GetComponentsInChildren<HeroInfoController>();

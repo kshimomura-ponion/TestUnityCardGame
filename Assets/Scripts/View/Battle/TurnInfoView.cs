@@ -49,9 +49,9 @@ namespace TestUnityCardGame.View.Battle
         }
 
         
-        void TurnInfoXAxisTransForm(){
+        void TurnInfoXAxisTransForm() {
             float turnInfoPanelXDestination = 0.0f;
-            if(TurnController.Instance.isPlayer1Turn == true) 
+            if (TurnController.Instance.isPlayer1Turn) 
             {
                 turnInfoPanelXDestination = 2000.0f;
             } else {
@@ -63,7 +63,7 @@ namespace TestUnityCardGame.View.Battle
         public void StartAnimation()
         {
             HideTurnInfo();
-            if(TurnController.Instance.isPlayer1Turn == true) 
+            if (TurnController.Instance.isPlayer1Turn) 
             {
                 SetTurnInfoText("Player 1's Turn");
                 turnInfo.transform.DOLocalMove(new Vector3(-2000f,0f,0f), 0f);
@@ -78,7 +78,7 @@ namespace TestUnityCardGame.View.Battle
    
         public void ShowTurnInfoView(int turnNum)
         {
-            if(turnInfoView != null)
+            if (turnInfoView != null)
             {
                 Show(turnNum);
             }

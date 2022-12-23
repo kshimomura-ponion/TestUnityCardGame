@@ -35,7 +35,7 @@ namespace TestUnityCardGame.Presenter.Battle
         protected override void Awake()
         {
             // ターン情報ビューを生成する
-            if(turnInfoView == null)
+            if (turnInfoView == null)
             {
                 turnInfoView = Instantiate(BattleViewController.Instance.GetTurnInfoViewPrefab(), canvasTransform, false);
             }
@@ -49,7 +49,7 @@ namespace TestUnityCardGame.Presenter.Battle
             StopAllCoroutines();
             StartCoroutine(CountDown());
             
-            if(isPlayer1Turn){
+            if (isPlayer1Turn) {
                 // ターン数を表示する
                 int turnNum = BattleViewController.Instance.player1Hero.GetTurnNumber();
                 turnInfoView.ShowTurnInfoView(turnNum);
@@ -75,7 +75,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 OpenPlayerHandsCard(Player.Player2);      // Player2の手札を全てOpenにする
                 ClosePlayerHandsCard(Player.Player1);     // Player1の手札を全てOpenにする
 
-                if(BattleViewController.Instance.battleInitialData.isPlayer2AI == true){
+                if (BattleViewController.Instance.battleInitialData.isPlayer2AI) {
                     // マウスカーソルの無効化
                     Cursor.lockState = CursorLockMode.Locked;
                     Cursor.visible = false;
@@ -114,7 +114,7 @@ namespace TestUnityCardGame.Presenter.Battle
             Cursor.visible = true;
 
             CardController[] playerFieldCardList;
-            if(isPlayer1Turn){
+            if (isPlayer1Turn) {
                 BattleViewController.Instance.player1Hero.view.SetActiveActivatedPanel(true);
                 playerFieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
                 
@@ -135,9 +135,9 @@ namespace TestUnityCardGame.Presenter.Battle
             SettingCanAttackView(playerFieldCardList,true);
         }
 
-        public void OpenPlayerHandsCard(Player player){
+        public void OpenPlayerHandsCard(Player player) {
             CardController[] playerCardList = {};
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 Transform player1HandTransform = BattleViewController.Instance.GetPlayer1HandTransform();
                 playerCardList = player1HandTransform.GetComponentsInChildren<CardController>();
             } else {
@@ -151,9 +151,9 @@ namespace TestUnityCardGame.Presenter.Battle
             }
         }
 
-        public void ClosePlayerHandsCard(Player player){
+        public void ClosePlayerHandsCard(Player player) {
             CardController[] playerCardList = {};
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 Transform player1HandTransform =  BattleViewController.Instance.GetPlayer1HandTransform();
                 playerCardList = player1HandTransform.GetComponentsInChildren<CardController>();
             } else {
@@ -211,7 +211,7 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             foreach (CardController card in cardList)
             {
-                if(card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
+                if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
                     card.SetDraggable(true);
                 } else {
                     card.SetDraggable(false);
@@ -235,7 +235,7 @@ namespace TestUnityCardGame.Presenter.Battle
 
         public void CheckHeroHP()
         {
-            if (BattleViewController.Instance.player1Hero.model.GetHP() <= 0 || BattleViewController.Instance.player2Hero.model.GetHP() <= 0){
+            if (BattleViewController.Instance.player1Hero.model.GetHP() <= 0 || BattleViewController.Instance.player2Hero.model.GetHP() <= 0) {
                 BattleViewController.Instance.GameOver();
             }
         }

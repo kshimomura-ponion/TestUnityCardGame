@@ -34,7 +34,7 @@ namespace TestUnityCardGame.View.Battle
         // ターン数（メイン画面）
         [SerializeField] TextMeshProUGUI turnNumText;
 
-        void Awake(){}
+        void Awake() {}
 
         void Start()
         {}

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using TestUnityCardGame.Presenter.Card;
+using TestUnityCardGame.Presenter.Battle;
 
 namespace TestUnityCardGame.Presenter.Card
 {
@@ -27,21 +28,15 @@ namespace TestUnityCardGame.Presenter.Card
         {
             CardController card = GetComponent<CardController>();
 
-            if(!card.model.IsFieldCard())
-            {
+            if (!card.model.IsFieldCard()) {
                 card.SetDraggable(true);
-            }
-            else if (card.model.IsFieldCard() && card.model.CanAttack())
-            {
+            } else if (card.model.IsFieldCard() && card.model.CanAttack()) {
                card.SetDraggable(true);
-            }
-            else
-            {
+            } else {
                 card.SetDraggable(false);
             }
 
-            if(card.IsDraggable() == false)
-            {
+            if (!card.IsDraggable()) {
                 return;
             }
             
@@ -57,8 +52,7 @@ namespace TestUnityCardGame.Presenter.Card
             CardController card = GetComponent<CardController>();
             bool isDraggable = card.IsDraggable();
 
-            if(card.IsDraggable() == false)
-            {
+            if (!card.IsDraggable()) {
                 return;
             }   
             /* CanvasにアタッチされているsubCameraをOrthographicにしておくことでマウスポインタの動きに追従させる。*/

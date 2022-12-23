@@ -40,7 +40,7 @@ namespace TestUnityCardGame.View.HeroSelect
             foreach (HeroInfoController heroInfo in hero1InfoList)
             {
 
-                if(heroInfo.model.GetHeroID() == hero1ID){
+                if (heroInfo.model.GetHeroID() == hero1ID) {
                     heroInfo.view.ShowSelectedPanel();
                 } else {
                     heroInfo.view.HideSelectedPanel();
@@ -50,14 +50,14 @@ namespace TestUnityCardGame.View.HeroSelect
             HeroInfoController[] hero2InfoList = HeroSelectViewController.Instance.GetHeroInfoList(Player.Player2);
             foreach (HeroInfoController heroInfo in hero2InfoList)
             {
-                if(heroInfo.model.GetHeroID() == hero2ID){
+                if (heroInfo.model.GetHeroID() == hero2ID) {
                     heroInfo.view.ShowSelectedPanel();
                 } else {
                     heroInfo.view.HideSelectedPanel();
                 }
             }
 
-            if(owner == Player.Player1){
+            if (owner == Player.Player1) {
                 HeroSelectViewController.Instance.hero1ID = hero1ID;
             } else {
                 HeroSelectViewController.Instance.hero2ID = hero2ID;
@@ -67,7 +67,7 @@ namespace TestUnityCardGame.View.HeroSelect
 
         public void Show(int heroID, Player player, Sprite icon, string name, string info)
         {
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 this.hero1ID = heroID;
             } else {
                 this.hero2ID = heroID;

@@ -16,29 +16,43 @@ namespace TestUnityCardGame.Presenter.Battle
 
         public void OnDrop(PointerEventData eventData)
         {
-            if(placeType == PlaceType.Hand) {
+            if (placeType == PlaceType.Hand) {
                 return;
             }
             CardController card = eventData.pointerDrag.GetComponent<CardController>();
-            if(card != null) {
-                if(!card.IsDraggable()){
+            if (card != null) {
+                if (!card.IsDraggable()) {
                     return;
                 }
 
-                // スペルカードは場にセットできない
+                // スペルカードかつ全体攻撃（回復）ならばフィールドに出た瞬間に使用する
                 if (card.model.IsSpell()) {
+                    UnityEngine.Debug.Log(card.model.GetSpell().ToString());
+                    var ownerHero = BattleViewController.Instance.player1Hero;
+                    if (card.GetOwner() == Player.Player2) {
+                        ownerHero = BattleViewController.Instance.player2Hero;
+                    }
+
+                    if (card.model.GetSpell() == Spell.AttackEnemyCards) {
+                        CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
+                        StartCoroutine(card.UseSpellToCards(enemyCards, ownerHero));
+
+                    } else if (card.model.GetSpell() == Spell.HealFriendCards) {
+                        CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                        StartCoroutine(card.UseSpellToCards(friendCards, ownerHero));
+                    }
                     return;
                 }
 
                 // すでに場に出ているカードは動かせない
-                if(card.model.IsFieldCard()) {
+                if (card.model.IsFieldCard()) {
                     return;
                 }
 
                 // 敵のFieldに配置しないようにする
-                if(card.GetOwner() == Player.Player1 && this.transform != BattleViewController.Instance.GetPlayer1FieldTransform()){
+                if (card.GetOwner() == Player.Player1 && this.transform != BattleViewController.Instance.GetPlayer1FieldTransform()) {
                     return;
-                } else if(card.GetOwner() == Player.Player2 && this.transform != BattleViewController.Instance.GetPlayer2FieldTransform()){
+                } else if (card.GetOwner() == Player.Player2 && this.transform != BattleViewController.Instance.GetPlayer2FieldTransform()) {
                     return;
                 }
 
@@ -52,7 +66,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 card.view.SetActiveFrontPanel(true);
 
                 // Mana Costを減らす
-                switch(card.GetOwner()){
+                switch(card.GetOwner()) {
                     case Player.Player1:
                         BattleViewController.Instance.player1Hero.ReduceManaCost(card.model.GetManaCost());
                         break;

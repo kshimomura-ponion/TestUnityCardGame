@@ -53,7 +53,7 @@ namespace TestUnityCardGame.Presenter.Hero
             RefreshView();
         }
 
-        void DamageAnimation(Transform transform){
+        void DamageAnimation(Transform transform) {
             Sequence sequence = DOTween.Sequence();
             sequence.Append(transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart));
             sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
@@ -63,7 +63,7 @@ namespace TestUnityCardGame.Presenter.Hero
             RewindDamageInfo();
         }
 
-        public void AddManaCost(int cost){
+        public void AddManaCost(int cost) {
             model.AddManaCost(cost);
             view.SetReduceManaCostInfoText("+" + cost.ToString());
             view.GetReduceManaCostInfo().SetActive(true);
@@ -100,11 +100,11 @@ namespace TestUnityCardGame.Presenter.Hero
             view.GetReduceManaCostInfo().transform.DORewind();
         }
 
-        public int GetTurnNumber(){
+        public int GetTurnNumber() {
             return turnNumber;
         }
 
-        public void AddTurnNumber(){
+        public void AddTurnNumber() {
             turnNumber++;
         }
     }

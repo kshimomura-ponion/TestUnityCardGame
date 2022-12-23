@@ -29,9 +29,9 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] player1FieldCards= BattleViewController.Instance.GetOpponentFieldCards(Player.Player2);
 
             // コスト以下のカードがあれば、カードをフィールドに出し続ける
-            while (Array.Exists(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost() && (!card.model.IsSpell() || (card.model.IsSpell() && card.CanUseSpell(player1FieldCards)))))) {
+            while (Array.Exists(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost() && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card)))))) {
                 // コスト以下のカードリストを取得
-                CardController[] selectableEnemyHandCards = Array.FindAll(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost()) && (!card.model.IsSpell() || (card.model.IsSpell() && card.CanUseSpell(player1FieldCards))));
+                CardController[] selectableEnemyHandCards = Array.FindAll(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost()) && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card))));
 
                 // 場に出すカードを選択
                 CardController card = selectableEnemyHandCards[0];
@@ -40,9 +40,9 @@ namespace TestUnityCardGame.Presenter.Battle
                 card.view.SetActiveFrontPanel(true);
 
                 // スペルカードなら使用する
-                if (card.model.IsSpell() == true){
+                if (card.model.IsSpell()) {
                     StartCoroutine(CastSpellOf(card));
-                    yield return new WaitForSeconds(1.0f);
+                    yield return new WaitForSeconds(2.0f);
                 } else {
                     // カードを移動して表示状態に変更、マナコストを減らす
                     StartCoroutine(card.movement.MoveToField(enemyAIFieldTransform));
@@ -66,13 +66,13 @@ namespace TestUnityCardGame.Presenter.Battle
                 // 攻撃④ pick player's defender cards.
                 player1FieldCards = BattleViewController.Instance.GetOpponentFieldCards(Player.Player2);
 
-                if (enemyCanAttackCards.Length > 0){
+                if (enemyCanAttackCards.Length > 0) {
                     CardController attacker = enemyCanAttackCards[0];
 
                     // 攻撃⑤ 場にカードがあればカードを攻撃、なければHeroを攻撃
-                    if (player1FieldCards.Length > 0){
+                    if (player1FieldCards.Length > 0) {
                         // シールドカードのみ攻撃対象にする
-                        if(Array.Exists(player1FieldCards, card => card.model.GetAbility() == Ability.Shield)){
+                        if (Array.Exists(player1FieldCards, card => card.model.GetAbility() == Ability.Shield)) {
                             player1FieldCards = Array.FindAll(player1FieldCards, card => card.model.GetAbility() == Ability.Shield);
                         }
                         CardController defender = player1FieldCards[0];
@@ -100,9 +100,37 @@ namespace TestUnityCardGame.Presenter.Battle
             BattleViewController.Instance.turnController.ChangeTurn();
         }
 
+
+        bool CanCastSpell(CardController card)
+        {
+            // わかりやすくするため
+            HeroController player1Hero = BattleViewController.Instance.player1Hero;
+            HeroController enemyAIHero = BattleViewController.Instance.player2Hero;
+            Transform enemyAIHandTransform = BattleViewController.Instance.GetPlayer2HandTransform();
+            Transform enemyAIFieldTransform = BattleViewController.Instance.GetPlayer2FieldTransform();
+
+            switch (card.model.GetSpell()) {
+                case Spell.AttackEnemyCard:
+                case Spell.AttackEnemyCards:
+                    CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
+                    return card.CanUseSpellToCard(opponentCards);
+                case Spell.HealFriendCard:
+                case Spell.HealFriendCards:
+                    CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                    return card.CanUseSpellToCard(friendCards);
+                case Spell.AttackEnemyHero:
+                    return card.CanUseSpellToHero(player1Hero);
+                case Spell.HealFriendHero:
+                    return card.CanUseSpellToHero(enemyAIHero);
+            }
+
+            return false;
+        }
+
         IEnumerator CastSpellOf(CardController card)
         {
             // わかりやすくするため
+            HeroController player1Hero = BattleViewController.Instance.player1Hero;
             HeroController enemyAIHero = BattleViewController.Instance.player2Hero;
             Transform enemyAIHandTransform = BattleViewController.Instance.GetPlayer2HandTransform();
             Transform enemyAIFieldTransform = BattleViewController.Instance.GetPlayer2FieldTransform();
@@ -110,42 +138,73 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController target = null;
             Transform movePosition = null;
 
-            switch (card.model.GetSpell()){
+            switch (card.model.GetSpell()) {
                 case Spell.AttackEnemyCard:
                     CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
-                    if(opponentCards.Length > 0) {
+                    if (opponentCards.Length > 0) {
                         target = opponentCards[0];
                         movePosition = target.transform;
                     }
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero));
                     break;
                 case Spell.HealFriendCard:
-                    CardController[] friendCardList = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
-                    if(friendCardList.Length > 0) {
-                        target = friendCardList[0];
+                    CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                    if (friendCards.Length > 0) {
+                        target = friendCards[0];
                         movePosition = target.transform;
                     }
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero));
                     break;
                 case Spell.AttackEnemyCards:
+                    opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                     movePosition = BattleViewController.Instance.GetPlayer1FieldTransform();
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToCards(opponentCards, enemyAIHero));
                     break;
                 case Spell.HealFriendCards:
+                    friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     movePosition = enemyAIFieldTransform;
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToCards(friendCards, enemyAIHero));
                     break;
                 case Spell.AttackEnemyHero:
-                    movePosition = BattleViewController.Instance.player1Hero.transform;
+                    movePosition = player1Hero.transform;
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToHero(player1Hero, enemyAIHero));
                     break;
                 case Spell.HealFriendHero:
                     movePosition = enemyAIHero.transform;
+                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    StartCoroutine(card.movement.MoveToField(movePosition));
+                    yield return new WaitForSeconds(2.0f);
+            
+                    // カードを使用したらMana Costを減らす
+                    StartCoroutine(card.UseSpellToHero(enemyAIHero, enemyAIHero));
                     break;
 
             }
-
-            // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-            StartCoroutine(card.movement.MoveToField(movePosition));
-            yield return new WaitForSeconds(2.0f);
-            
-            // カードを使用したらMana Costを減らす
-            StartCoroutine(card.UseSpellTo(target, enemyAIHero));
         }
     }
 }

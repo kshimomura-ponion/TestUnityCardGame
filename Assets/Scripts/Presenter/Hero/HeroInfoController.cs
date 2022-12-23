@@ -22,7 +22,7 @@ namespace TestUnityCardGame.Presenter.Hero
             view = GetComponent<HeroInfoView>();
             view.Show(model, isRandom);
             owner = player;
-            if(isRandom){
+            if (isRandom) {
                 heroInfoID = 0;
             } else {
                 heroInfoID = model.GetHeroID();

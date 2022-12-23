@@ -11,7 +11,7 @@ public class HeroInfoClick : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         HeroInfoController heroInfo = eventData.pointerPress.GetComponent<HeroInfoController>();
-        if(heroInfo != null)
+        if (heroInfo != null)
         {
             HeroSelectViewController.Instance.ClickedHeroInfoCard(heroInfo);
         }

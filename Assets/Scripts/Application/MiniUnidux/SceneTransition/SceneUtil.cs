@@ -46,7 +46,7 @@ namespace MiniUnidux.SceneTransition
             var sceneCount = SceneManager.sceneCount;
             for (var i = 0; i < sceneCount; i++)
             {
-                if(SceneManager.GetSceneAt(i).name == name)
+                if (SceneManager.GetSceneAt(i).name == name)
                 {
                     return true;
                 }

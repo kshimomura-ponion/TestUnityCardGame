@@ -118,9 +118,9 @@ namespace TestUnityCardGame.Presenter.Battle
         public void GiveCardToHand(HeroController hero, Transform hand, Player player)
         {
             CardController[] currentHandCards = GetMyHandCards(player);
-            if(currentHandCards.Length <= maxHandCardNum){
+            if (currentHandCards.Length <= maxHandCardNum) {
                 List<(int, CardType)> deck = hero.model.GetCardDeck();
-                if (deck.Count == 0){
+                if (deck.Count == 0) {
                     return;
                 }
                 // デッキの上から値を削除していく
@@ -197,7 +197,7 @@ namespace TestUnityCardGame.Presenter.Battle
         // 自分の手札を取得
         public CardController[] GetMyHandCards(Player player)
         {
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 return player1HandTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player2HandTransform.GetComponentsInChildren<CardController>();
@@ -207,7 +207,7 @@ namespace TestUnityCardGame.Presenter.Battle
         // 現在ターンが回っているHeroにとって味方のフィールドを取得
         public CardController[] GetFriendFieldCards(Player player)
         {
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 return player1FieldTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player2FieldTransform.GetComponentsInChildren<CardController>();
@@ -217,7 +217,7 @@ namespace TestUnityCardGame.Presenter.Battle
         // 現在ターンが回っているHeroにとって敵のフィールドを取得
         public CardController[] GetOpponentFieldCards(Player player)
         {
-            if(player == Player.Player1){
+            if (player == Player.Player1) {
                 return player2FieldTransform.GetComponentsInChildren<CardController>();
             } else {
                 return player1FieldTransform.GetComponentsInChildren<CardController>();
@@ -229,7 +229,7 @@ namespace TestUnityCardGame.Presenter.Battle
             //　シールドカードがあればシールドカード以外は攻撃できない
             CardController[] enemyFieldCards = GetOpponentFieldCards(player);
 
-            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == Ability.Shield)){
+            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == Ability.Shield)) {
                 return true;
             } else {
                 return false;

@@ -42,7 +42,7 @@ public class GameManager: MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null){
+        if (instance == null) {
             instance = this;
         }
     }
@@ -90,7 +90,7 @@ public class GameManager: MonoBehaviour
     public void GiveCardToHand(HeroController hero, Transform hand, PLAYER player)
     {
         List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
-        if (deck.Count == 0){
+        if (deck.Count == 0) {
             return;
         }
         // デッキの上から値を削除していく
@@ -159,7 +159,7 @@ public class GameManager: MonoBehaviour
 
     public void CheckHeroHP()
     {
-        if (GameManager.instance.player1Hero.model.GetHP() <= 0 || GameManager.instance.player2Hero.model.GetHP() <= 0){
+        if (GameManager.instance.player1Hero.model.GetHP() <= 0 || GameManager.instance.player2Hero.model.GetHP() <= 0) {
             GameOver(player1Hero.model.GetHP());
         }
     }
@@ -175,7 +175,7 @@ public class GameManager: MonoBehaviour
 
     public CardController[] GetMyHandCards(PLAYER player)
     {
-        if(player == PLAYER.PLAYER1){
+        if (player == PLAYER.PLAYER1) {
             return player1HandTransform.GetComponentsInChildren<CardController>();
         } else {
             return player2HandTransform.GetComponentsInChildren<CardController>();
@@ -185,7 +185,7 @@ public class GameManager: MonoBehaviour
     // 現在ターンが回っているHeroにとって味方のフィールドを取得
     public CardController[] GetFriendFieldCards(PLAYER player)
     {
-        if(player == PLAYER.PLAYER1){
+        if (player == PLAYER.PLAYER1) {
             return player1FieldTransform.GetComponentsInChildren<CardController>();
         } else {
             return player2FieldTransform.GetComponentsInChildren<CardController>();
@@ -195,7 +195,7 @@ public class GameManager: MonoBehaviour
     // 現在ターンが回っているHeroにとって敵のフィールドを取得
     public CardController[] GetOpponentFieldCards(PLAYER player)
     {
-        if(player == PLAYER.PLAYER1){
+        if (player == PLAYER.PLAYER1) {
             return player2FieldTransform.GetComponentsInChildren<CardController>();
         } else {
             return player1FieldTransform.GetComponentsInChildren<CardController>();

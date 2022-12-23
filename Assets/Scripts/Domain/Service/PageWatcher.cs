@@ -35,7 +35,7 @@ namespace TestUnityCardGame.Domain.Service
         // Update Scene
         void UpdateScene(StateEntity state)
         {
-            if(state.Scene.NeedsAdjust(_categoryMap.GetPageScenes()))
+            if (state.Scene.NeedsAdjust(_categoryMap.GetPageScenes()))
             {
                 MiniUniduxService.Dispatch(PageActionManager<SceneName>.ActionCreator.Adjust());
             }

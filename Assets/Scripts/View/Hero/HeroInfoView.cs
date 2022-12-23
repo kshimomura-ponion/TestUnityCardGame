@@ -15,7 +15,7 @@ public class HeroInfoView : MonoBehaviour
 
     public void Show(HeroModel model, bool isRandom)
     {
-        if(isRandom){
+        if (isRandom) {
             randomSelectPanel.SetActive(true);
         } else {
             iconImage.sprite = model.GetIcon();

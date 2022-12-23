@@ -67,7 +67,7 @@ namespace TestUnityCardGame
             // 音楽を再生
             audioManager.PlayBGM(BGM.Result);
 
-            if(resultInitialData.isPlayer1Win) {
+            if (resultInitialData.isPlayer1Win) {
                 resultView.SetResultText("Player1 WIN!");
             } else {
                 resultView.SetResultText("Player2 WIN!");

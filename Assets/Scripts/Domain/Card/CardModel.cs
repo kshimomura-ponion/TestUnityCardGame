@@ -44,7 +44,7 @@ namespace TestUnityCardGame.Presenter.Card
         public void Damage(int dmg)
         {
             hp -= dmg;
-            if(hp <= 0) {
+            if (hp <= 0) {
                 hp = 0;
                 isAlive = false;
             }
@@ -112,7 +112,7 @@ namespace TestUnityCardGame.Presenter.Card
 
         public bool IsSpell()
         {
-            if(skill.GetSpell() == Spell.None) {
+            if (skill.GetSpell() == Spell.None) {
                 return false;
             } else {
                 return true;

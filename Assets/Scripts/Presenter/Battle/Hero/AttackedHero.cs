@@ -5,9 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Card;
-using TestUnityCardGame.Presenter.Battle;
 
-namespace TestUnityCardGame.Presenter.Card
+namespace TestUnityCardGame.Presenter.Battle
 {
     public class AttackedHero : MonoBehaviour, IDropHandler
     {

@@ -27,7 +27,7 @@ public class HeroModel
         name = heroEntity.name;
         manaCost = 5;  // Initial Value of Mana Cost.
         hp = heroEntity.hp;
-        if(player == Player.Player1){
+        if (player == Player.Player1) {
             icon = heroEntity.leftIcon;
         } else {
             icon = heroEntity.rightIcon;
@@ -36,7 +36,7 @@ public class HeroModel
         info = heroEntity.info;
         isAlive = true;
 
-        if(deck.Count != 0){
+        if (deck.Count != 0) {
             // ヒーローのタイプによって比率を変える
             List<(int, CardType)> tmpCardDeck = new List<(int, CardType)>();
             int monsterCardIdx = 0;
@@ -47,18 +47,18 @@ public class HeroModel
                 case HEROTYPE.MAGICUSER:
                     spellNum = (int)Math.Floor(deck.Count * 0.8f);
                     monsterNum = deck.Count - spellNum;
-                    for(int i = 0; i < spellNum; i++){
+                    for(int i = 0; i < spellNum; i++) {
                         tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                         spellCardIdx++;
                     }
-                    for(int i = 0; i < monsterNum; i++){
+                    for(int i = 0; i < monsterNum; i++) {
                         tmpCardDeck.Add((deck[monsterCardIdx], CardType.Monster));
                         monsterCardIdx++;
                     }
                     break;
                 case HEROTYPE.MAGICFIGHTER:
-                    for(int i = 0; i < deck.Count; i++){
-                        if(i % 2 == 0)
+                    for(int i = 0; i < deck.Count; i++) {
+                        if (i % 2 == 0)
                         {
                             tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                             spellCardIdx++;
@@ -71,11 +71,11 @@ public class HeroModel
                 case HEROTYPE.WARRIOR:
                     spellNum = (int)Math.Floor(deck.Count * 0.2f);
                     monsterNum = deck.Count - spellNum;
-                    for(int i = 0; i < spellNum; i++){
+                    for(int i = 0; i < spellNum; i++) {
                         tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                         spellCardIdx++;
                     }
-                    for(int i = 0; i < monsterNum; i++){
+                    for(int i = 0; i < monsterNum; i++) {
                         tmpCardDeck.Add((deck[monsterCardIdx], CardType.Monster));
                         monsterCardIdx++;
                     }
@@ -97,7 +97,7 @@ public class HeroModel
     public void Damage(int dmg)
     {
         hp -= dmg;
-        if(hp <= 0)
+        if (hp <= 0)
         {
             hp = 0;
             isAlive = false;

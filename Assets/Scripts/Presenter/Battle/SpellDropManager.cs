@@ -22,29 +22,33 @@ namespace TestUnityCardGame.Presenter.Battle
             }
 
             var ownerHero = BattleViewController.Instance.player1Hero;
-            if(spellCard.GetOwner() == Player.Player2){
+            if (spellCard.GetOwner() == Player.Player2) {
                 ownerHero = BattleViewController.Instance.player2Hero;
             }
 
             CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(spellCard.GetOwner());
 
-            if (spellCard.CanUseSpell(enemyCards)) {
-                if(targetCard != null) {
-                    spellCard.UseSpellTo(targetCard, ownerHero);
+            if (spellCard.CanUseSpellToCard(enemyCards)) {
+                if (targetCard != null) {
+                    StartCoroutine(spellCard.UseSpellToCard(targetCard, ownerHero));
                 }
-                if(targetHero != null){
-                    spellCard.UseSpellTo(targetHero, ownerHero);
+            }
+            if (spellCard.CanUseSpellToHero(targetHero)) {
+                if (targetHero != null) {
+                    StartCoroutine(spellCard.UseSpellToHero(targetHero, ownerHero));
                 }
             }
 
            CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(spellCard.GetOwner());
 
-            if (spellCard.CanUseSpell(friendCards)) {
-                if(targetCard != null) {
-                    spellCard.UseSpellTo(targetCard, ownerHero);
+            if (spellCard.CanUseSpellToCard(friendCards)) {
+                if (targetCard != null) {
+                    StartCoroutine(spellCard.UseSpellToCard(targetCard, ownerHero));
                 }
-                if(targetHero != null){
-                    spellCard.UseSpellTo(targetHero, ownerHero);
+            }
+            if (spellCard.CanUseSpellToHero(targetHero)) {
+                if (targetHero != null) {
+                    StartCoroutine(spellCard.UseSpellToHero(targetHero, ownerHero));
                 }
             }
         }

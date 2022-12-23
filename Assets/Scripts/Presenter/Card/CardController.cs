@@ -64,14 +64,14 @@ namespace TestUnityCardGame.Presenter.Card
         {
             DamageAnimation(view.GetDamageInfo().transform);
             // hpが0になったらオブジェクトを消す
-            if(model.IsAlive()) {
+            if (model.IsAlive()) {
                 RefreshView();
             } else {
                 DestroyCard();
             }
         }
 
-        void DamageAnimation(Transform transform){
+        void DamageAnimation(Transform transform) {
             Sequence sequence = DOTween.Sequence();
             sequence.Append(transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart));
             sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
@@ -95,18 +95,18 @@ namespace TestUnityCardGame.Presenter.Card
         void DestroyCard()
         {
             audioManager.PlaySE(SE.Died);
-            if(model.IsSpell() == true) {
+            if (model.IsSpell()) {
                 Instantiate(view.explosionParticleSpell, transform.position, view.explosionParticleSpell.transform.rotation);
             } else {
                 Instantiate(view.explosionParticleMonster, transform.position, view.explosionParticleSpell.transform.rotation);
             }
-            if(this.gameObject != null)
+            if (this.gameObject != null)
             {
                 Destroy(this.gameObject);
             }
         }
 
-        public bool CanUseSpell(CardController[] targetCards)
+        public bool CanUseSpellToCard(CardController[] targetCards)
         {
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCard:
@@ -117,9 +117,6 @@ namespace TestUnityCardGame.Presenter.Card
                         return true;
                     }
                     return false;
-                case Spell.AttackEnemyHero:
-                case Spell.HealFriendHero:
-                    return true;
                 case Spell.HealFriendCard:
                 case Spell.HealFriendCards:
                     if (targetCards.Length > 0)
@@ -133,9 +130,21 @@ namespace TestUnityCardGame.Presenter.Card
             return false;
         }
 
-        public IEnumerator UseSpellTo(CardController targetCard, HeroController ownerHero)
+        public bool CanUseSpellToHero(HeroController targetHero)
         {
-             UnityEngine.Debug.Log(model.GetSpell().ToString());
+            switch (model.GetSpell()) {
+                case Spell.AttackEnemyHero:
+                    return true;
+                case Spell.HealFriendHero:
+                    return true;
+                case Spell.None:
+                    return false;
+            }
+            return false;
+        }
+
+        public IEnumerator UseSpellToCard(CardController targetCard, HeroController ownerHero)
+        {
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCard:
                     // 特定の敵を攻撃する
@@ -162,7 +171,7 @@ namespace TestUnityCardGame.Presenter.Card
             ownerHero.model.ReduceManaCost(model.GetManaCost());
         }
 
-        public IEnumerator UseSpellTo(CardController[] targetCards, HeroController ownerHero)
+        public IEnumerator UseSpellToCards(CardController[] targetCards, HeroController ownerHero)
         {
              UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
@@ -170,6 +179,7 @@ namespace TestUnityCardGame.Presenter.Card
                     // 相手フィールドの全てのカードに攻撃する
                     foreach (CardController targetCard in targetCards)
                     {
+                        UnityEngine.Debug.Log(targetCard.model.GetName());
                         Attack(targetCard);
                     }
                     foreach (CardController targetCard in targetCards)
@@ -195,7 +205,7 @@ namespace TestUnityCardGame.Presenter.Card
             ownerHero.model.ReduceManaCost(model.GetManaCost());
         }
 
-        public IEnumerator UseSpellTo(HeroController target, HeroController ownerHero)
+        public IEnumerator UseSpellToHero(HeroController target, HeroController ownerHero)
         {
              UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {

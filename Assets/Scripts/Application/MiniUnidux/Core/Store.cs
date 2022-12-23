@@ -66,7 +66,7 @@ namespace MiniUnidux
 
         public void Update()
         {
-            if(!this._changed)
+            if (!this._changed)
             {
                 return;
             }
