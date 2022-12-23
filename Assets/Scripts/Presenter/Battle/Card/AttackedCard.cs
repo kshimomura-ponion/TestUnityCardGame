@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Domain.Card;
 
 namespace TestUnityCardGame.Presenter.Battle
 {

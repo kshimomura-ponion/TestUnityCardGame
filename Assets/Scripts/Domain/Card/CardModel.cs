@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Domain.Card
 {
     public class CardModel
     {
@@ -117,11 +117,6 @@ namespace TestUnityCardGame
             } else {
                 return true;
             }
-        }
-
-        public void SetIsFieldCard(bool isField)
-        {
-            isFieldCard = isField;
         }
 
         public bool IsFieldCard()

@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Presenter.Battle;
 using TestUnityCardGame.View.Card;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Domain.Card
 {
     public class CardController : MonoBehaviour
     {
@@ -13,7 +15,6 @@ namespace TestUnityCardGame
         [System.NonSerialized] public CardView view;
         [System.NonSerialized] public CardModel model;
         [System.NonSerialized] public CardMovement movement;
-        private float xDestination = 0.0f;
 
         private Player owner;
         private bool isDraggable;
@@ -80,16 +81,10 @@ namespace TestUnityCardGame
             RewindDamageInfo();
         }
 
-        void XAxisTransForm()
-        {
-            transform.DOLocalMove(new Vector3(xDestination,0f,0f), 0.02f);
-        }
-
         void RewindDamageInfo()
         {
             view.GetDamageInfo().SetActive(false);
             view.GetDamageInfo().transform.DORewind();
-            xDestination = 0.0f;
         }
 
         void RefreshView()
@@ -100,7 +95,11 @@ namespace TestUnityCardGame
         void DestroyCard()
         {
             audioManager.PlaySE(SE.Died);
-            Instantiate(view.explosionParticle, transform.position, view.explosionParticle.transform.rotation);
+            if(model.IsSpell() == true) {
+                Instantiate(view.explosionParticleSpell, transform.position, view.explosionParticleSpell.transform.rotation);
+            } else {
+                Instantiate(view.explosionParticleMonster, transform.position, view.explosionParticleSpell.transform.rotation);
+            }
             if(this.gameObject != null)
             {
                 Destroy(this.gameObject);
@@ -136,17 +135,19 @@ namespace TestUnityCardGame
 
         public IEnumerator UseSpellTo(CardController targetCard, HeroController ownerHero)
         {
+ UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
                 case SPELL.DAMAGE_ENEMY_CARD:
+                UnityEngine.Debug.Log("usespell_enemycard");
                     // 特定の敵を攻撃する
-                    if (targetCard != null && targetCard.GetOwner() == owner)
+                    if (targetCard != null && targetCard.GetOwner() != owner)
                     {
                         Attack(targetCard);
                         targetCard.CheckAlive();
                     }
                     break;
                 case SPELL.HEAL_FRIEND_CARD:
-                    if (targetCard != null && targetCard.GetOwner() != owner)
+                    if (targetCard != null && targetCard.GetOwner() == owner)
                     {
                         Heal(targetCard);
                     }

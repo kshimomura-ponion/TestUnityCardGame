@@ -12,6 +12,8 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Domain.Card;
 using TestUnityCardGame.View.Battle;
 
 namespace TestUnityCardGame.Presenter.Battle

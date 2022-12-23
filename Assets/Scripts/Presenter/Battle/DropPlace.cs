@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Domain.Card;
 
 namespace TestUnityCardGame.Presenter.Battle
 {
@@ -58,7 +60,7 @@ namespace TestUnityCardGame.Presenter.Battle
                         BattleViewController.Instance.player2Hero.ReduceManaCost(card.model.GetManaCost());
                         break;
                 }
-                card.model.SetIsFieldCard(true);
+                card.model.OnField();
             }
         }
     }

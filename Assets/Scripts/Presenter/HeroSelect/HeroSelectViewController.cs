@@ -14,6 +14,7 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.Domain.Hero;
 using TestUnityCardGame.View.HeroSelect;
 
 namespace TestUnityCardGame.Presenter.HeroSelect

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1043945489205106964}
   - component: {fileID: -1865984105451208271}
   m_Layer: 0
-  m_Name: Explosion0
+  m_Name: ExplosionSpell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -738,7 +738,7 @@ ParticleSystem:
     m_UseMeshMaterialIndex: 0
     m_UseMeshColors: 1
     alignToDirection: 0
-    m_Texture: {fileID: 2800000, guid: a81552b25f3b36b43b82a6c5daf6e098, type: 3}
+    m_Texture: {fileID: 0}
     m_TextureClipChannel: 3
     m_TextureClipThreshold: 0
     m_TextureUVChannel: 0
@@ -4881,7 +4881,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8ff2a2d7e79f81c40ac447512f879374, type: 3}
+  m_audioClip: {fileID: 8300000, guid: aa967a280457c054bb646d57611f5bd0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 0.71

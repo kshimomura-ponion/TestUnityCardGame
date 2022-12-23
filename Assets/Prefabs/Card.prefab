@@ -491,7 +491,8 @@ MonoBehaviour:
   iconImage: {fileID: 1377510922821005599}
   selectablePanel: {fileID: 2790302312811297614}
   abilityIconImage: {fileID: 7045087821105588878}
-  explosionParticle: {fileID: 3897204618372718216, guid: d7891160dccbe4393bbee49c725bd97d, type: 3}
+  explosionParticleMonster: {fileID: 3897204618372718216, guid: d7891160dccbe4393bbee49c725bd97d, type: 3}
+  explosionParticleSpell: {fileID: 3897204618372718216, guid: eb884bfd900c9412899583e98a90512d, type: 3}
   frontPanel: {fileID: 1377510922243572080}
   backPanel: {fileID: 3604238668058101914}
   damageInfo: {fileID: 1901458351939251835}
