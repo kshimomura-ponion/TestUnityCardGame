@@ -11,8 +11,8 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TMPro;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
 using TestUnityCardGame.Presenter.Battle;
 
 

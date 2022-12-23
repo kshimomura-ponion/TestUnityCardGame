@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Battle;
 using TestUnityCardGame.View.Card;
 
-namespace TestUnityCardGame.Domain.Card
+namespace TestUnityCardGame.Presenter.Card
 {
     public class CardController : MonoBehaviour
     {
@@ -109,25 +109,25 @@ namespace TestUnityCardGame.Domain.Card
         public bool CanUseSpell(CardController[] targetCards)
         {
             switch (model.GetSpell()) {
-                case SPELL.DAMAGE_ENEMY_CARD:
-                case SPELL.DAMAGE_ENEMY_CARDS:
+                case Spell.AttackEnemyCard:
+                case Spell.AttackEnemyCards:
                     // 相手フィールドの全てのカードに攻撃する
                     if (targetCards.Length > 0)
                     {
                         return true;
                     }
                     return false;
-                case SPELL.DAMAGE_ENEMY_HERO:
-                case SPELL.HEAL_FRIEND_HERO:
+                case Spell.AttackEnemyHero:
+                case Spell.HealFriendHero:
                     return true;
-                case SPELL.HEAL_FRIEND_CARD:
-                case SPELL.HEAL_FRIEND_CARDS:
+                case Spell.HealFriendCard:
+                case Spell.HealFriendCards:
                     if (targetCards.Length > 0)
                     {
                         return true;
                     }
                     return false;
-                case SPELL.NONE:
+                case Spell.None:
                     return false;
             }
             return false;
@@ -135,10 +135,9 @@ namespace TestUnityCardGame.Domain.Card
 
         public IEnumerator UseSpellTo(CardController targetCard, HeroController ownerHero)
         {
- UnityEngine.Debug.Log(model.GetSpell().ToString());
+             UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
-                case SPELL.DAMAGE_ENEMY_CARD:
-                UnityEngine.Debug.Log("usespell_enemycard");
+                case Spell.AttackEnemyCard:
                     // 特定の敵を攻撃する
                     if (targetCard != null && targetCard.GetOwner() != owner)
                     {
@@ -146,13 +145,13 @@ namespace TestUnityCardGame.Domain.Card
                         targetCard.CheckAlive();
                     }
                     break;
-                case SPELL.HEAL_FRIEND_CARD:
+                case Spell.HealFriendCard:
                     if (targetCard != null && targetCard.GetOwner() == owner)
                     {
                         Heal(targetCard);
                     }
                     break;
-                case SPELL.NONE:
+                case Spell.None:
                     break;
             }
             yield return new WaitForSeconds(0.5f);
@@ -165,8 +164,9 @@ namespace TestUnityCardGame.Domain.Card
 
         public IEnumerator UseSpellTo(CardController[] targetCards, HeroController ownerHero)
         {
+             UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
-                case SPELL.DAMAGE_ENEMY_CARDS:
+                case Spell.AttackEnemyCards:
                     // 相手フィールドの全てのカードに攻撃する
                     foreach (CardController targetCard in targetCards)
                     {
@@ -177,13 +177,13 @@ namespace TestUnityCardGame.Domain.Card
                         targetCard.CheckAlive();
                     }
                     break;
-                case SPELL.HEAL_FRIEND_CARDS:
+                case Spell.HealFriendCards:
                     foreach (CardController targetCard in targetCards)
                     {
                         Heal(targetCard);
                     }
                     break;
-                case SPELL.NONE:
+                case Spell.None:
                     break;
             }
             
@@ -197,14 +197,15 @@ namespace TestUnityCardGame.Domain.Card
 
         public IEnumerator UseSpellTo(HeroController target, HeroController ownerHero)
         {
+             UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
-                case SPELL.DAMAGE_ENEMY_HERO:
+                case Spell.AttackEnemyHero:
                     target.Attacked(this);
                     break;
-                case SPELL.HEAL_FRIEND_HERO:
+                case Spell.HealFriendHero:
                     target.Healed(this);
                     break;
-                case SPELL.NONE:
+                case Spell.None:
                     break;
             }
 

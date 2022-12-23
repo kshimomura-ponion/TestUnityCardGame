@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Card;
 
-namespace TestUnityCardGame.Domain.Hero
+namespace TestUnityCardGame.Presenter.Hero
 {
     public class HeroController : MonoBehaviour
     {

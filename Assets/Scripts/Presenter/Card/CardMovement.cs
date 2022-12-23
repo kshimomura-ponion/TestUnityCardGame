@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Card;
 
-namespace TestUnityCardGame.Presenter.Battle
+namespace TestUnityCardGame.Presenter.Card
 {
     public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {

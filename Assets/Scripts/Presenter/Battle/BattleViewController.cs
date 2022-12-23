@@ -12,8 +12,8 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
 using TestUnityCardGame.View.Battle;
 
 namespace TestUnityCardGame.Presenter.Battle
@@ -119,12 +119,12 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             CardController[] currentHandCards = GetMyHandCards(player);
             if(currentHandCards.Length <= maxHandCardNum){
-                List<(int, CARDTYPE)> deck = hero.model.GetCardDeck();
+                List<(int, CardType)> deck = hero.model.GetCardDeck();
                 if (deck.Count == 0){
                     return;
                 }
                 // デッキの上から値を削除していく
-                (int, CARDTYPE) cardInfo = deck[0];
+                (int, CardType) cardInfo = deck[0];
                 hero.model.RemoveCard(0);
 
                 CreateCard(cardInfo, hand, player);
@@ -132,7 +132,7 @@ namespace TestUnityCardGame.Presenter.Battle
         }
 
         // カードをインスタンス化
-        void CreateCard((int, CARDTYPE) cardInfo, Transform hand, Player player)
+        void CreateCard((int, CardType) cardInfo, Transform hand, Player player)
         {
             CardController card = Instantiate(battleView.GetCardPrefab(), hand, false);
 
@@ -229,7 +229,7 @@ namespace TestUnityCardGame.Presenter.Battle
             //　シールドカードがあればシールドカード以外は攻撃できない
             CardController[] enemyFieldCards = GetOpponentFieldCards(player);
 
-            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == ABILITY.SHIELD)){
+            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == Ability.Shield)){
                 return true;
             } else {
                 return false;

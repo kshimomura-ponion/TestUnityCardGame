@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
+using TestUnityCardGame.Presenter.Battle;
 
-namespace TestUnityCardGame.Presenter.Battle
+namespace TestUnityCardGame.Presenter.Card
 {
     public class AttackedHero : MonoBehaviour, IDropHandler
     {
@@ -22,7 +23,7 @@ namespace TestUnityCardGame.Presenter.Battle
 
             // 敵フィールドにシールドカードがあれば攻撃できない
             CardController[] enemyFieldCards = BattleViewController.Instance.GetOpponentFieldCards(attacker.GetOwner());
-            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == ABILITY.SHIELD))
+            if (Array.Exists(enemyFieldCards, card => card.model.GetAbility() == Ability.Shield))
             {
                 return;
             }

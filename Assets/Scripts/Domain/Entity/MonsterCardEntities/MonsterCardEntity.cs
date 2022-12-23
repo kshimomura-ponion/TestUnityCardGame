@@ -11,6 +11,6 @@ public class MonsterCardEntity : ScriptableObject
     public int at;
     public int manaCost;
     public Sprite icon;
-    public ABILITY ability;
+    public Ability ability;
     public Sprite abilityIcon;
 }

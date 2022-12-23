@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.HeroSelect;
 
 namespace TestUnityCardGame.View.HeroSelect

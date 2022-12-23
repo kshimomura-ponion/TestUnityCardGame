@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class Skill
 {
-    ABILITY ability = ABILITY.NONE;
-    SPELL spell = SPELL.NONE;
+    Ability ability = Ability.None;
+    Spell spell = Spell.None;
 
-    public Skill(ABILITY a)
+    public Skill(Ability a)
     {
         ability = a;
     }
 
-    public Skill(SPELL s)
+    public Skill(Spell s)
     {
         spell = s;
     }
 
-    public ABILITY GetAbility()
+    public Ability GetAbility()
     {
         return ability;
     }
 
-    public SPELL GetSpell()
+    public Spell GetSpell()
     {
         return spell;
     }

@@ -1,24 +1,24 @@
-public enum ABILITY
+public enum Ability
 {
-    NONE,
-    INIT_ATTACKABLE,    // 場に出してすぐ攻撃可能（速攻カード）
-    SHIELD,             // プレイヤーや他のカードを守る（シールドカード）
+    None,
+    InitAttackable,    // 場に出してすぐ攻撃可能（速攻カード）
+    Shield,             // プレイヤーや他のカードを守る（シールドカード）
 }
 
-public enum SPELL
+public enum Spell
 {
-    NONE,
-    DAMAGE_ENEMY_CARD,
-    DAMAGE_ENEMY_CARDS,
-    DAMAGE_ENEMY_HERO,
-    HEAL_FRIEND_CARD,
-    HEAL_FRIEND_CARDS,
-    HEAL_FRIEND_HERO,
+    None,
+    AttackEnemyCard,
+    AttackEnemyCards,
+    AttackEnemyHero,
+    HealFriendCard,
+    HealFriendCards,
+    HealFriendHero,
 }
 
 // カードタイプがモンスター、か呪文なのか
-public enum CARDTYPE
+public enum CardType
 {
-    MONSTER,
-    SPELL
+    Monster,
+    Spell
 }

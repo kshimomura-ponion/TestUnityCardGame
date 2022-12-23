@@ -26,9 +26,9 @@ namespace TestUnityCardGame
             return spellCardEntityList[id - 1];
         }
 
-        public CardEntity GetCardEntity(int id, CARDTYPE cardType)
+        public CardEntity GetCardEntity(int id, CardType cardType)
         {
-            if (cardType == CARDTYPE.MONSTER)
+            if (cardType == CardType.Monster)
             {
                 return new CardEntity(GetMonsterCardEntity(id));
 

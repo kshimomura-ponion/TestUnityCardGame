@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
 
 namespace TestUnityCardGame.Presenter.Battle
 {
@@ -22,26 +21,30 @@ namespace TestUnityCardGame.Presenter.Battle
                 return;
             }
 
-            CardController[] targetCards = BattleViewController.Instance.GetOpponentFieldCards(spellCard.GetOwner());
-            //UnityEngine.Debug.Log(string.Join(",", targetCards.Select(n => n.ToString())));
+            var ownerHero = BattleViewController.Instance.player1Hero;
+            if(spellCard.GetOwner() == Player.Player2){
+                ownerHero = BattleViewController.Instance.player2Hero;
+            }
 
-            if (spellCard.CanUseSpell(targetCards)) {
-                // Dropで攻撃するのはプレイヤーのみ
-                if(spellCard.GetOwner() == Player.Player1){
-                    
-                    if(targetCard != null) {
-                        spellCard.UseSpellTo(targetCard, BattleViewController.Instance.player1Hero);
-                    }
-                    if(targetHero != null){
-                        spellCard.UseSpellTo(targetHero, BattleViewController.Instance.player1Hero);
-                    }
-                } else {
-                    if(targetCard != null) {
-                        spellCard.UseSpellTo(targetCard, BattleViewController.Instance.player2Hero);
-                    } 
-                    if(targetHero != null){
-                        spellCard.UseSpellTo(targetHero, BattleViewController.Instance.player2Hero);
-                    }
+            CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(spellCard.GetOwner());
+
+            if (spellCard.CanUseSpell(enemyCards)) {
+                if(targetCard != null) {
+                    spellCard.UseSpellTo(targetCard, ownerHero);
+                }
+                if(targetHero != null){
+                    spellCard.UseSpellTo(targetHero, ownerHero);
+                }
+            }
+
+           CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(spellCard.GetOwner());
+
+            if (spellCard.CanUseSpell(friendCards)) {
+                if(targetCard != null) {
+                    spellCard.UseSpellTo(targetCard, ownerHero);
+                }
+                if(targetHero != null){
+                    spellCard.UseSpellTo(targetHero, ownerHero);
                 }
             }
         }

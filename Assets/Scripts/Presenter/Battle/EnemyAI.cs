@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TestUnityCardGame.Domain.Service;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
 
 namespace TestUnityCardGame.Presenter.Battle
 {
@@ -72,8 +72,8 @@ namespace TestUnityCardGame.Presenter.Battle
                     // 攻撃⑤ 場にカードがあればカードを攻撃、なければHeroを攻撃
                     if (player1FieldCards.Length > 0){
                         // シールドカードのみ攻撃対象にする
-                        if(Array.Exists(player1FieldCards, card => card.model.GetAbility() == ABILITY.SHIELD)){
-                            player1FieldCards = Array.FindAll(player1FieldCards, card => card.model.GetAbility() == ABILITY.SHIELD);
+                        if(Array.Exists(player1FieldCards, card => card.model.GetAbility() == Ability.Shield)){
+                            player1FieldCards = Array.FindAll(player1FieldCards, card => card.model.GetAbility() == Ability.Shield);
                         }
                         CardController defender = player1FieldCards[0];
 
@@ -111,30 +111,30 @@ namespace TestUnityCardGame.Presenter.Battle
             Transform movePosition = null;
 
             switch (card.model.GetSpell()){
-                case SPELL.DAMAGE_ENEMY_CARD:
+                case Spell.AttackEnemyCard:
                     CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                     if(opponentCards.Length > 0) {
                         target = opponentCards[0];
                         movePosition = target.transform;
                     }
                     break;
-                case SPELL.HEAL_FRIEND_CARD:
+                case Spell.HealFriendCard:
                     CardController[] friendCardList = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     if(friendCardList.Length > 0) {
                         target = friendCardList[0];
                         movePosition = target.transform;
                     }
                     break;
-                case SPELL.DAMAGE_ENEMY_CARDS:
+                case Spell.AttackEnemyCards:
                     movePosition = BattleViewController.Instance.GetPlayer1FieldTransform();
                     break;
-                case SPELL.HEAL_FRIEND_CARDS:
+                case Spell.HealFriendCards:
                     movePosition = enemyAIFieldTransform;
                     break;
-                case SPELL.DAMAGE_ENEMY_HERO:
+                case Spell.AttackEnemyHero:
                     movePosition = BattleViewController.Instance.player1Hero.transform;
                     break;
-                case SPELL.HEAL_FRIEND_HERO:
+                case Spell.HealFriendHero:
                     movePosition = enemyAIHero.transform;
                     break;
 

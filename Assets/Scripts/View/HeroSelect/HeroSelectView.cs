@@ -13,6 +13,7 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
+using TestUnityCardGame.Presenter.Hero;
 
 namespace TestUnityCardGame.View.HeroSelect
 {

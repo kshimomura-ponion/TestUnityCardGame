@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Card;
 
 namespace TestUnityCardGame.View.Card
 {
@@ -44,7 +44,7 @@ namespace TestUnityCardGame.View.Card
             abilityIconImage.sprite = model.GetSkillIcon();
 
             // スペルカードにHPはないため
-            if (model.GetSpell() != SPELL.NONE) {
+            if (model.GetSpell() != Spell.None) {
                 hpText.gameObject.SetActive(false);
             }
         }

@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TestUnityCardGame.Domain.Card
+namespace TestUnityCardGame.Presenter.Card
 {
     public class CardModel
     {
@@ -36,7 +36,7 @@ namespace TestUnityCardGame.Domain.Card
         {
             isFieldCard = true;
             // 速攻カードの場合
-            if (skill.GetAbility() == ABILITY.INIT_ATTACKABLE) {
+            if (skill.GetAbility() == Ability.InitAttackable) {
                 SetCanAttack(true);
             }
         }
@@ -95,12 +95,12 @@ namespace TestUnityCardGame.Domain.Card
             return manaCost;
         }
 
-        public ABILITY GetAbility()
+        public Ability GetAbility()
         {
             return skill.GetAbility();
         }
 
-        public SPELL GetSpell()
+        public Spell GetSpell()
         {
             return skill.GetSpell();
         }
@@ -112,7 +112,7 @@ namespace TestUnityCardGame.Domain.Card
 
         public bool IsSpell()
         {
-            if(skill.GetSpell() == SPELL.NONE) {
+            if(skill.GetSpell() == Spell.None) {
                 return false;
             } else {
                 return true;

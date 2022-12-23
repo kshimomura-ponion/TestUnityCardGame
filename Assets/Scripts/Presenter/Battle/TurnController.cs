@@ -7,8 +7,8 @@ using UnityEngine.UI;
 using MiniUnidux;
 using MiniUnidux.Util;
 using TMPro;
-using TestUnityCardGame.Domain.Hero;
-using TestUnityCardGame.Domain.Card;
+using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.Presenter.Card;
 using TestUnityCardGame.View.Battle;
 
 namespace TestUnityCardGame.Presenter.Battle

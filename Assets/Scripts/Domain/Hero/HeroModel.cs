@@ -19,7 +19,7 @@ public class HeroModel
     private HeroEntity heroEntity;
 
     // Cardの種類を把握するために、Tupleでカード情報を持っておくようにする
-    private List<(int, CARDTYPE)> cardDeck = new List<(int, CARDTYPE)>();
+    private List<(int, CardType)> cardDeck = new List<(int, CardType)>();
 
     public HeroModel(HeroEntity heroEntity, List<int> deck, Player player)
     {
@@ -38,7 +38,7 @@ public class HeroModel
 
         if(deck.Count != 0){
             // ヒーローのタイプによって比率を変える
-            List<(int, CARDTYPE)> tmpCardDeck = new List<(int, CARDTYPE)>();
+            List<(int, CardType)> tmpCardDeck = new List<(int, CardType)>();
             int monsterCardIdx = 0;
             int spellCardIdx = 0;
             int spellNum = 0;
@@ -48,11 +48,11 @@ public class HeroModel
                     spellNum = (int)Math.Floor(deck.Count * 0.8f);
                     monsterNum = deck.Count - spellNum;
                     for(int i = 0; i < spellNum; i++){
-                        tmpCardDeck.Add((deck[spellCardIdx], CARDTYPE.SPELL));
+                        tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                         spellCardIdx++;
                     }
                     for(int i = 0; i < monsterNum; i++){
-                        tmpCardDeck.Add((deck[monsterCardIdx], CARDTYPE.MONSTER));
+                        tmpCardDeck.Add((deck[monsterCardIdx], CardType.Monster));
                         monsterCardIdx++;
                     }
                     break;
@@ -60,10 +60,10 @@ public class HeroModel
                     for(int i = 0; i < deck.Count; i++){
                         if(i % 2 == 0)
                         {
-                            tmpCardDeck.Add((deck[spellCardIdx], CARDTYPE.SPELL));
+                            tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                             spellCardIdx++;
                         } else {
-                            tmpCardDeck.Add((deck[monsterCardIdx], CARDTYPE.MONSTER));
+                            tmpCardDeck.Add((deck[monsterCardIdx], CardType.Monster));
                             monsterCardIdx++;
                         }
                     }
@@ -72,11 +72,11 @@ public class HeroModel
                     spellNum = (int)Math.Floor(deck.Count * 0.2f);
                     monsterNum = deck.Count - spellNum;
                     for(int i = 0; i < spellNum; i++){
-                        tmpCardDeck.Add((deck[spellCardIdx], CARDTYPE.SPELL));
+                        tmpCardDeck.Add((deck[spellCardIdx], CardType.Spell));
                         spellCardIdx++;
                     }
                     for(int i = 0; i < monsterNum; i++){
-                        tmpCardDeck.Add((deck[monsterCardIdx], CARDTYPE.MONSTER));
+                        tmpCardDeck.Add((deck[monsterCardIdx], CardType.Monster));
                         monsterCardIdx++;
                     }
                 break;
@@ -153,7 +153,7 @@ public class HeroModel
         return manaCost;
     }
 
-    public List<(int, CARDTYPE)> GetCardDeck()
+    public List<(int, CardType)> GetCardDeck()
     {
         return cardDeck;
     }

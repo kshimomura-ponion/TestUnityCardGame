@@ -10,6 +10,6 @@ public class SpellCardEntity : ScriptableObject
     public int at;
     public int manaCost;
     public Sprite icon;
-    public SPELL spell;
+    public Spell spell;
     public Sprite spellIcon;
 }
