@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 4
   name: PsychicGirl
-  hp: 8
-  at: 15
+  hp: 4
+  at: 5
   manaCost: 4
   icon: {fileID: 21300000, guid: 62c31df052c2eac4ba2f0c7882c26bfd, type: 3}
   ability: 1

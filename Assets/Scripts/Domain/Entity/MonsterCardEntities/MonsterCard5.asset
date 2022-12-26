@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   name: Dragon
-  hp: 30
-  at: 30
+  hp: 8
+  at: 10
   manaCost: 8
   icon: {fileID: 21300000, guid: ed68e8f1c1e846542a14b2075f3caaf4, type: 3}
   ability: 1

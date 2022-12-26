@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 8
   name: SwordMan
-  hp: 5
-  at: 10
+  hp: 3
+  at: 8
   manaCost: 8
   icon: {fileID: 21300000, guid: ece7d52fafc79c046a46fc9cc976c030, type: 3}
   ability: 1

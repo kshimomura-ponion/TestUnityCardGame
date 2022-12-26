@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 7
   name: AxesKnight
-  hp: 30
+  hp: 6
   at: 1
   manaCost: 3
   icon: {fileID: 21300000, guid: 1ad136078bb640547a4e813899839458, type: 3}
