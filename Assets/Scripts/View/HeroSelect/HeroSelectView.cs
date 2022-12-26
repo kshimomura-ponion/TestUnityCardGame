@@ -37,14 +37,12 @@ namespace TestUnityCardGame.View.HeroSelect
         private void Awake()
         {
             // ヒーロー情報ダイアログを生成する
-            if (heroInfoDialog == null)
-            {
+            if (heroInfoDialog == null) {
                 heroInfoDialog = Instantiate(heroInfoDialogPrefab, canvasTransform, false);
             }
 
             // 警告ダイアログを生成する
-            if (alertDialog == null)
-            {
+            if (alertDialog == null) {
                 alertDialog = Instantiate(alertDialogPrefab, canvasTransform, false);
             }
         }
@@ -62,13 +60,11 @@ namespace TestUnityCardGame.View.HeroSelect
         // いらないオブジェクトの破棄
         void CleanUp()
         {
-            if (alertDialog != null)
-            {
+            if (alertDialog != null) {
                 Destroy(alertDialog.gameObject);
             }
 
-            if (heroInfoDialog != null)
-            {
+            if (heroInfoDialog != null) {
                 Destroy(heroInfoDialog.gameObject);
             }
         }

@@ -58,8 +58,7 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] enemyAIFieldCards = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
 
             // 攻撃② 攻撃可能カードがあれば攻撃を繰り返す
-            while (Array.Exists(enemyAIFieldCards, card => card.model.CanAttack()))
-            {
+            while (Array.Exists(enemyAIFieldCards, card => card.model.CanAttack())) {
                 // 攻撃③攻撃可能カードを取得検索：　Array.FindAll
                 CardController[] enemyCanAttackCards = Array.FindAll(enemyAIFieldCards, card => card.model.CanAttack());
 

@@ -139,10 +139,10 @@ namespace TestUnityCardGame.Presenter.HeroSelect
                 StopAllCoroutines();             
                 CleanUp();  // いらないオブジェクトの破棄
                 
-                var battleInitialData = new BattleInitialData(hero1ID, hero2ID, isPlayer2AI);
+                var battleData = new BattleData(hero1ID, hero2ID, isPlayer2AI, existHeroNum, existCardNum);
 
                 // バトル画面へ遷移するプッシュアクションを生成
-                var pushToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle, battleInitialData);
+                var pushToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle, battleData);
 
                 // プッシュアクションのディスパッチ
                 MiniUniduxService.Dispatch(pushToBattleAction);

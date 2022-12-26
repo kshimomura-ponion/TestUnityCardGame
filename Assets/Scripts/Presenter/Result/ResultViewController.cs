@@ -18,14 +18,14 @@ namespace TestUnityCardGame
         [SerializeField] AudioManager audioManager; // Audio Manager
 
         // 前のページから受け渡されるデータ
-        public ResultInitialData resultInitialData;
+        public ResultData resultData;
 
         protected override void Awake()
         {
             resultView = GetComponent<ResultView>();
 
             // リザルト初期データを受け取る
-            resultInitialData = MiniUniduxService.State.Scene.GetData<ResultInitialData>();
+            resultData = MiniUniduxService.State.Scene.GetData<ResultData>();
         }
 
         public void Start()
@@ -67,7 +67,7 @@ namespace TestUnityCardGame
             // 音楽を再生
             audioManager.PlayBGM(BGM.Result);
 
-            if (resultInitialData.isPlayer1Win) {
+            if (resultData.isPlayer1Win) {
                 resultView.SetResultText("Player1 WIN!");
             } else {
                 resultView.SetResultText("Player2 WIN!");

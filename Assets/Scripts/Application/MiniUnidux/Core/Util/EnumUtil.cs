@@ -8,8 +8,7 @@ namespace MiniUnidux.Util
         public static IEnumerable<TEnum> All<TEnum>()
             where TEnum : struct
         {
-            foreach (TEnum value in Enum.GetValues(typeof(TEnum)))
-            {
+            foreach (TEnum value in Enum.GetValues(typeof(TEnum))) {
                 yield return value;
             }
         }

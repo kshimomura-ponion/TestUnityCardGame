@@ -20,16 +20,12 @@ namespace MiniUnidux.Util
             IFormatter formatter = new BinaryFormatter();
             formatter.SurrogateSelector = selector;
 
-            using (MemoryStream stream = new MemoryStream())
-            {
-                try
-                {
+            using (MemoryStream stream = new MemoryStream()) {
+                try {
                     formatter.Serialize(stream, clonee);
                     stream.Position = 0;
                     result = formatter.Deserialize(stream);
-                }
-                finally
-                {
+                } finally {
                     stream.Close();
                 }
             }
@@ -40,25 +36,21 @@ namespace MiniUnidux.Util
         public static TInstance CopyEntity<TInstance>(TInstance thisInstance, TInstance newInstance)
             where TInstance : class
         {
-            if (thisInstance == null || newInstance == null)
-            {
+            if (thisInstance == null || newInstance == null) {
                 return null;
             }
 
             var type = thisInstance.GetType();
 
             var fields = type.GetFields();
-            foreach (var field in fields)
-            {
+            foreach (var field in fields) {
                 var thisValue = field.GetValue(thisInstance);
                 field.SetValue(newInstance, ObjectClone(thisValue));
             }
 
             var properties = type.GetProperties();
-            foreach (var property in properties)
-            {
-                if (property.CanRead && property.CanWrite)
-                {
+            foreach (var property in properties) {
+                if (property.CanRead && property.CanWrite) {
                     var thisValue = property.GetValue(thisInstance, null);
                     property.SetValue(newInstance, ObjectClone(thisValue), null);
                 }
@@ -69,35 +61,29 @@ namespace MiniUnidux.Util
 
         public static object ObjectClone(object instance)
         {
-            if (instance == null)
-            {
+            if (instance == null) {
                 return null;
             }
 
-            if (instance is ICloneable)
-            {
+            if (instance is ICloneable) {
                 return ((ICloneable) instance).Clone();
             }
 
             var type = instance.GetType();
 
-            if (type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string))
-            {
+            if (type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string)) {
                 return instance;
             }
 
-            if (type.IsArray)
-            {
+            if (type.IsArray) {
                 return ArrayClone((IList)instance);
             }
 
-            if (instance is IList)
-            {
+            if (instance is IList) {
                 return ListClone((IList) instance);
             }
 
-            if (instance is IDictionary)
-            {
+            if (instance is IDictionary) {
                 return DictionaryClone((IDictionary) instance);
             }
 
@@ -112,8 +98,7 @@ namespace MiniUnidux.Util
             var dict = (IDictionary) instance;
             var newDict = (TValue) Activator.CreateInstance(type);
 
-            foreach (var key in dict.Keys)
-            {
+            foreach (var key in dict.Keys) {
                 newDict[key] = ObjectClone(dict[key]);
             }
 
@@ -124,8 +109,7 @@ namespace MiniUnidux.Util
         {
             var newArray = Array.CreateInstance(array.GetType().GetElementType(), array.Count);
             
-            for (var i = 0; i < array.Count; i++)
-            {
+            for (var i = 0; i < array.Count; i++) {
                 newArray.SetValue(ObjectClone(array[i]), i);
             }
             
@@ -139,8 +123,7 @@ namespace MiniUnidux.Util
 
             IList newList = (IList) Activator.CreateInstance(type);
 
-            foreach (var value in list)
-            {
+            foreach (var value in list) {
                 newList.Add(ObjectClone(value));
             }
 

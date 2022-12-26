@@ -14,8 +14,7 @@ namespace MiniUnidux.SceneTransition
         {
             var sceneCount = SceneManager.sceneCount;
 
-            for (var i = 0; i < sceneCount; i++)
-            {
+            for (var i = 0; i < sceneCount; i++) {
                 var scene = SceneManager.GetSceneAt(i);
                 var enumScene = (TScene)Enum.Parse(typeof(TScene), scene.name);
                 yield return enumScene;
@@ -25,8 +24,7 @@ namespace MiniUnidux.SceneTransition
         // Load Scene File
         public static async UniTask AddScene(string name, CancellationToken token)
         {
-            if (!SceneManager.GetSceneByName(name).isLoaded && !IsAlreadyLoadedScene(name))
-            {
+            if (!SceneManager.GetSceneByName(name).isLoaded && !IsAlreadyLoadedScene(name)) {
                 await SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive).WithCancellation(token);
             }
         }
@@ -34,8 +32,7 @@ namespace MiniUnidux.SceneTransition
         // Unload Scene File
         public static async UniTask RemoveScene(string name, CancellationToken token)
         {
-            if (SceneManager.GetSceneByName(name).isLoaded)
-            {
+            if (SceneManager.GetSceneByName(name).isLoaded) {
                 await SceneManager.UnloadSceneAsync(name).WithCancellation(token);
             }
         }
@@ -44,8 +41,7 @@ namespace MiniUnidux.SceneTransition
         static bool IsAlreadyLoadedScene(string name)
         {
             var sceneCount = SceneManager.sceneCount;
-            for (var i = 0; i < sceneCount; i++)
-            {
+            for (var i = 0; i < sceneCount; i++) {
                 if (SceneManager.GetSceneAt(i).name == name)
                 {
                     return true;

@@ -37,8 +37,7 @@ namespace TestUnityCardGame.View.HeroSelect
         {
             audioManager.PlaySE(SE.OK);
             HeroInfoController[] hero1InfoList = HeroSelectViewController.Instance.GetHeroInfoList(Player.Player1);
-            foreach (HeroInfoController heroInfo in hero1InfoList)
-            {
+            foreach (HeroInfoController heroInfo in hero1InfoList) {
 
                 if (heroInfo.model.GetHeroID() == hero1ID) {
                     heroInfo.view.ShowSelectedPanel();
@@ -48,8 +47,7 @@ namespace TestUnityCardGame.View.HeroSelect
             }
 
             HeroInfoController[] hero2InfoList = HeroSelectViewController.Instance.GetHeroInfoList(Player.Player2);
-            foreach (HeroInfoController heroInfo in hero2InfoList)
-            {
+            foreach (HeroInfoController heroInfo in hero2InfoList) {
                 if (heroInfo.model.GetHeroID() == hero2ID) {
                     heroInfo.view.ShowSelectedPanel();
                 } else {

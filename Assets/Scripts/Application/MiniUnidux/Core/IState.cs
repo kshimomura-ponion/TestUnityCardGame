@@ -4,6 +4,5 @@ using System.Collections.Generic;
 namespace MiniUnidux
 {
     public interface IState
-    {
-    }
+    {}
 }

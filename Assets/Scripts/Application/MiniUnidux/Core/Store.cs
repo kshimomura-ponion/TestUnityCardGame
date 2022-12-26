@@ -20,8 +20,7 @@ namespace MiniUnidux
         public TState State
         {
             get { return this._state; }
-            set
-            {
+            set {
                 this._changed = StateUtil.ApplyStateChanged(this._state, value);
                 this._state = value;
             }
@@ -47,34 +46,28 @@ namespace MiniUnidux
 
         public object Dispatch(object action)
         {
-            foreach (var matcher in this._matchers)
-            {
-                if (matcher.IsMatchedAction(action))
-                {
+            foreach (var matcher in this._matchers) {
+                if (matcher.IsMatchedAction(action)) {
                     this._state = (TState) matcher.ReduceAny(this.State, action);
                     this._changed = true;
                 }
             }
 
-            if (!this._changed)
-            {
+            if (!this._changed) {
                 Debug.LogWarning("'Store.Dispatch(" + action + ")' was failed. Maybe you forget to assign reducer.");
             }
 
             return null;
         }
 
-        public void Update()
-        {
-            if (!this._changed)
-            {
+        public void Update() {
+            if (!this._changed) {
                 return;
             }
 
             this._changed = false;
             TState fixedState;
-            lock (this._state)
-            {
+            lock (this._state) {
                 fixedState = (TState) this._state.Clone();
 
                 StateUtil.ResetStateChanged(this._state);

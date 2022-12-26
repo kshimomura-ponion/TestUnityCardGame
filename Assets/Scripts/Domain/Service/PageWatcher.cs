@@ -35,8 +35,7 @@ namespace TestUnityCardGame.Domain.Service
         // Update Scene
         void UpdateScene(StateEntity state)
         {
-            if (state.Scene.NeedsAdjust(_categoryMap.GetPageScenes()))
-            {
+            if (state.Scene.NeedsAdjust(_categoryMap.GetPageScenes())) {
                 MiniUniduxService.Dispatch(PageActionManager<SceneName>.ActionCreator.Adjust());
             }
         }
@@ -47,14 +46,12 @@ namespace TestUnityCardGame.Domain.Service
         async UniTaskVoid ChangeScenes(SceneState<SceneName> sceneState, CancellationToken token = default)
         {
             // シーンファイル群の減算処理
-            foreach (var scene in sceneState.Removals(SceneUtil.GetActiveScenes<SceneName>()).OrderBy(x => (int)x))
-            {
+            foreach (var scene in sceneState.Removals(SceneUtil.GetActiveScenes<SceneName>()).OrderBy(x => (int)x)) {
                 await SceneUtil.RemoveScene($"{scene}", token);
             }
 
             // シーンファイル群の加算処理
-            foreach (var scene in sceneState.Additionals(SceneUtil.GetActiveScenes<SceneName>()).OrderBy(x => (int)x))
-            {
+            foreach (var scene in sceneState.Additionals(SceneUtil.GetActiveScenes<SceneName>()).OrderBy(x => (int)x)) {
                 await SceneUtil.AddScene($"{scene}", token);
             }
         }

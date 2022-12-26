@@ -42,15 +42,13 @@ namespace MiniUnidux.SceneTransition
 
         public SceneState(SceneState<TScene> state)
         {
-            foreach (var page in state.Stack)
-            {
+            foreach (var page in state.Stack) {
                 this.Stack.Add(page);
             }
 
             this.ActiveMap.Clear();
 
-            foreach (var key in state.ActiveMap.Keys)
-            {
+            foreach (var key in state.ActiveMap.Keys) {
                 this.ActiveMap[key] = state.ActiveMap[key];
             }
 
@@ -85,13 +83,11 @@ namespace MiniUnidux.SceneTransition
         {
             var required = new Dictionary<TScene, bool>();
 
-            foreach (var scene in allPageScenes)
-            {
+            foreach (var scene in allPageScenes) {
                 required[scene] = false;
             }
 
-            foreach (var scene in allPageScenes)
-            {
+            foreach (var scene in allPageScenes) {
                 if (required[scene] != this.ActiveMap[scene]) return true;
             }
 
@@ -100,8 +96,7 @@ namespace MiniUnidux.SceneTransition
 
         public override bool Equals(object obj)
         {
-            if (obj is SceneState<TScene>)
-            {
+            if (obj is SceneState<TScene>) {
                 var target = (SceneState<TScene>) obj;
                 return this.ActiveMap.SequenceEqual(target.ActiveMap);
             }

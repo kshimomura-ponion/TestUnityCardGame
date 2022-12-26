@@ -5,7 +5,5 @@ using UnityEngine;
 namespace MiniUnidux
 {
     public abstract class Action: IAction
-    {
-
-    }
+    {}
 }

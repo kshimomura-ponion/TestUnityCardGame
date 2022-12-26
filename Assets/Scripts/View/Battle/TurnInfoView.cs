@@ -78,8 +78,7 @@ namespace TestUnityCardGame.View.Battle
    
         public void ShowTurnInfoView(int turnNum)
         {
-            if (turnInfoView != null)
-            {
+            if (turnInfoView != null) {
                 Show(turnNum);
             }
         }

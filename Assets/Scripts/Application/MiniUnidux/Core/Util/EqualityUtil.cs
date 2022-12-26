@@ -8,13 +8,11 @@ namespace MiniUnidux.Util
     {
         public static bool EntityEquals(object thisObject, object targetObject)
         {
-            if (thisObject == null || targetObject == null)
-            {
+            if (thisObject == null || targetObject == null) {
                 return thisObject == targetObject;
             }
 
-            if (thisObject.GetType() != targetObject.GetType())
-            {
+            if (thisObject.GetType() != targetObject.GetType()) {
                 return false;
             }
 
@@ -23,20 +21,17 @@ namespace MiniUnidux.Util
 
         public static bool ObjectEquals(object thisObject, object targetObject)
         {
-            if (thisObject == null || targetObject == null)
-            {
+            if (thisObject == null || targetObject == null) {
                 return thisObject == targetObject;
             }
 
-            if (thisObject.GetType() != targetObject.GetType())
-            {
+            if (thisObject.GetType() != targetObject.GetType()) {
                 return false;
             }
 
             var type = thisObject.GetType();
 
-            if (type.IsPrimitive)
-            {
+            if (type.IsPrimitive) {
                 if (type == typeof(double))
                 {
                     return DoubleEquals((double) thisObject, (double) targetObject);
@@ -49,13 +44,11 @@ namespace MiniUnidux.Util
                 return thisObject.Equals(targetObject);
             }
 
-            if (type.IsEnum)
-            {
+            if (type.IsEnum) {
                 return thisObject.Equals(targetObject);
             }
 
-            if (thisObject is IEnumerable)
-            {
+            if (thisObject is IEnumerable) {
                 return EnumerableEquals((IEnumerable) thisObject, (IEnumerable) targetObject);
             }
 
@@ -65,8 +58,7 @@ namespace MiniUnidux.Util
         public static bool FieldsEquals(object thisObject, object targetObject)
         {
             var fields = thisObject.GetType().GetFields();
-            foreach (var field in fields)
-            {
+            foreach (var field in fields) {
                 var thisValue = field.GetValue(thisObject);
                 var targetValue = field.GetValue(targetObject);
 
@@ -82,8 +74,7 @@ namespace MiniUnidux.Util
         public static bool PropertiesEquals(object thisObject, object targetObject)
         {
             var properties = thisObject.GetType().GetProperties();
-            foreach (var property in properties)
-            {
+            foreach (var property in properties) {
                 if (!property.CanRead)
                 {
                     continue;
@@ -109,8 +100,7 @@ namespace MiniUnidux.Util
             var thisNext = thisEnumerator.MoveNext();
             var targetNext = targetEnumerator.MoveNext();
 
-            while (thisNext && targetNext)
-            {
+            while (thisNext && targetNext) {
                 var thisValue = thisEnumerator.Current;
                 var targetValue = targetEnumerator.Current;
 

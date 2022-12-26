@@ -17,24 +17,20 @@ namespace TestUnityCardGame.Presenter.Card
             CardController attacker = eventData.pointerDrag.GetComponent<CardController>();
             CardController defender = GetComponent<CardController>();
 
-            if (attacker == null || defender == null)
-            {
+            if (attacker == null || defender == null) {
                 return;
             }
 
-            if (attacker.GetOwner() == defender.GetOwner())
-            {
+            if (attacker.GetOwner() == defender.GetOwner()) {
                 return;
             }
 
             //　シールドカードがあればシールドカード以外は攻撃できない
-            if (BattleViewController.Instance.ExistsSheldCard(attacker.GetOwner()) && defender.model.GetAbility() != Ability.Shield)
-            {
+            if (BattleViewController.Instance.ExistsSheldCard(attacker.GetOwner()) && defender.model.GetAbility() != Ability.Shield) {
                 return;
             }
 
-            if (attacker.model.CanAttack())
-            {
+            if (attacker.model.CanAttack()) {
                 // attackerとdefenderを戦わせる
                 BattleViewController.Instance.CardsBattle(attacker, defender);
             }

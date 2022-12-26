@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 using DG.Tweening;
 using TestUnityCardGame.Presenter.Card;
 
@@ -35,7 +36,6 @@ namespace TestUnityCardGame.Presenter.Hero
             view.GetDamageInfo().SetActive(true);
             RefreshByDamage();
             attacker.SetCanAttack(false);
-            //GameManager.instance.CheckHeroHP();
         }
 
         public void Healed(CardController healer)

@@ -30,8 +30,7 @@ namespace MiniUnidux.SceneTransition
 
         public override bool Equals(object obj)
         {
-            if (obj is Page<TScene>)
-            {
+            if (obj is Page<TScene>) {
                 var target = (Page<TScene>) obj;
                 return this.Scene.Equals(target.Scene) &&
                         (this.Data == null && target.Data == null || this.Data != null && this.Data.Equals(target.Data));

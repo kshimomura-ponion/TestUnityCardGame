@@ -1,16 +1,16 @@
 using System;
 using MiniUnidux.SceneTransition;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Domain.Service
 {
     [Serializable]
-    public class ResultInitialData : ISceneData
+    public class ResultData : ISceneData
     {
         public bool isPlayer1Win { get; set; }
         
-        ResultInitialData() {}
+        ResultData() {}
 
-        public ResultInitialData(bool isPlayer1Win)
+        public ResultData(bool isPlayer1Win)
         {
             this.isPlayer1Win = isPlayer1Win;
         }

@@ -31,13 +31,11 @@ namespace MiniUnidux.Util
 
         protected bool CheckInstance()
         {
-            if (_instance == null)
-            {
+            if (_instance == null) {
                 _instance = (TClass) this;
                 return true;
             }
-            else if (_instance == this)
-            {
+            else if (_instance == this) {
                 return true;
             }
 
