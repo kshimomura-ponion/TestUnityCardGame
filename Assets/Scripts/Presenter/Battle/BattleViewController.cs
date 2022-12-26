@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using UniRx;
+using UniRx.Triggers; 
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
@@ -40,12 +41,8 @@ namespace TestUnityCardGame.Presenter.Battle
         // Hero
         [System.NonSerialized] public HeroController player1Hero, player2Hero;
 
-        // 現在用意できているヒーロー、カードの種類の数
-        [System.NonSerialized] public int existHeroNum = 6;
-        [System.NonSerialized] public int existCardNum = 8;
-
         // 前のページから受け渡されるデータ
-        public BattleInitialData battleInitialData;
+        public BattleData battleData;
 
         // 手札の保持数の最大値
         int maxHandCardNum = 5;
@@ -56,7 +53,11 @@ namespace TestUnityCardGame.Presenter.Battle
             battleView = GetComponent<BattleView>();
 
             // バトル初期データを受け取る
-            battleInitialData = MiniUniduxService.State.Scene.GetData<BattleInitialData>();
+            battleData = MiniUniduxService.State.Scene.GetData<BattleData>();
+
+            // HeroのHPを監視する
+            player1Hero.ObserveEveryValueChanged(x => x.model.GetHP()).Where(x => x <= 0).Subscribe(_ => GameOver());
+            player2Hero.ObserveEveryValueChanged(x => x.model.GetHP()).Where(x => x <= 0).Subscribe(_ => GameOver());
         }
 
         void Start()
@@ -70,7 +71,7 @@ namespace TestUnityCardGame.Presenter.Battle
         public void StartBattle()
         {
             // Heroの準備
-            SettingHeroes(battleInitialData.hero1ID, battleInitialData.hero2ID);
+            SettingHeroes(battleData.hero1ID, battleData.hero2ID);
 
             // 手札の準備
             SettingInitHand(3);
@@ -88,11 +89,11 @@ namespace TestUnityCardGame.Presenter.Battle
             // デッキ 1~8のカードIDから16枚をランダムに生成する
             List<int> player1Deck = new List<int>();
             List<int> player2Deck = new List<int>();
-            for(int i = 1; i <= (existCardNum * 2); i++)
+            for(int i = 1; i <= (battleData.existCardNum * 2); i++)
             {
-                int idx1 = UnityEngine.Random.Range(1, existCardNum);
+                int idx1 = UnityEngine.Random.Range(1, battleData.existCardNum);
                 player1Deck.Add(idx1);
-                int idx2 = UnityEngine.Random.Range(1, existCardNum);
+                int idx2 = UnityEngine.Random.Range(1, battleData.existCardNum);
                 player2Deck.Add(idx2);
             }
             // UnityEngine.Debug.Log(string.Join(",", player1Deck.Select(n => n.ToString())));
@@ -185,10 +186,10 @@ namespace TestUnityCardGame.Presenter.Battle
 
             bool isPlayer1Win = (player1Hero.model.GetHP() > 0);
 
-            var resultInitialData = new ResultInitialData(isPlayer1Win);
+            var resultData = new ResultData(isPlayer1Win);
 
             // リザルト画面へ遷移するプッシュアクションを生成
-            var pushToResultAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Result, resultInitialData);
+            var pushToResultAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Result, resultData);
 
             // プッシュアクションのディスパッチ
             MiniUniduxService.Dispatch(pushToResultAction);
