@@ -67,7 +67,7 @@ namespace TestUnityCardGame.Presenter.Card
             if (model.IsAlive()) {
                 RefreshView();
             } else {
-                DestroyCard();
+                StartCoroutine(DestroyCard());
             }
         }
 
@@ -92,7 +92,7 @@ namespace TestUnityCardGame.Presenter.Card
             view.Refresh(model);
         }
 
-        void DestroyCard()
+        IEnumerator DestroyCard()
         {
             audioManager.PlaySE(SE.Died);
             if (model.IsSpell()) {
@@ -100,50 +100,13 @@ namespace TestUnityCardGame.Presenter.Card
             } else {
                 Instantiate(view.explosionParticleMonster, transform.position, view.explosionParticleSpell.transform.rotation);
             }
-            if (this.gameObject != null)
-            {
+            yield return new WaitForSeconds(0.5f);
+            if (this.gameObject != null) {
                 Destroy(this.gameObject);
             }
         }
 
-        public bool CanUseSpellToCard(CardController[] targetCards)
-        {
-            switch (model.GetSpell()) {
-                case Spell.AttackEnemyCard:
-                case Spell.AttackEnemyCards:
-                    // 相手フィールドの全てのカードに攻撃する
-                    if (targetCards.Length > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                case Spell.HealFriendCard:
-                case Spell.HealFriendCards:
-                    if (targetCards.Length > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                case Spell.None:
-                    return false;
-            }
-            return false;
-        }
-
-        public bool CanUseSpellToHero(HeroController targetHero)
-        {
-            switch (model.GetSpell()) {
-                case Spell.AttackEnemyHero:
-                    return true;
-                case Spell.HealFriendHero:
-                    return true;
-                case Spell.None:
-                    return false;
-            }
-            return false;
-        }
-
-        public IEnumerator UseSpellToCard(CardController targetCard, HeroController ownerHero)
+        public IEnumerator UseSpellToCard(CardController targetCard)
         {
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCard:
@@ -164,22 +127,18 @@ namespace TestUnityCardGame.Presenter.Card
                     break;
             }
             yield return new WaitForSeconds(0.5f);
-            // カードを破棄する
-            DestroyCard();
 
-            // カード所有者のマナコストを減少させる
-            ownerHero.model.ReduceManaCost(model.GetManaCost());
+            // カードを破棄する
+            StartCoroutine(DestroyCard());
         }
 
-        public IEnumerator UseSpellToCards(CardController[] targetCards, HeroController ownerHero)
+        public IEnumerator UseSpellToCards(CardController[] targetCards)
         {
-             UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCards:
                     // 相手フィールドの全てのカードに攻撃する
                     foreach (CardController targetCard in targetCards)
                     {
-                        UnityEngine.Debug.Log(targetCard.model.GetName());
                         Attack(targetCard);
                     }
                     foreach (CardController targetCard in targetCards)
@@ -198,16 +157,13 @@ namespace TestUnityCardGame.Presenter.Card
             }
             
             yield return new WaitForSeconds(0.5f);
-            // カードを破棄する
-            DestroyCard();
 
-            // カード所有者のマナコストを減少させる
-            ownerHero.model.ReduceManaCost(model.GetManaCost());
+            // カードを破棄する
+            StartCoroutine(DestroyCard());
         }
 
-        public IEnumerator UseSpellToHero(HeroController target, HeroController ownerHero)
+        public IEnumerator UseSpellToHero(HeroController target)
         {
-             UnityEngine.Debug.Log(model.GetSpell().ToString());
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyHero:
                     target.Attacked(this);
@@ -220,11 +176,9 @@ namespace TestUnityCardGame.Presenter.Card
             }
 
             yield return new WaitForSeconds(0.5f);
-            // カードを破棄する
-            DestroyCard();
 
-            // カード所有者のマナコストを減少させる
-            ownerHero.model.ReduceManaCost(model.GetManaCost());
+            // カードを破棄する
+            StartCoroutine(DestroyCard());
         }
 
         public Player GetOwner()

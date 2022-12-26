@@ -21,34 +21,28 @@ namespace TestUnityCardGame.Presenter.Battle
                 return;
             }
 
-            var ownerHero = BattleViewController.Instance.player1Hero;
-            if (spellCard.GetOwner() == Player.Player2) {
+            HeroController ownerHero = null;
+            if (spellCard.GetOwner() == Player.Player1) {
+                ownerHero = BattleViewController.Instance.player1Hero;
+            } else if (spellCard.GetOwner() == Player.Player2) {
                 ownerHero = BattleViewController.Instance.player2Hero;
             }
 
-            CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(spellCard.GetOwner());
-
-            if (spellCard.CanUseSpellToCard(enemyCards)) {
-                if (targetCard != null) {
-                    StartCoroutine(spellCard.UseSpellToCard(targetCard, ownerHero));
+            if (ownerHero != null) {
+                if (spellCard.model.GetManaCost() > ownerHero.model.GetManaCost() || ownerHero.model.GetManaCost() < 0) {
+                    return;
                 }
-            }
-            if (spellCard.CanUseSpellToHero(targetHero)) {
-                if (targetHero != null) {
-                    StartCoroutine(spellCard.UseSpellToHero(targetHero, ownerHero));
-                }
-            }
 
-           CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(spellCard.GetOwner());
-
-            if (spellCard.CanUseSpellToCard(friendCards)) {
-                if (targetCard != null) {
-                    StartCoroutine(spellCard.UseSpellToCard(targetCard, ownerHero));
-                }
-            }
-            if (spellCard.CanUseSpellToHero(targetHero)) {
-                if (targetHero != null) {
-                    StartCoroutine(spellCard.UseSpellToHero(targetHero, ownerHero));
+                if (spellCard.model.GetSpell() == Spell.AttackEnemyCard || spellCard.model.GetSpell() == Spell.HealFriendCard) {
+                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost() && ownerHero.model.GetManaCost() > 0) {
+                        ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
+                        StartCoroutine(spellCard.UseSpellToCard(targetCard));
+                    }
+                } else if(spellCard.model.GetSpell() == Spell.AttackEnemyHero || spellCard.model.GetSpell() == Spell.HealFriendHero) {
+                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost() && ownerHero.model.GetManaCost() > 0) {
+                        ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
+                        StartCoroutine(spellCard.UseSpellToHero(targetHero));
+                    }
                 }
             }
         }

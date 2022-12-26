@@ -1,3 +1,4 @@
+using System.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace TestUnityCardGame.Presenter.Hero
         [System.NonSerialized] public HeroView view;
         [System.NonSerialized] public HeroModel model;
 
+        [System.NonSerialized] public ReactiveProperty<int> reactiveHP;
+        [System.NonSerialized] public ReactiveProperty<int> reactiveManaCost;
+
         // ターン数
         private int turnNumber;
         
@@ -26,6 +30,11 @@ namespace TestUnityCardGame.Presenter.Hero
 
             // ターン数を1にセットする
             turnNumber = 1;
+
+            // 監視用のオブジェクトのインスタンス化
+            reactiveHP = new ReactiveProperty<int>(model.GetHP());
+            reactiveManaCost = new ReactiveProperty<int>(model.GetManaCost());
+
         }
 
         public void Attacked(CardController attacker)
@@ -50,6 +59,8 @@ namespace TestUnityCardGame.Presenter.Hero
         void RefreshByDamage()
         {
             DamageAnimation(view.GetDamageInfo().transform);
+            reactiveHP.Value = model.GetHP();
+            reactiveManaCost.Value = model.GetManaCost();
             RefreshView();
         }
 

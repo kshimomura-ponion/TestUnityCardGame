@@ -23,8 +23,7 @@ namespace TestUnityCardGame.Presenter.Title
         {
             titleView = GetComponent<TitleView>();
 
-            foreach (var scene in _getPermanentScenesWithoutEntryPoint)
-            {
+            foreach (var scene in _getPermanentScenesWithoutEntryPoint) {
                 SceneManager.LoadSceneAsync($"{scene}", LoadSceneMode.Additive);
             }
         }

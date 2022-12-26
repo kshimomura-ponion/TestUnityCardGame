@@ -31,9 +31,7 @@ namespace TestUnityCardGame
             if (cardType == CardType.Monster) {
                 return new CardEntity(GetMonsterCardEntity(id));
 
-            }
-            else
-            {
+            } else {
                 return new CardEntity(GetSpellCardEntity(id));
             }
         }

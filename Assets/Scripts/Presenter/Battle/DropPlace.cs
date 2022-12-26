@@ -25,25 +25,6 @@ namespace TestUnityCardGame.Presenter.Battle
                     return;
                 }
 
-                // スペルカードかつ全体攻撃（回復）ならばフィールドに出た瞬間に使用する
-                if (card.model.IsSpell()) {
-                    UnityEngine.Debug.Log(card.model.GetSpell().ToString());
-                    var ownerHero = BattleViewController.Instance.player1Hero;
-                    if (card.GetOwner() == Player.Player2) {
-                        ownerHero = BattleViewController.Instance.player2Hero;
-                    }
-
-                    if (card.model.GetSpell() == Spell.AttackEnemyCards) {
-                        CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
-                        StartCoroutine(card.UseSpellToCards(enemyCards, ownerHero));
-
-                    } else if (card.model.GetSpell() == Spell.HealFriendCards) {
-                        CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
-                        StartCoroutine(card.UseSpellToCards(friendCards, ownerHero));
-                    }
-                    return;
-                }
-
                 // すでに場に出ているカードは動かせない
                 if (card.model.IsFieldCard()) {
                     return;
@@ -51,30 +32,59 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 // 敵のFieldに配置しないようにする
                 if (card.GetOwner() == Player.Player1 && this.transform != BattleViewController.Instance.GetPlayer1FieldTransform()) {
+                    UnityEngine.Debug.Log(card.GetOwner());
                     return;
                 } else if (card.GetOwner() == Player.Player2 && this.transform != BattleViewController.Instance.GetPlayer2FieldTransform()) {
+                    UnityEngine.Debug.Log(card.GetOwner());
                     return;
                 }
 
-                // ドラッグ中のカードの親コンポーネントを自分に変える
-                card.movement.SetDefaultParent(this.transform);
-
-                // 自分のカードがフィールドに出たことを明示する
-                card.model.OnField();
-
-                // 自分のカードを表示状態にする
-                card.view.SetActiveFrontPanel(true);
-
-                // Mana Costを減らす
-                switch(card.GetOwner()) {
-                    case Player.Player1:
-                        BattleViewController.Instance.player1Hero.ReduceManaCost(card.model.GetManaCost());
-                        break;
-                    case Player.Player2:
-                        BattleViewController.Instance.player2Hero.ReduceManaCost(card.model.GetManaCost());
-                        break;
+                HeroController ownerHero = null;
+                if (card.GetOwner() == Player.Player1) {
+                    ownerHero = BattleViewController.Instance.player1Hero;
+                } else if (card.GetOwner() == Player.Player2) {
+                    ownerHero = BattleViewController.Instance.player2Hero;
                 }
-                card.model.OnField();
+
+                // スペルカードかつ全体攻撃（回復）ならばMana Costを減らした上でフィールドに出た瞬間に使用する
+                if (card.model.IsSpell()) {
+                    if(ownerHero != null) {
+                        if (card.model.GetSpell() == Spell.AttackEnemyCards) {
+                            CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
+                            if (enemyCards.Length > 0) {
+                                ownerHero.ReduceManaCost(card.model.GetManaCost());
+                                StartCoroutine(card.UseSpellToCards(enemyCards));
+                            } else {
+                                return;
+                            }
+
+                        } else if (card.model.GetSpell() == Spell.HealFriendCards) {
+                            CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                            if (friendCards.Length > 0) {
+                                ownerHero.ReduceManaCost(card.model.GetManaCost());
+                                StartCoroutine(card.UseSpellToCards(friendCards));
+                            } else {
+                                return;
+                            }
+                        }
+                    }
+                    return;
+                // モンスターカードならMana Costを減らすだけ
+                } else {
+                    // ドラッグ中のカードの親コンポーネントを自分に変える
+                    card.movement.SetDefaultParent(this.transform);
+
+                    // 自分のカードがフィールドに出たことを明示する
+                    card.model.OnField();
+
+                    // 自分のカードを表示状態にする
+                    card.view.SetActiveFrontPanel(true);
+
+                    // Mana Costを減らす
+                    if(ownerHero != null) {
+                        ownerHero.ReduceManaCost(card.model.GetManaCost());
+                    }
+                }
             }
         }
     }

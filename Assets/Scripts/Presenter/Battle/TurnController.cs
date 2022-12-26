@@ -32,15 +32,13 @@ namespace TestUnityCardGame.Presenter.Battle
         protected override void Awake()
         {
             // ターン情報ビューを生成する
-            if (turnInfoView == null)
-            {
+            if (turnInfoView == null) {
                 turnInfoView = Instantiate(BattleViewController.Instance.GetTurnInfoViewPrefab(), canvasTransform, false);
             }
         }
 
         public void TurnStart()
         {
-            //isTurnEnd = false;
             // カウントダウン開始
             StopAllCoroutines();
             StartCoroutine(CountDown());
@@ -94,8 +92,7 @@ namespace TestUnityCardGame.Presenter.Battle
 
             timeCount = maxSeconds;
             untilEndOfTurnText.text = timeCount.ToString();
-            while (timeCount > 0)
-            {
+            while (timeCount > 0) {
                 yield return new WaitForSeconds(1); // 1秒待機
                 timeCount--;
                 untilEndOfTurnText.text = timeCount.ToString();
@@ -116,11 +113,11 @@ namespace TestUnityCardGame.Presenter.Battle
                 
                 // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
                 CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(Player.Player1);
-                SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player1Hero);
+                BattleViewController.Instance.SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player1Hero);
 
                 // 攻撃表示の変更
-                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field);
+                BattleViewController.Instance.SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
+                BattleViewController.Instance.SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field);
 
             } else {
                 BattleViewController.Instance.player2Hero.view.SetActiveActivatedPanel(true);
@@ -128,11 +125,11 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
                 CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(Player.Player2);
-                SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player2Hero);
+                BattleViewController.Instance.SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player2Hero);
 
                 // 攻撃表示の変更
-                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
+                BattleViewController.Instance.SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
+                BattleViewController.Instance.SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
             }
         }
 
@@ -146,8 +143,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 playerCardList = player2HandTransform.GetComponentsInChildren<CardController>();
             }
 
-            foreach(CardController card in playerCardList)
-            {
+            foreach(CardController card in playerCardList) {
                 card.view.SetActiveFrontPanel(true);
             }
         }
@@ -158,17 +154,16 @@ namespace TestUnityCardGame.Presenter.Battle
                 Transform player1HandTransform =  BattleViewController.Instance.GetPlayer1HandTransform();
                 handCardList = player1HandTransform.GetComponentsInChildren<CardController>();
                 // 念のため攻撃表示を解除しておく
-                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Hand);
+                BattleViewController.Instance.SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Hand);
 
             } else {
                 Transform player2HandTransform = BattleViewController.Instance.GetPlayer2HandTransform();
                 handCardList = player2HandTransform.GetComponentsInChildren<CardController>();
                 // 念のため攻撃表示を解除しておく
-                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Hand);
+                BattleViewController.Instance.SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Hand);
             }
             
-            foreach(CardController card in handCardList)
-            {
+            foreach(CardController card in handCardList) {
                 card.view.SetActiveFrontPanel(false);
             }
         }
@@ -180,11 +175,11 @@ namespace TestUnityCardGame.Presenter.Battle
 
             Transform player1FieldTransform = BattleViewController.Instance.GetPlayer1FieldTransform();
             CardController[] player1FieldCardList = player1FieldTransform.GetComponentsInChildren<CardController>();
-            SettingCardCanAttack(player1FieldCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Field);
+            BattleViewController.Instance.SettingCardCanAttack(player1FieldCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Field);
 
             Transform player2FieldTransform = BattleViewController.Instance.GetPlayer2FieldTransform();
             CardController[] player2FieldCardList = player2FieldTransform.GetComponentsInChildren<CardController>();
-            SettingCardCanAttack(player2FieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field);
+            BattleViewController.Instance.SettingCardCanAttack(player2FieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field);
 
             isPlayer1Turn = !isPlayer1Turn;
 
@@ -209,36 +204,6 @@ namespace TestUnityCardGame.Presenter.Battle
             }
             
             TurnStart();
-        }
-
-        // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
-        void SettingIsDraggableFromManaCost(CardController[] cardList, HeroController hero)
-        {
-            foreach (CardController card in cardList)
-            {
-                if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
-                    card.SetDraggable(true);
-                } else {
-                    card.SetDraggable(false);
-                }
-            }
-        }
-
-        void SettingCardCanAttack(CardController[] cardList, bool canAttack, HeroController hero, PlaceType placeType)
-        {
-            foreach (CardController card in cardList)
-            {
-                if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
-                    if (placeType == PlaceType.Field) {
-                        card.SetCanAttack(canAttack);
-                    } else if (placeType == PlaceType.Hand) {
-                        // 手持ちで攻撃表示にできるのはスペルカードのみ
-                        if (card.model.IsSpell()) {
-                            card.SetCanAttack(canAttack);
-                        }
-                    }
-                } 
-            }
         }
 
         public void AddTurnNumber(HeroController hero)

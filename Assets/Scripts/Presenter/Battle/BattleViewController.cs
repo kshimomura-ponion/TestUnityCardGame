@@ -54,10 +54,6 @@ namespace TestUnityCardGame.Presenter.Battle
 
             // バトル初期データを受け取る
             battleData = MiniUniduxService.State.Scene.GetData<BattleData>();
-
-            // HeroのHPを監視する
-            player1Hero.ObserveEveryValueChanged(x => x.model.GetHP()).Where(x => x <= 0).Subscribe(_ => GameOver());
-            player2Hero.ObserveEveryValueChanged(x => x.model.GetHP()).Where(x => x <= 0).Subscribe(_ => GameOver());
         }
 
         void Start()
@@ -89,8 +85,7 @@ namespace TestUnityCardGame.Presenter.Battle
             // デッキ 1~8のカードIDから16枚をランダムに生成する
             List<int> player1Deck = new List<int>();
             List<int> player2Deck = new List<int>();
-            for(int i = 1; i <= (battleData.existCardNum * 2); i++)
-            {
+            for(int i = 1; i <= (battleData.existCardNum * 2); i++) {
                 int idx1 = UnityEngine.Random.Range(1, battleData.existCardNum);
                 player1Deck.Add(idx1);
                 int idx2 = UnityEngine.Random.Range(1, battleData.existCardNum);
@@ -102,12 +97,20 @@ namespace TestUnityCardGame.Presenter.Battle
             // ここで各Heroの持つカード情報を整理しておく
             player1Hero.Init(entitiesManager.GetHeroEntity(id1), player1Deck, Player.Player1);
             player2Hero.Init(entitiesManager.GetHeroEntity(id2), player2Deck, Player.Player2);
+
+            // 以後HeroのHPを監視する
+            player1Hero.reactiveHP.Where(x => x <= 0).Subscribe(_ => GameOver());
+            player2Hero.reactiveHP.Where(x => x <= 0).Subscribe(_ => GameOver());
+
+            // 以後HeroのMana Costを監視する
+            player1Hero.reactiveManaCost.Subscribe(_ => UpdateCardSettings(Player.Player1));
+            player2Hero.reactiveManaCost.Subscribe(_ => UpdateCardSettings(Player.Player2));
+
         }
 
         public void SettingInitHand(int initHandNum)
         {
-            for (int i = 0; i < initHandNum; i++)
-            {
+            for (int i = 0; i < initHandNum; i++) {
                 // 手札置き場（Hand）、FieldともにHorizontalLayoutGroupに属していないとカードが重なってしまう
                 // （カードはAlignmentでCenterに置くべき）
                 GiveCardToHand(player1Hero, player1HandTransform, Player.Player1);
@@ -137,8 +140,6 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             CardController card = Instantiate(battleView.GetCardPrefab(), hand, false);
 
-            // UnityEngine.Debug.Log(cardInfo.Item1.ToString());
-            // UnityEngine.Debug.Log(cardInfo.Item2.ToString());
             // カードエンティティを生成し、カードタイプを渡してカードを生成する
             card.Init(entitiesManager.GetCardEntity(cardInfo.Item1, cardInfo.Item2), player);
         }
@@ -157,20 +158,16 @@ namespace TestUnityCardGame.Presenter.Battle
         public void CleanUp()
         {
             // handとFiledのカードを削除
-            foreach (Transform card in player1HandTransform)
-            {
+            foreach (Transform card in player1HandTransform) {
                 Destroy(card.gameObject);
             }
-            foreach (Transform card in player1FieldTransform)
-            {
+            foreach (Transform card in player1FieldTransform) {
                 Destroy(card.gameObject);
             }
-            foreach (Transform card in player2HandTransform)
-            {
+            foreach (Transform card in player2HandTransform) {
                 Destroy(card.gameObject);
             }
-            foreach (Transform card in player2FieldTransform)
-            {
+            foreach (Transform card in player2FieldTransform) {
                 Destroy(card.gameObject);
             }
         }
@@ -186,7 +183,7 @@ namespace TestUnityCardGame.Presenter.Battle
 
             bool isPlayer1Win = (player1Hero.model.GetHP() > 0);
 
-            var resultData = new ResultData(isPlayer1Win);
+            var resultData = new ResultData(isPlayer1Win, battleData.hero1ID, battleData.hero2ID, battleData.isPlayer2AI, battleData.existHeroNum, battleData.existCardNum);
 
             // リザルト画面へ遷移するプッシュアクションを生成
             var pushToResultAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Result, resultData);
@@ -237,6 +234,90 @@ namespace TestUnityCardGame.Presenter.Battle
             }
         }
         
+        public void UpdateCardSettings(Player player)
+        {
+            SettingCardCanAttack(player);
+            SettingIsDraggableFromManaCost(player);
+        }
+
+        public void SettingIsDraggableFromManaCost(Player player)
+        {
+            CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
+            if (player == Player.Player1) {
+                SettingIsDraggableFromManaCost(handCardList, player1Hero);
+            } else {
+                SettingIsDraggableFromManaCost(handCardList, player2Hero);
+            }
+        }
+
+        // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
+        public void SettingIsDraggableFromManaCost(CardController[] cardList, HeroController hero)
+        {
+            foreach (CardController card in cardList) {
+                if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
+                    card.SetDraggable(true);
+                } else {
+                    card.SetDraggable(false);
+                }
+            }
+        }
+
+        public void SettingCardCanAttack(Player player)
+        {
+            CardController[] fieldCardList = BattleViewController.Instance.GetFriendFieldCards(player);
+            CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
+
+            // 攻撃表示の変更
+            if (player == Player.Player1) {
+                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
+                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field);  
+            } else {
+                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
+                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
+            }
+        }
+
+        public void SettingCardCanAttack(CardController[] cardList, bool canAttack, HeroController hero, PlaceType placeType)
+        {
+            foreach (CardController card in cardList) {
+                if (canAttack) {
+                    if (placeType == PlaceType.Field) {
+                        // フィールドに出ているカード（モンスターカード）は必ず攻撃表示
+                        if (!card.model.IsSpell()) {
+                            card.SetCanAttack(canAttack);
+                        }
+                    } else if (placeType == PlaceType.Hand) {
+                        // 手持ちで攻撃表示にできるのはスペルカードのみ
+                        if (card.model.IsSpell()) {
+                            if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
+                                CardController[] targetCards;
+                                switch (card.model.GetSpell()) {
+                                    case Spell.AttackEnemyCard:
+                                    case Spell.AttackEnemyCards:
+                                        targetCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
+                                        if (targetCards.Length > 0) {
+                                            card.SetCanAttack(canAttack);
+                                        }
+                                        break;
+                                    case Spell.HealFriendCard:
+                                    case Spell.HealFriendCards:
+                                        targetCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                                        if (targetCards.Length > 0) {
+                                            card.SetCanAttack(canAttack);
+                                        }
+                                        break;
+                                    case Spell.AttackEnemyHero:
+                                    case Spell.HealFriendHero:
+                                        card.SetCanAttack(canAttack);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public void SetTurnNumText(string turnNumString)
         {
             battleView.SetTurnNumText(turnNumString);

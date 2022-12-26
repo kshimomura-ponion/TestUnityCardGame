@@ -46,6 +46,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 } else {
                     // カードを移動して表示状態に変更、マナコストを減らす
                     StartCoroutine(card.movement.MoveToField(enemyAIFieldTransform));
+                    enemyAIHero.ReduceManaCost(card.model.GetManaCost());
 
                     // 敵のカードがフィールドに出たことを明示する
                     card.model.OnField();
@@ -112,15 +113,22 @@ namespace TestUnityCardGame.Presenter.Battle
                 case Spell.AttackEnemyCard:
                 case Spell.AttackEnemyCards:
                     CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
-                    return card.CanUseSpellToCard(opponentCards);
+                    if (opponentCards.Length > 0)
+                    {
+                        return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
+                    }
+                    return false;
                 case Spell.HealFriendCard:
                 case Spell.HealFriendCards:
                     CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
-                    return card.CanUseSpellToCard(friendCards);
+                    if (friendCards.Length > 0)
+                    {
+                        return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
+                    }
+                    return false;
                 case Spell.AttackEnemyHero:
-                    return card.CanUseSpellToHero(player1Hero);
                 case Spell.HealFriendHero:
-                    return card.CanUseSpellToHero(enemyAIHero);
+                    return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
             }
 
             return false;
@@ -149,7 +157,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     yield return new WaitForSeconds(2.0f);
             
                     // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero));
+                    StartCoroutine(card.UseSpellToCard(target));
                     break;
                 case Spell.HealFriendCard:
                     CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
@@ -162,7 +170,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     yield return new WaitForSeconds(2.0f);
             
                     // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero));
+                    StartCoroutine(card.UseSpellToCard(target));
                     break;
                 case Spell.AttackEnemyCards:
                     opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
@@ -172,7 +180,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     yield return new WaitForSeconds(2.0f);
             
                     // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCards(opponentCards, enemyAIHero));
+                    StartCoroutine(card.UseSpellToCards(opponentCards));
                     break;
                 case Spell.HealFriendCards:
                     friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
@@ -182,7 +190,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     yield return new WaitForSeconds(2.0f);
             
                     // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCards(friendCards, enemyAIHero));
+                    StartCoroutine(card.UseSpellToCards(friendCards));
                     break;
                 case Spell.AttackEnemyHero:
                     movePosition = player1Hero.transform;
@@ -191,16 +199,17 @@ namespace TestUnityCardGame.Presenter.Battle
                     yield return new WaitForSeconds(2.0f);
             
                     // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToHero(player1Hero, enemyAIHero));
+                    StartCoroutine(card.UseSpellToHero(player1Hero));
                     break;
                 case Spell.HealFriendHero:
                     movePosition = enemyAIHero.transform;
                     // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
+                    enemyAIHero.ReduceManaCost(card.model.GetManaCost());
                     StartCoroutine(card.movement.MoveToField(movePosition));
                     yield return new WaitForSeconds(2.0f);
             
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToHero(enemyAIHero, enemyAIHero));
+                    // カードを使用して破壊
+                    StartCoroutine(card.UseSpellToHero(enemyAIHero));
                     break;
 
             }

@@ -109,8 +109,7 @@ namespace TestUnityCardGame.Presenter.HeroSelect
             timeCount = maxSeconds;
             heroSelectView.SetUntilEndOfSelectText(timeCount.ToString());
 
-            while (timeCount > 0)
-            {
+            while (timeCount > 0) {
                 yield return new WaitForSeconds(1); // 1秒待機
                 timeCount--;
                 heroSelectView.SetUntilEndOfSelectText(timeCount.ToString());
@@ -157,13 +156,11 @@ namespace TestUnityCardGame.Presenter.HeroSelect
         void CleanUp()
         {
             HeroInfoController[] hero1InfoList = GetHeroInfoList(Player.Player1);
-            foreach (HeroInfoController heroInfo in hero1InfoList)
-            {
+            foreach (HeroInfoController heroInfo in hero1InfoList) {
                 Destroy(heroInfo.gameObject);
             }
             HeroInfoController[] hero2InfoList = GetHeroInfoList(Player.Player2);
-            foreach (HeroInfoController heroInfo in hero2InfoList)
-            {
+            foreach (HeroInfoController heroInfo in hero2InfoList) {
                 Destroy(heroInfo.gameObject);
             }
         }

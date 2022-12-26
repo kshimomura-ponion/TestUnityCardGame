@@ -26,6 +26,10 @@ namespace TestUnityCardGame
 
             // リザルト初期データを受け取る
             resultData = MiniUniduxService.State.Scene.GetData<ResultData>();
+
+            // AIターン中に飛ばされることがあるためマウスカーソルを有効化しておく
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void Start()
@@ -58,7 +62,10 @@ namespace TestUnityCardGame
                 MiniUniduxService.Dispatch(resetAction);
 
                 // 前の画面(バトル画面)に遷移するためにポップアクションの生成
-                var returnToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle);
+                var battleData = new BattleData(resultData.hero1ID, resultData.hero2ID, resultData.isPlayer2AI, resultData.existHeroNum, resultData.existCardNum);
+
+                var returnToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle, battleData);
+                
                 // ポップアクションのディスパッチ
                 MiniUniduxService.Dispatch(returnToBattleAction);
             })

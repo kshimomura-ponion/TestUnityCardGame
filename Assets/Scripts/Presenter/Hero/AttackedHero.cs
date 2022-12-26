@@ -29,7 +29,6 @@ namespace TestUnityCardGame.Presenter.Card
             if (attacker.model.CanAttack()) {
                 // attackerがHeroに攻撃する
                 if (attacker.GetOwner() == Player.Player1) {
-                    UnityEngine.Debug.Log("Attacked Hero");
                     BattleViewController.Instance.player2Hero.Attacked(attacker);
                 } else {
                     BattleViewController.Instance.player1Hero.Attacked(attacker);

@@ -28,22 +28,6 @@ namespace TestUnityCardGame.Presenter.Card
         {
             CardController card = GetComponent<CardController>();
 
-            // スペルカードの時
-            if (card.model.IsSpell()) {
-                if (card.model.CanAttack()) {
-                    card.SetDraggable(true);
-                }
-            // モンスターカードの時
-            } else {
-                if (!card.model.IsFieldCard()) {
-                    card.SetDraggable(true);
-                } else if (card.model.IsFieldCard() && card.model.CanAttack()) {
-                    card.SetDraggable(true);
-                } else {
-                    card.SetDraggable(false);
-                }
-            }
-
             if (!card.IsDraggable()) {
                 return;
             }
