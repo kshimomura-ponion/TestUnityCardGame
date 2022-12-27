@@ -1,8 +1,9 @@
 using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
+using TestUnityCardGame.Presenter.Card;
 
-namespace TestUnityCardGame.Presenter.Card
+namespace TestUnityCardGame.Domain.Card
 {
     public class CardModel
     {

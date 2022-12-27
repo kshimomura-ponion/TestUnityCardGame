@@ -8,6 +8,7 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Domain.Service;
 using TestUnityCardGame.View.Title;
 
@@ -31,7 +32,11 @@ namespace TestUnityCardGame.Presenter.Title
         public void Start()
         {
             audioManager.PlayBGM(BGM.Title);
-            titleView.buttonEntry.OnClickAsObservable().Delay(TimeSpan.FromSeconds(0.6f)).Subscribe(_ => PushedEnter());
+            titleView.buttonEntry.OnClickAsObservable()
+                .First()
+                .Delay(TimeSpan.FromSeconds(0.6f))
+                .Subscribe(_ => PushedEnter())
+                .AddTo(this);
         }
 
         // Common Systemを除いたパーマネントシーンを読み込みたい順番に設定する

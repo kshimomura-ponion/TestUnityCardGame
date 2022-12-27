@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Battle;
+using TestUnityCardGame.Domain.Card;
 using TestUnityCardGame.View.Card;
 
 namespace TestUnityCardGame.Presenter.Card

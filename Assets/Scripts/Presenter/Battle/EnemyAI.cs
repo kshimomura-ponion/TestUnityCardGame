@@ -29,9 +29,9 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] player1FieldCards= BattleViewController.Instance.GetOpponentFieldCards(Player.Player2);
 
             // コスト以下のカードがあれば、カードをフィールドに出し続ける
-            while (Array.Exists(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost() && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card)))))) {
+            while (Array.Exists(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost().Value && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card)))))) {
                 // コスト以下のカードリストを取得
-                CardController[] selectableEnemyHandCards = Array.FindAll(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost()) && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card))));
+                CardController[] selectableEnemyHandCards = Array.FindAll(enemyAIHandCards, card => (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost().Value) && (!card.model.IsSpell() || (card.model.IsSpell() && CanCastSpell(card))));
 
                 // 場に出すカードを選択
                 CardController card = selectableEnemyHandCards[0];
@@ -80,7 +80,7 @@ namespace TestUnityCardGame.Presenter.Battle
                         // 攻撃⑤ start combat
                         StartCoroutine(attacker.movement.MoveToTarget(defender.transform));
                         yield return new WaitForSeconds(0.51f);
-                        BattleViewController.Instance.CardsBattle(attacker, defender);
+                        StartCoroutine(BattleViewController.Instance.CardsBattle(attacker, defender));
                     } else {
                         StartCoroutine(attacker.movement.MoveToTarget(BattleViewController.Instance.player1Hero.transform));
                         yield return new WaitForSeconds(0.25f);
@@ -115,7 +115,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                     if (opponentCards.Length > 0)
                     {
-                        return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
+                        return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
                     }
                     return false;
                 case Spell.HealFriendCard:
@@ -123,12 +123,12 @@ namespace TestUnityCardGame.Presenter.Battle
                     CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     if (friendCards.Length > 0)
                     {
-                        return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
+                        return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
                     }
                     return false;
                 case Spell.AttackEnemyHero:
                 case Spell.HealFriendHero:
-                    return (enemyAIHero.model.GetManaCost() <= card.model.GetManaCost());
+                    return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
             }
 
             return false;

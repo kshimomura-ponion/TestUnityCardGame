@@ -466,8 +466,8 @@ MonoBehaviour:
   iconImage: {fileID: 1660054903883852801}
   damageInfo: {fileID: 2211138874952182639}
   damageInfoText: {fileID: 5382664315113016106}
-  reduceManaCostInfo: {fileID: 5256825780447757150}
-  reduceManaCostInfoText: {fileID: 3441868843550026039}
+  manaCostInfo: {fileID: 5256825780447757150}
+  manaCostInfoText: {fileID: 3441868843550026039}
   activatedPanel: {fileID: 3142504032967936263}
 --- !u!114 &1660054904157906080
 MonoBehaviour:
@@ -582,7 +582,7 @@ GameObject:
   - component: {fileID: 4816311190572518477}
   - component: {fileID: 3441868843550026039}
   m_Layer: 5
-  m_Name: ReduceManaCostInfoText
+  m_Name: ManaCostInfoText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -928,7 +928,7 @@ GameObject:
   - component: {fileID: 3086611258419499041}
   - component: {fileID: 2480029449916622944}
   m_Layer: 5
-  m_Name: ReduceManaCostInfo
+  m_Name: ManaCostInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

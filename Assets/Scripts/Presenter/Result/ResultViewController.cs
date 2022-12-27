@@ -7,6 +7,7 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.View.Result;
 
 namespace TestUnityCardGame
@@ -35,41 +36,41 @@ namespace TestUnityCardGame
         public void Start()
         {   
             // ボタンのセット
-            resultView.reselectButton
-            .OnClickAsObservable()
-            .Subscribe(_ =>
-            {
-                // これまでのスタック履歴をリセット（クリア）する
-                var resetAction = PageActionManager<SceneName>.ActionCreator.Reset();
-                // リセットアクションのディスパッチ
-                MiniUniduxService.Dispatch(resetAction);
+            resultView.reselectButton.OnClickAsObservable()
+                .First()
+                .Subscribe(_ =>
+                {
+                    // これまでのスタック履歴をリセット（クリア）する
+                    var resetAction = PageActionManager<SceneName>.ActionCreator.Reset();
+                    // リセットアクションのディスパッチ
+                    MiniUniduxService.Dispatch(resetAction);
 
-                // 前の画面(ヒーローセレクト画面)に遷移するためにポップアクションの生成
-                var returnToHeroSelectAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.HeroSelect);
+                    // 前の画面(ヒーローセレクト画面)に遷移するためにポップアクションの生成
+                    var returnToHeroSelectAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.HeroSelect);
 
-                // ポップアクションのディスパッチ
-                MiniUniduxService.Dispatch(returnToHeroSelectAction);
-            })
-            .AddTo(this);
+                    // ポップアクションのディスパッチ
+                    MiniUniduxService.Dispatch(returnToHeroSelectAction);
+                })
+                .AddTo(this);
 
-            resultView.restartButton
-            .OnClickAsObservable()
-            .Subscribe(_ =>
-            {
-                // これまでのスタック履歴をリセット（クリア）する
-                var resetAction = PageActionManager<SceneName>.ActionCreator.Reset();
-                // リセットアクションのディスパッチ
-                MiniUniduxService.Dispatch(resetAction);
+            resultView.restartButton.OnClickAsObservable()
+                .First()
+                .Subscribe(_ =>
+                {
+                    // これまでのスタック履歴をリセット（クリア）する
+                    var resetAction = PageActionManager<SceneName>.ActionCreator.Reset();
+                    // リセットアクションのディスパッチ
+                    MiniUniduxService.Dispatch(resetAction);
 
-                // 前の画面(バトル画面)に遷移するためにポップアクションの生成
-                var battleData = new BattleData(resultData.hero1ID, resultData.hero2ID, resultData.isPlayer2AI, resultData.existHeroNum, resultData.existCardNum);
+                    // 前の画面(バトル画面)に遷移するためにポップアクションの生成
+                    var battleData = new BattleData(resultData.hero1ID, resultData.hero2ID, resultData.isPlayer2AI, resultData.existHeroNum, resultData.existCardNum);
 
-                var returnToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle, battleData);
-                
-                // ポップアクションのディスパッチ
-                MiniUniduxService.Dispatch(returnToBattleAction);
-            })
-            .AddTo(this);  
+                    var returnToBattleAction = PageActionManager<SceneName>.ActionCreator.Push(SceneName.Battle, battleData);
+
+                    // ポップアクションのディスパッチ
+                    MiniUniduxService.Dispatch(returnToBattleAction);
+                })
+                .AddTo(this);  
 
             // 音楽を再生
             audioManager.PlayBGM(BGM.Result);

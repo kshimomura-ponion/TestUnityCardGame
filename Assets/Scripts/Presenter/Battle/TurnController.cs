@@ -55,7 +55,9 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 BattleViewController.Instance.player1Hero.AddTurnNumber();  // Player1のターン数を増やす
                 OpenPlayerHandsCard(Player.Player1);      // Player1の手札を全てOpenにする
-                ClosePlayerHandsCard(Player.Player2);     // Player2の手札を全てOpenにする
+                ClosePlayerHandsCard(Player.Player2);     // Player2の手札を全てCloseにする
+
+                BattleViewController.Instance.UpdateCardSettings(Player.Player1);   // ドラッグ、攻撃表示の設定
 
                 PlayerTurn(); // ターン開始
             } else {
@@ -67,7 +69,9 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 BattleViewController.Instance.player2Hero.AddTurnNumber();  // Player2のターン数を増やす
                 OpenPlayerHandsCard(Player.Player2);      // Player2の手札を全てOpenにする
-                ClosePlayerHandsCard(Player.Player1);     // Player1の手札を全てOpenにする
+                ClosePlayerHandsCard(Player.Player1);     // Player1の手札を全てCloseにする
+
+                BattleViewController.Instance.UpdateCardSettings(Player.Player2);   // ドラッグ、攻撃表示の設定
 
                 if (BattleViewController.Instance.battleData.isPlayer2AI) {
                     // マウスカーソルの無効化
@@ -105,32 +109,6 @@ namespace TestUnityCardGame.Presenter.Battle
             // マウスカーソルの有効化
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-
-            CardController[] fieldCardList;
-            if (BattleViewController.Instance.isPlayer1Turn) {
-                BattleViewController.Instance.player1Hero.view.SetActiveActivatedPanel(true);
-                fieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
-                
-                // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
-                CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(Player.Player1);
-                BattleViewController.Instance.SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player1Hero);
-
-                // 攻撃表示の変更
-                BattleViewController.Instance.SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-                BattleViewController.Instance.SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field);
-
-            } else {
-                BattleViewController.Instance.player2Hero.view.SetActiveActivatedPanel(true);
-                fieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
-
-                // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
-                CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(Player.Player2);
-                BattleViewController.Instance.SettingIsDraggableFromManaCost(handCardList, BattleViewController.Instance.player2Hero);
-
-                // 攻撃表示の変更
-                BattleViewController.Instance.SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
-                BattleViewController.Instance.SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
-            }
         }
 
         public void OpenPlayerHandsCard(Player player) {
@@ -209,14 +187,6 @@ namespace TestUnityCardGame.Presenter.Battle
         public void AddTurnNumber(HeroController hero)
         {
             hero.AddTurnNumber();
-        }
-
-
-        public void CheckHeroHP()
-        {
-            if (BattleViewController.Instance.player1Hero.model.GetHP() <= 0 || BattleViewController.Instance.player2Hero.model.GetHP() <= 0) {
-                BattleViewController.Instance.GameOver();
-            }
         }
     }
 }

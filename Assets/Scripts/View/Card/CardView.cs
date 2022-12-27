@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TestUnityCardGame.Domain.Card;
 using TestUnityCardGame.Presenter.Card;
 
 namespace TestUnityCardGame.View.Card
@@ -63,6 +64,11 @@ namespace TestUnityCardGame.View.Card
         public void SetActiveFrontPanel(bool flag)
         {
             frontPanel.SetActive(flag);
+
+            // 攻撃表示オーラは裏表紙になっている時は開かない
+            if(!flag) {
+                SetActiveSelectablePanel(false);
+            }
         }
 
         public void SetActiveBackPanel(bool flag)

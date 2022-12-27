@@ -3,61 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TestUnityCardGame.Domain.Hero;
 
-public class HeroView : MonoBehaviour
+namespace TestUnityCardGame.View.Hero
 {
-    [SerializeField] TextMeshProUGUI nameText;
-    [SerializeField] TextMeshProUGUI hpText;
-    [SerializeField] TextMeshProUGUI manaCostText;
-    [SerializeField] Image iconImage;
-
-    // ダメージ表示オブジェクト
-    [SerializeField] GameObject damageInfo;
-    [SerializeField] TextMeshProUGUI damageInfoText;
-
-    // マナコスト減少表示オブジェクト
-    [SerializeField] GameObject reduceManaCostInfo;
-    [SerializeField] TextMeshProUGUI reduceManaCostInfoText;
-
-    // 現在のターンのHeroにはオーラをつける
-    [SerializeField] GameObject activatedPanel;
-
-    public void Show(HeroModel model)
+    public class HeroView : MonoBehaviour
     {
-        nameText.text = model.GetName();
-        hpText.text = model.GetHP().ToString();
-        manaCostText.text = model.GetManaCost().ToString();
-        iconImage.sprite = model.GetIcon();
-    }
+        [SerializeField] TextMeshProUGUI nameText;
+        [SerializeField] TextMeshProUGUI hpText;
+        [SerializeField] TextMeshProUGUI manaCostText;
+        [SerializeField] Image iconImage;
 
-    public void Refresh(HeroModel model)
-    {
-        hpText.text = model.GetHP().ToString();
-        manaCostText.text = model.GetManaCost().ToString();
-    }
+        // ダメージ表示オブジェクト
+        [SerializeField] GameObject damageInfo;
+        [SerializeField] TextMeshProUGUI damageInfoText;
 
-    public void SetActiveActivatedPanel(bool flag)
-    {
-        activatedPanel.SetActive(flag);
-    }
+        // マナコスト表示オブジェクト
+        [SerializeField] GameObject manaCostInfo;
+        [SerializeField] TextMeshProUGUI manaCostInfoText;
 
-    public void SetDamageInfoText(string text)
-    {
-        damageInfoText.text = text;
-    }
+        // 現在のターンのHeroにはオーラをつける
+        [SerializeField] GameObject activatedPanel;
 
-    public void SetReduceManaCostInfoText(string text)
-    {
-        reduceManaCostInfoText.text = text;
-    }
+        public void Show(HeroModel model)
+        {
+            nameText.text = model.GetName();
+            hpText.text = model.GetHP().ToString();
+            manaCostText.text = model.GetManaCost().ToString();
+            iconImage.sprite = model.GetIcon();
+        }
 
-    public GameObject GetDamageInfo()
-    {
-        return damageInfo;
-    }
+        public void Refresh(HeroModel model)
+        {
+            hpText.text = model.GetHP().ToString();
+            manaCostText.text = model.GetManaCost().ToString();
+        }
 
-    public GameObject GetReduceManaCostInfo()
-    {
-        return reduceManaCostInfo;
+        public void SetActiveActivatedPanel(bool flag)
+        {
+            activatedPanel.SetActive(flag);
+        }
+
+        public void SetDamageInfoText(string text)
+        {
+            damageInfoText.text = text;
+        }
+
+        public void SetManaCostInfoText(string text)
+        {
+            manaCostInfoText.text = text;
+        }
+
+        public GameObject GetDamageInfo()
+        {
+            return damageInfo;
+        }
+
+        public GameObject GetManaCostInfo()
+        {
+            return manaCostInfo;
+        }
     }
 }

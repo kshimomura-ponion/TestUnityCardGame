@@ -13,7 +13,9 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Presenter.Hero;
+using TestUnityCardGame.View.Alert;
 
 namespace TestUnityCardGame.View.HeroSelect
 {

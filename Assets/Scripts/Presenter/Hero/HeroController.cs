@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using DG.Tweening;
+using TestUnityCardGame.Domain.Sound;
+using TestUnityCardGame.Domain.Hero;
 using TestUnityCardGame.Presenter.Card;
+using TestUnityCardGame.View.Hero;
 
 namespace TestUnityCardGame.Presenter.Hero
 {
@@ -14,9 +17,6 @@ namespace TestUnityCardGame.Presenter.Hero
         [SerializeField] AudioManager audioManager;
         [System.NonSerialized] public HeroView view;
         [System.NonSerialized] public HeroModel model;
-
-        [System.NonSerialized] public ReactiveProperty<int> reactiveHP;
-        [System.NonSerialized] public ReactiveProperty<int> reactiveManaCost;
 
         // ターン数
         private int turnNumber;
@@ -30,11 +30,6 @@ namespace TestUnityCardGame.Presenter.Hero
 
             // ターン数を1にセットする
             turnNumber = 1;
-
-            // 監視用のオブジェクトのインスタンス化
-            reactiveHP = new ReactiveProperty<int>(model.GetHP());
-            reactiveManaCost = new ReactiveProperty<int>(model.GetManaCost());
-
         }
 
         public void Attacked(CardController attacker)
@@ -61,11 +56,9 @@ namespace TestUnityCardGame.Presenter.Hero
             var damageAnimation = DamageAnimation();
             while(damageAnimation.MoveNext()) {}
             RefreshView();
-            reactiveHP.Value = model.GetHP();
-            if (reactiveHP.Value <= 0) {
+            if (model.GetHP().Value <= 0) {
                 audioManager.PlaySE(SE.Died);
             }
-            reactiveManaCost.Value = model.GetManaCost();
             RewindDamageInfo();
         }
 
@@ -81,22 +74,23 @@ namespace TestUnityCardGame.Presenter.Hero
 
         public void AddManaCost(int cost) {
             model.AddManaCost(cost);
-            view.SetReduceManaCostInfoText("+" + cost.ToString());
-            view.GetReduceManaCostInfo().SetActive(true);
-            RefreshByReduceManaCost();
+            view.SetManaCostInfoText("+" + cost.ToString());
+            view.GetManaCostInfo().SetActive(true);
+            RefreshByChangedManaCost();
         }
 
         public void ReduceManaCost(int cost)
         {
             model.ReduceManaCost(cost);
-            view.SetReduceManaCostInfoText("-" + cost.ToString());
-            view.GetReduceManaCostInfo().SetActive(true);
-            RefreshByReduceManaCost();
+            view.SetManaCostInfoText("-" + cost.ToString());
+            view.GetManaCostInfo().SetActive(true);
+
+            RefreshByChangedManaCost();
         }
 
-        void RefreshByReduceManaCost()
+        void RefreshByChangedManaCost()
         {
-            view.GetReduceManaCostInfo().transform.DOLocalMove(new Vector3(0f,180.0f,0f), 0.5f).SetEase(Ease.InOutQuart).OnComplete(RewindReduceManaCostInfo);
+            view.GetManaCostInfo().transform.DOLocalMove(new Vector3(0f,180.0f,0f), 0.5f).SetEase(Ease.InOutQuart).OnComplete(RewindReduceManaCostInfo);
             view.Refresh(model);
         }
 
@@ -112,8 +106,8 @@ namespace TestUnityCardGame.Presenter.Hero
         }
         void RewindReduceManaCostInfo()
         {
-            view.GetReduceManaCostInfo().SetActive(false);
-            view.GetReduceManaCostInfo().transform.DORewind();
+            view.GetManaCostInfo().SetActive(false);
+            view.GetManaCostInfo().transform.DORewind();
         }
 
         public int GetTurnNumber() {

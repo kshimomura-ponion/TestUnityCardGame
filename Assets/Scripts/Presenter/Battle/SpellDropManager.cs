@@ -29,17 +29,17 @@ namespace TestUnityCardGame.Presenter.Battle
             }
 
             if (ownerHero != null) {
-                if (spellCard.model.GetManaCost() > ownerHero.model.GetManaCost() || ownerHero.model.GetManaCost() < 0) {
+                if (spellCard.model.GetManaCost() > ownerHero.model.GetManaCost().Value || ownerHero.model.GetManaCost().Value < 0) {
                     return;
                 }
 
                 if (spellCard.model.GetSpell() == Spell.AttackEnemyCard || spellCard.model.GetSpell() == Spell.HealFriendCard) {
-                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost() && ownerHero.model.GetManaCost() > 0) {
+                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
                         ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
                         StartCoroutine(spellCard.UseSpellToCard(targetCard));
                     }
                 } else if(spellCard.model.GetSpell() == Spell.AttackEnemyHero || spellCard.model.GetSpell() == Spell.HealFriendHero) {
-                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost() && ownerHero.model.GetManaCost() > 0) {
+                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
                         ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
                         StartCoroutine(spellCard.UseSpellToHero(targetHero));
                     }

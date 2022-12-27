@@ -12,6 +12,7 @@ using UniRx.Triggers;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Domain.Service;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Card;
@@ -102,13 +103,27 @@ namespace TestUnityCardGame.Presenter.Battle
             player2Hero.Init(entitiesManager.GetHeroEntity(id2), player2Deck, Player.Player2);
 
             // 以後HeroのHPを監視する
-            player1Hero.reactiveHP.Where(x => x <= 0).Delay(TimeSpan.FromSeconds(1.0f)).Subscribe(_ => GameOver());
-            player2Hero.reactiveHP.Where(x => x <= 0).Delay(TimeSpan.FromSeconds(1.0f)).Subscribe(_ => GameOver());
+            player1Hero.model.GetHP()
+                .Where(x => x <= 0)
+                .First()
+                .Delay(TimeSpan.FromSeconds(1.0f))
+                .Subscribe(_ => GameOver()).AddTo(this);
+
+            player2Hero.model.GetHP()
+                .Where(x => x <= 0)
+                .First()
+                .Delay(TimeSpan.FromSeconds(1.0f))
+                .Subscribe(_ => GameOver())
+                .AddTo(this);
 
             // 以後HeroのMana Costを監視する
-            player1Hero.reactiveManaCost.Subscribe(_ => UpdateCardSettings(Player.Player1));
-            player2Hero.reactiveManaCost.Subscribe(_ => UpdateCardSettings(Player.Player2));
+            player1Hero.model.GetManaCost()
+                .Subscribe(_ => UpdateCardSettings(Player.Player1))
+                .AddTo(this);
 
+            player2Hero.model.GetManaCost()
+                .Subscribe(_ => UpdateCardSettings(Player.Player2))
+                .AddTo(this);
         }
 
         public void SettingInitHand(int initHandNum)
@@ -187,7 +202,7 @@ namespace TestUnityCardGame.Presenter.Battle
 
             CleanUp();
 
-            bool isPlayer1Win = (player1Hero.model.GetHP() > 0);
+            bool isPlayer1Win = (player1Hero.model.GetHP().Value > 0);
 
             var resultData = new ResultData(isPlayer1Win, battleData.hero1ID, battleData.hero2ID, battleData.isPlayer2AI, battleData.existHeroNum, battleData.existCardNum);
 
@@ -281,8 +296,6 @@ namespace TestUnityCardGame.Presenter.Battle
         public void SettingCardListDragAndDropEventEnable(CardController[] cardList, bool isEnable)
             {
                 foreach (CardController card in cardList) {
-                    UnityEngine.Debug.Log(card.model.GetName());
-                     UnityEngine.Debug.Log(isEnable.ToString());
                     card.gameObject.GetComponent<CardMovement>().enabled = isEnable;
                 }
         }
@@ -291,7 +304,7 @@ namespace TestUnityCardGame.Presenter.Battle
         public void SettingIsDraggableFromManaCost(CardController[] cardList, HeroController hero)
         {
             foreach (CardController card in cardList) {
-                if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
+                if (card.model.GetManaCost() <= hero.model.GetManaCost().Value && hero.model.GetManaCost().Value > 0) {
                     card.SetDraggable(true);
                 } else {
                     card.SetDraggable(false);
@@ -304,6 +317,7 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] fieldCardList = BattleViewController.Instance.GetFriendFieldCards(player);
             CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
 
+            UnityEngine.Debug.Log("SettingCardCanAttack");
             // 攻撃表示の変更
             if (player == Player.Player1) {
                 SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
@@ -323,14 +337,14 @@ namespace TestUnityCardGame.Presenter.Battle
             foreach (CardController card in cardList) {
                 if (canAttack) {
                     if (placeType == PlaceType.Field) {
-                        // フィールドに出ているカード（モンスターカード）は必ず攻撃表示
-                        if (!card.model.IsSpell()) {
+                        // フィールドに出ているカード（モンスターカード）はDraggableであれば必ず攻撃表示
+                        if (!card.model.IsSpell() && card.IsDraggable()) {
                             card.SetCanAttack(canAttack);
                         }
                     } else if (placeType == PlaceType.Hand) {
                         // 手持ちで攻撃表示にできるのはスペルカードのみ
                         if (card.model.IsSpell()) {
-                            if (card.model.GetManaCost() <= hero.model.GetManaCost() && hero.model.GetManaCost() > 0) {
+                            if (card.model.GetManaCost() <= hero.model.GetManaCost().Value && hero.model.GetManaCost().Value > 0) {
                                 CardController[] targetCards;
                                 switch (card.model.GetSpell()) {
                                     case Spell.AttackEnemyCard:

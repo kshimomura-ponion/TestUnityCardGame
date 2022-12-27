@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.HeroSelect;
 
@@ -65,6 +66,8 @@ namespace TestUnityCardGame.View.HeroSelect
 
         public void Show(int heroID, Player player, Sprite icon, string name, string info)
         {
+            audioManager.PlaySE(SE.DialogOpen); // ダイアログが出たよという意味で
+
             if (player == Player.Player1) {
                 this.hero1ID = heroID;
             } else {

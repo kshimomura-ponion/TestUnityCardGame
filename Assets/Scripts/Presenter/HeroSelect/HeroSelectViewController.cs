@@ -13,6 +13,7 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Domain.Service;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.View.HeroSelect;
@@ -67,7 +68,11 @@ namespace TestUnityCardGame.Presenter.HeroSelect
             CreateHeroInfo(0, Player.Player1, player1SelectTransform, true);
             CreateHeroInfo(0, Player.Player2, player2SelectTransform, true);
 
-            heroSelectView.battleStartButton.OnClickAsObservable().Delay(TimeSpan.FromSeconds(0.6f)).Subscribe(_ => OnSelectedHeroes());
+            heroSelectView.battleStartButton.OnClickAsObservable()
+                .First()
+                .Delay(TimeSpan.FromSeconds(0.6f))
+                .Subscribe(_ => OnSelectedHeroes())
+                .AddTo(this);
     
             StartCoroutine(SelectHeroAndGameStart());
         }

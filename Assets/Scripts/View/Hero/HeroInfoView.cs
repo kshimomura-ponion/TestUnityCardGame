@@ -2,34 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TestUnityCardGame.Domain.Hero;
 
-public class HeroInfoView : MonoBehaviour
+namespace TestUnityCardGame.View.Hero
 {
-    [SerializeField] Image iconImage;
-
-    // 選択中のHeroにオーラをつける
-    [SerializeField] GameObject selectedPanel;
-
-    // ランダムの場合
-    [SerializeField] GameObject randomSelectPanel;
-
-    public void Show(HeroModel model, bool isRandom)
+    public class HeroInfoView : MonoBehaviour
     {
-        if (isRandom) {
-            randomSelectPanel.SetActive(true);
-        } else {
-            iconImage.sprite = model.GetIcon();
-            randomSelectPanel.SetActive(false);
+        [SerializeField] Image iconImage;
+
+        // 選択中のHeroにオーラをつける
+        [SerializeField] GameObject selectedPanel;
+
+        // ランダムの場合
+        [SerializeField] GameObject randomSelectPanel;
+
+        public void Show(HeroModel model, bool isRandom)
+        {
+            if (isRandom) {
+                randomSelectPanel.SetActive(true);
+            } else {
+                iconImage.sprite = model.GetIcon();
+                randomSelectPanel.SetActive(false);
+            }
         }
-    }
 
-    public void ShowSelectedPanel()
-    {
-        selectedPanel.SetActive(true);
-    }
+        public void ShowSelectedPanel()
+        {
+            selectedPanel.SetActive(true);
+        }
 
-    public void HideSelectedPanel()
-    {
-        selectedPanel.SetActive(false);
+        public void HideSelectedPanel()
+        {
+            selectedPanel.SetActive(false);
+        }
     }
 }
