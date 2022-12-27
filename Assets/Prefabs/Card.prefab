@@ -419,8 +419,8 @@ GameObject:
   - component: {fileID: 5307588906651553128}
   - component: {fileID: 4130396839543501548}
   - component: {fileID: 5824292915448886175}
-  - component: {fileID: -5545449577566184343}
-  - component: {fileID: 8756515433993875371}
+  - component: {fileID: 712256686085799047}
+  - component: {fileID: 8321221277429202850}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -521,7 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aaf1e1233a1642c8a2e34d997a27e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-5545449577566184343
+--- !u!114 &712256686085799047
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82fb5bc5202474d6ea86674fa1c47790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!225 &8756515433993875371
+--- !u!225 &8321221277429202850
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

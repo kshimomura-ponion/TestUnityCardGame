@@ -93,23 +93,24 @@ namespace TestUnityCardGame.Presenter.Card
             } else {
                 StartCoroutine(DestroyCard());
             }
-            RewindDamageInfo();
         }
 
         IEnumerator DamageAnimation() {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, 20.0f, 0f), 0.5f).SetEase(Ease.InOutQuart));
+            sequence.Append(view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, 10.0f, 0f), 0.5f).SetEase(Ease.InOutQuart));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25, 0f, 0f), 0.05f));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x + 50,0f,0f), 0.1f));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25,0f,0f), 0.05f));
-            sequence.Play();
+            sequence.Play().OnComplete(RewindDamageInfo);
             yield return new WaitForSeconds(0.01f);
+            view.GetDamageInfo().transform.DORewind();
         }
 
         void RewindDamageInfo()
         {
+            view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f,-10f, 0f), 0.1f);
             view.GetDamageInfo().SetActive(false);
-            view.GetDamageInfo().transform.DORewind();
+            this.transform.DORewind();
         }
 
         void RefreshView()
@@ -131,8 +132,16 @@ namespace TestUnityCardGame.Presenter.Card
             }
         }
 
-        public IEnumerator UseSpellToCard(CardController targetCard)
+        public IEnumerator UseSpellToCard(CardController targetCard, HeroController ownerHero, Transform movePosition)
         {
+            int targetNum = 0;
+
+            // カードを移動
+            if (movement != null && movePosition != null) {
+                var moveToField = movement.MoveToField(movePosition);
+                while(moveToField.MoveNext()){}
+            }
+
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCard:
                     // 特定の敵を攻撃する
@@ -140,6 +149,7 @@ namespace TestUnityCardGame.Presenter.Card
                     {
                         int damage = Attack(targetCard);
                         targetCard.CheckAlive(-1 * damage);
+                        targetNum++;
                     }
                     break;
                 case Spell.HealFriendCard:
@@ -147,6 +157,7 @@ namespace TestUnityCardGame.Presenter.Card
                     {
                        int healed = Heal(targetCard);
                        targetCard.CheckAlive(healed);
+                        targetNum++;
                     }
                     break;
                 case Spell.None:
@@ -154,26 +165,45 @@ namespace TestUnityCardGame.Presenter.Card
             }
             yield return new WaitForSeconds(0.5f);
 
-            // カードを破棄する
-            StartCoroutine(DestroyCard());
+            if (targetNum > 0) {
+                ownerHero.ReduceManaCost(model.GetManaCost());  // 使用者のManaCostを減らす
+                StartCoroutine(DestroyCard());  // 使用後は破壊する
+            }
         }
 
-        public IEnumerator UseSpellToCards(CardController[] targetCards)
+        public IEnumerator UseSpellToCards(CardController[] targetCards, HeroController ownerHero, Transform movePosition)
         {
+            int targetNum = 0;
+
+            // カードを移動
+            if (movement != null && movePosition != null) {
+                var moveToField = movement.MoveToField(movePosition);
+                while(moveToField.MoveNext()){}
+            }
+
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyCards:
                     // 相手フィールドの全てのカードに攻撃する
                     foreach (CardController targetCard in targetCards)
                     {
-                        int dmg = Attack(targetCard);
-                        targetCard.CheckAlive(-1 * dmg);
+                        // 特定の敵を攻撃する
+                        if (targetCard != null && targetCard.GetOwner() != owner)
+                        {
+                            int dmg = Attack(targetCard);
+                            targetCard.CheckAlive(-1 * dmg);
+                            targetNum++;
+                        }
                     }
                     break;
                 case Spell.HealFriendCards:
                     foreach (CardController targetCard in targetCards)
                     {
-                        int healed = Heal(targetCard);
-                        targetCard.CheckAlive(healed);
+                        if (targetCard != null && targetCard.GetOwner() == owner)
+                        {
+                            int healed = Heal(targetCard);
+                            targetCard.CheckAlive(healed);
+                            targetNum++;
+                        }
                     }
                     break;
                 case Spell.None:
@@ -182,12 +212,20 @@ namespace TestUnityCardGame.Presenter.Card
             
             yield return new WaitForSeconds(0.5f);
 
-            // カードを破棄する
-            StartCoroutine(DestroyCard());
+            if (targetNum > 0) {
+                ownerHero.ReduceManaCost(model.GetManaCost());  // 使用者のManaCostを減らす
+                StartCoroutine(DestroyCard());  // 使用後は破壊する
+            }
         }
 
-        public IEnumerator UseSpellToHero(HeroController target)
+        public IEnumerator UseSpellToHero(HeroController target, HeroController ownerHero, Transform movePosition)
         {
+            // カードを移動
+            if (movement != null && movePosition != null) {
+                var moveToField = movement.MoveToField(movePosition);
+                while(moveToField.MoveNext()){}
+            }
+
             switch (model.GetSpell()) {
                 case Spell.AttackEnemyHero:
                     target.Attacked(this);
@@ -198,11 +236,10 @@ namespace TestUnityCardGame.Presenter.Card
                 case Spell.None:
                     break;
             }
-
             yield return new WaitForSeconds(0.5f);
 
-            // カードを破棄する
-            StartCoroutine(DestroyCard());
+            ownerHero.ReduceManaCost(model.GetManaCost());  // 使用者のManaCostを減らす
+            StartCoroutine(DestroyCard());  // 使用後は破壊する
         }
 
         public bool IsFieldCard()

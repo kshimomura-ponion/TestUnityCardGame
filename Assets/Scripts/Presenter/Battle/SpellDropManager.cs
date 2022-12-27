@@ -34,14 +34,15 @@ namespace TestUnityCardGame.Presenter.Battle
                 }
 
                 if (spellCard.model.GetSpell() == Spell.AttackEnemyCard || spellCard.model.GetSpell() == Spell.HealFriendCard) {
-                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
-                        ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
-                        StartCoroutine(spellCard.UseSpellToCard(targetCard));
+                    if (targetCard != null && spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
+                        // Hand上のカードには使用できない
+                        if(targetCard.IsFieldCard()){
+                            StartCoroutine(spellCard.UseSpellToCard(targetCard, ownerHero, null));
+                        }
                     }
                 } else if(spellCard.model.GetSpell() == Spell.AttackEnemyHero || spellCard.model.GetSpell() == Spell.HealFriendHero) {
-                    if (spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
-                        ownerHero.ReduceManaCost(spellCard.model.GetManaCost());
-                        StartCoroutine(spellCard.UseSpellToHero(targetHero));
+                    if (targetHero != null && spellCard.model.GetManaCost() <= ownerHero.model.GetManaCost().Value && ownerHero.model.GetManaCost().Value > 0) {
+                        StartCoroutine(spellCard.UseSpellToHero(targetHero, ownerHero, null));
                     }
                 }
             }

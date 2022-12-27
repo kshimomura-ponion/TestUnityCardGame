@@ -50,8 +50,7 @@ namespace TestUnityCardGame.Presenter.Battle
                         if (card.model.GetSpell() == Spell.AttackEnemyCards) {
                             CardController[] enemyCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                             if (enemyCards.Length > 0) {
-                                ownerHero.ReduceManaCost(card.model.GetManaCost());
-                                StartCoroutine(card.UseSpellToCards(enemyCards));
+                                StartCoroutine(card.UseSpellToCards(enemyCards, ownerHero, null));
                             } else {
                                 return;
                             }
@@ -59,8 +58,7 @@ namespace TestUnityCardGame.Presenter.Battle
                         } else if (card.model.GetSpell() == Spell.HealFriendCards) {
                             CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                             if (friendCards.Length > 0) {
-                                ownerHero.ReduceManaCost(card.model.GetManaCost());
-                                StartCoroutine(card.UseSpellToCards(friendCards));
+                                StartCoroutine(card.UseSpellToCards(friendCards, ownerHero, null));
                             } else {
                                 return;
                             }

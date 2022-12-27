@@ -207,7 +207,6 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             CardController[] fieldCardList = BattleViewController.Instance.GetFriendFieldCards(player);
 
-            UnityEngine.Debug.Log("SetAllCardsInFieldCanAttack");
             // 攻撃表示の変更
             if (player == Player.Player1) {
                 SetCardsInFieldCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero);

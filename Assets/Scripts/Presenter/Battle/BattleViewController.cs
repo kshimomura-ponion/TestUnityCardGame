@@ -287,7 +287,6 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
 
-            UnityEngine.Debug.Log("SetAllCardsInHandCanAttackWithManaCost");
             // 攻撃表示の変更
             if (player == Player.Player1) {
                 SetCardsInHandCanAttackWithManaCost(handCardList, true, BattleViewController.Instance.player1Hero);

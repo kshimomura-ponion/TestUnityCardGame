@@ -41,8 +41,8 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 // スペルカードなら使用する
                 if (card.model.IsSpell()) {
-                    StartCoroutine(CastSpellOf(card));
-                    yield return new WaitForSeconds(2.0f);
+                    var castSpell = CastSpellOf(card);
+                    while(castSpell.MoveNext()){}
                 } else {
                     // カードを移動して表示状態に変更、マナコストを減らす
                     StartCoroutine(card.movement.MoveToField(enemyAIFieldTransform));
@@ -115,7 +115,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     CardController[] opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                     if (opponentCards.Length > 0)
                     {
-                        return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
+                        return (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost().Value);
                     }
                     return false;
                 case Spell.HealFriendCard:
@@ -123,12 +123,12 @@ namespace TestUnityCardGame.Presenter.Battle
                     CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     if (friendCards.Length > 0)
                     {
-                        return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
+                        return (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost().Value);
                     }
                     return false;
                 case Spell.AttackEnemyHero:
                 case Spell.HealFriendHero:
-                    return (enemyAIHero.model.GetManaCost().Value <= card.model.GetManaCost());
+                    return (card.model.GetManaCost() <= enemyAIHero.model.GetManaCost().Value);
             }
 
             return false;
@@ -152,12 +152,8 @@ namespace TestUnityCardGame.Presenter.Battle
                         target = opponentCards[0];
                         movePosition = target.transform;
                     }
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
-            
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCard(target));
+
+                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero, movePosition));
                     break;
                 case Spell.HealFriendCard:
                     CardController[] friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
@@ -165,54 +161,35 @@ namespace TestUnityCardGame.Presenter.Battle
                         target = friendCards[0];
                         movePosition = target.transform;
                     }
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
             
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCard(target));
+                    StartCoroutine(card.UseSpellToCard(target, enemyAIHero, movePosition));
                     break;
                 case Spell.AttackEnemyCards:
                     opponentCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
                     movePosition = BattleViewController.Instance.GetPlayer1FieldTransform();
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
-            
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCards(opponentCards));
+
+                    StartCoroutine(card.UseSpellToCards(opponentCards, enemyAIHero, movePosition));
                     break;
                 case Spell.HealFriendCards:
                     friendCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
                     movePosition = enemyAIFieldTransform;
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
-            
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToCards(friendCards));
+ 
+                    StartCoroutine(card.UseSpellToCards(friendCards, enemyAIHero, movePosition));
                     break;
                 case Spell.AttackEnemyHero:
                     movePosition = player1Hero.transform;
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
-            
-                    // カードを使用したらMana Costを減らす
-                    StartCoroutine(card.UseSpellToHero(player1Hero));
+
+                    StartCoroutine(card.UseSpellToHero(player1Hero, enemyAIHero, movePosition));
                     break;
                 case Spell.HealFriendHero:
                     movePosition = enemyAIHero.transform;
-                    // 移動先としてターゲット/それぞれのフィールド/それぞれのHeroのTransformが必要
-                    enemyAIHero.ReduceManaCost(card.model.GetManaCost());
-                    StartCoroutine(card.movement.MoveToField(movePosition));
-                    yield return new WaitForSeconds(2.0f);
-            
-                    // カードを使用して破壊
-                    StartCoroutine(card.UseSpellToHero(enemyAIHero));
-                    break;
 
+                    StartCoroutine(card.UseSpellToHero(enemyAIHero, enemyAIHero, movePosition));
+                    break;
+                default:
+                    break;
             }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

@@ -59,17 +59,17 @@ namespace TestUnityCardGame.Presenter.Hero
             if (model.GetHP().Value <= 0) {
                 audioManager.PlaySE(SE.Died);
             }
-            RewindDamageInfo();
         }
 
         IEnumerator DamageAnimation() {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, 20.0f, 0f), 0.5f).SetEase(Ease.InOutQuart));
+            sequence.Append(view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, 10.0f, 0f), 0.5f).SetEase(Ease.InOutQuart));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25, 0f, 0f), 0.05f));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x + 50,0f,0f), 0.1f));
             sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25,0f,0f), 0.05f));
-            sequence.Play();
+            sequence.Play().OnComplete(RewindDamageInfo);
             yield return new WaitForSeconds(0.1f);
+            view.GetDamageInfo().transform.DORewind();
         }
 
         public void AddManaCost(int cost) {
@@ -101,8 +101,9 @@ namespace TestUnityCardGame.Presenter.Hero
 
         void RewindDamageInfo()
         {
+            view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, -10f, 0f), 0.1f);
             view.GetDamageInfo().SetActive(false);
-            view.GetDamageInfo().transform.DORewind();
+            this.transform.DORewind();
         }
         void RewindReduceManaCostInfo()
         {
