@@ -5,7 +5,7 @@ using UnityEngine;
 
 // https://qiita.com/simanezumi1989/items/681328f30e88737f57b0
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Domain.Sound
 {
     public class AudioManager: ScriptableObject
     {

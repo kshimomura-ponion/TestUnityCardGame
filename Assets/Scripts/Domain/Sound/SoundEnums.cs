@@ -4,7 +4,8 @@ public enum SE{
     Cancel,
     Attack,
     Heal,
-    Died
+    Died,
+    DialogOpen
 }
 // サウンド（BGM）
 public enum BGM{
