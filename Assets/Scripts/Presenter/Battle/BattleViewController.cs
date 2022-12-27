@@ -147,14 +147,17 @@ namespace TestUnityCardGame.Presenter.Battle
             card.Init(entitiesManager.GetCardEntity(cardInfo.Item1, cardInfo.Item2), player);
         }
 
-        public void CardsBattle(CardController attacker, CardController defender)
+        public IEnumerator CardsBattle(CardController attacker, CardController defender)
         {
-            // ダメージを計算し、Viewのダメージ情報パネルを更新する
-            defender.view.SetDamageInfoText("-" + defender.Attack(attacker).ToString());
-            attacker.CheckAlive();
+            // 攻撃側の攻撃ダメージを計算し、防御側Viewのダメージ情報パネルを更新する
+            int defenderDamage = attacker.Attack(defender);
+            defender.CheckAlive(-1 * defenderDamage);
 
-            attacker.view.SetDamageInfoText("-" + attacker.Attack(defender).ToString());
-            defender.CheckAlive();
+            yield return new WaitForSeconds(0.5f);
+
+            // 防御側の反撃ダメージを計算し、攻撃側Viewのダメージ情報パネルを更新する
+            int attackerDamage = defender.Attack(attacker);
+            attacker.CheckAlive(-1 * attackerDamage);
         }
 
         // いらないオブジェクトの破棄
@@ -304,8 +307,12 @@ namespace TestUnityCardGame.Presenter.Battle
             // 攻撃表示の変更
             if (player == Player.Player1) {
                 SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field);  
+                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field); 
+                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Hand);
+                SettingCardCanAttack(fieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field); 
             } else {
+                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Hand);
+                SettingCardCanAttack(fieldCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Field); 
                 SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
                 SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
             }

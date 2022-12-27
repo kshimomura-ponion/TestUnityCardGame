@@ -53,8 +53,7 @@ namespace TestUnityCardGame.Presenter.Card
         // 敵を攻撃する
         public int Attack(CardController card)
         {
-            card.model.Damage(at);
-
+            Damage(at);
             return at;
         }
 
@@ -65,9 +64,10 @@ namespace TestUnityCardGame.Presenter.Card
         }
 
         // cardを回復させる
-        public void Heal(CardController card)
+        public int Heal(CardController card)
         {
-            card.model.RecoveryHP(at);
+            RecoveryHP(at);
+            return at;
         }
 
         public string GetName()

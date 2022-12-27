@@ -58,20 +58,25 @@ namespace TestUnityCardGame.Presenter.Hero
 
         void RefreshByDamage()
         {
-            DamageAnimation(view.GetDamageInfo().transform);
+            var damageAnimation = DamageAnimation();
+            while(damageAnimation.MoveNext()) {}
             RefreshView();
             reactiveHP.Value = model.GetHP();
+            if (reactiveHP.Value <= 0) {
+                audioManager.PlaySE(SE.Died);
+            }
             reactiveManaCost.Value = model.GetManaCost();
+            RewindDamageInfo();
         }
 
-        void DamageAnimation(Transform transform) {
+        IEnumerator DamageAnimation() {
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.2f));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x + 50,0f,0f), 0.2f));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.2f));
-    
-            RewindDamageInfo();
+            sequence.Append(view.GetDamageInfo().transform.DOLocalMove(new Vector3(0f, 20.0f, 0f), 0.5f).SetEase(Ease.InOutQuart));
+            sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25, 0f, 0f), 0.05f));
+            sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x + 50,0f,0f), 0.1f));
+            sequence.Append(this.transform.DOLocalMove(new Vector3(this.transform.position.x - 25,0f,0f), 0.05f));
+            sequence.Play();
+            yield return new WaitForSeconds(0.1f);
         }
 
         public void AddManaCost(int cost) {
