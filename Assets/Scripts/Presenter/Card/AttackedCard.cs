@@ -30,7 +30,7 @@ namespace TestUnityCardGame.Presenter.Card
                 return;
             }
 
-            if (attacker.model.CanAttack()) {
+            if (attacker.IsAttackable()) {
                 // attackerとdefenderを戦わせる
                 StartCoroutine(BattleViewController.Instance.CardsBattle(attacker, defender));
             }

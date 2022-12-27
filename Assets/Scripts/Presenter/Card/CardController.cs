@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Globalization;
+using System.ComponentModel.Design;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +23,8 @@ namespace TestUnityCardGame.Presenter.Card
 
         private Player owner;
         private bool isDraggable;
+        private bool isAttackable;
+        private bool isFieldCard;
 
         private void Awake()
         {
@@ -35,11 +40,20 @@ namespace TestUnityCardGame.Presenter.Card
             view.Show(model);
         }
 
+        public void OnField()
+        {
+            this.isFieldCard = true;
+
+            // 速攻カードの場合
+            if (model.GetAbility() == Ability.InitAttackable) {
+                SetAttackable(true);
+            }
+        }
         public int Attack(CardController enemyCard)
         {
             audioManager.PlaySE(SE.Attack);
             int at = model.Attack(enemyCard);
-            SetCanAttack(false);
+            SetAttackable(false);
             return at;
         }
 
@@ -51,10 +65,15 @@ namespace TestUnityCardGame.Presenter.Card
             return at;
         }
 
-        public void SetCanAttack(bool canAttack)
+        public void SetAttackable(bool isAttackable)
         {
-            model.SetCanAttack(canAttack);
-            view.SetActiveSelectablePanel(canAttack);
+            this.isAttackable = isAttackable;
+            view.SetActiveSelectablePanel(isAttackable);
+        }
+
+        public bool IsAttackable()
+        {
+            return this.isAttackable;
         }
 
         public void CheckAlive(int damage)
@@ -184,6 +203,11 @@ namespace TestUnityCardGame.Presenter.Card
 
             // カードを破棄する
             StartCoroutine(DestroyCard());
+        }
+
+        public bool IsFieldCard()
+        {
+            return isFieldCard;
         }
 
         public Player GetOwner()

@@ -41,7 +41,7 @@ namespace TestUnityCardGame.Presenter.Battle
             StartCoroutine(CountDown());
 
             // ドラッグイベントそのものをON/OFFする
-            BattleViewController.Instance.SettingDragAndDropEventEnable();
+            SetAllCardsDragAndDropEventEnable();
             
             if (BattleViewController.Instance.isPlayer1Turn) {
                 // ターン数を表示する
@@ -57,7 +57,8 @@ namespace TestUnityCardGame.Presenter.Battle
                 OpenPlayerHandsCard(Player.Player1);      // Player1の手札を全てOpenにする
                 ClosePlayerHandsCard(Player.Player2);     // Player2の手札を全てCloseにする
 
-                BattleViewController.Instance.UpdateCardSettings(Player.Player1);   // ドラッグ、攻撃表示の設定
+                BattleViewController.Instance.UpdateCardSettingsWithManaCost(Player.Player1);   // ドラッグ、スペルカードの攻撃表示の設定
+                SetAllCardsInFieldCanAttack(Player.Player1); // モンスターカードの攻撃表示の設定
 
                 PlayerTurn(); // ターン開始
             } else {
@@ -71,7 +72,8 @@ namespace TestUnityCardGame.Presenter.Battle
                 OpenPlayerHandsCard(Player.Player2);      // Player2の手札を全てOpenにする
                 ClosePlayerHandsCard(Player.Player1);     // Player1の手札を全てCloseにする
 
-                BattleViewController.Instance.UpdateCardSettings(Player.Player2);   // ドラッグ、攻撃表示の設定
+                BattleViewController.Instance.UpdateCardSettingsWithManaCost(Player.Player2);   // ドラッグ、スペルカードの攻撃表示の設定
+                SetAllCardsInFieldCanAttack(Player.Player2); // モンスターカードの攻撃表示の設定
 
                 if (BattleViewController.Instance.battleData.isPlayer2AI) {
                     // マウスカーソルの無効化
@@ -131,14 +133,9 @@ namespace TestUnityCardGame.Presenter.Battle
             if (player == Player.Player1) {
                 Transform player1HandTransform =  BattleViewController.Instance.GetPlayer1HandTransform();
                 handCardList = player1HandTransform.GetComponentsInChildren<CardController>();
-                // 念のため攻撃表示を解除しておく
-                BattleViewController.Instance.SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-
             } else {
                 Transform player2HandTransform = BattleViewController.Instance.GetPlayer2HandTransform();
                 handCardList = player2HandTransform.GetComponentsInChildren<CardController>();
-                // 念のため攻撃表示を解除しておく
-                BattleViewController.Instance.SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Hand);
             }
             
             foreach(CardController card in handCardList) {
@@ -150,14 +147,6 @@ namespace TestUnityCardGame.Presenter.Battle
         {
             // ターンが変わったらタイマーの文字を元に戻す
             untilEndOfTurnText.text = maxSeconds.ToString();
-
-            Transform player1FieldTransform = BattleViewController.Instance.GetPlayer1FieldTransform();
-            CardController[] player1FieldCardList = player1FieldTransform.GetComponentsInChildren<CardController>();
-            BattleViewController.Instance.SettingCardCanAttack(player1FieldCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Field);
-
-            Transform player2FieldTransform = BattleViewController.Instance.GetPlayer2FieldTransform();
-            CardController[] player2FieldCardList = player2FieldTransform.GetComponentsInChildren<CardController>();
-            BattleViewController.Instance.SettingCardCanAttack(player2FieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field);
 
             BattleViewController.Instance.isPlayer1Turn = !(BattleViewController.Instance.isPlayer1Turn);
 
@@ -183,6 +172,64 @@ namespace TestUnityCardGame.Presenter.Battle
             
             TurnStart();
         }
+
+        // カードのドラッグ&ドロップイベントをON/OFFする
+        public void SetAllCardsDragAndDropEventEnable()
+        {
+            CardController[] player1FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
+            CardController[] player1HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player1);
+            CardController[] player2FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
+            CardController[] player2HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player2);
+
+ 
+            if (BattleViewController.Instance.isPlayer1Turn) {
+                SetCardsDragAndDropEventEnable(player1FieldCardList, true);
+                SetCardsDragAndDropEventEnable(player1HandCardList, true);
+                SetCardsDragAndDropEventEnable(player2FieldCardList, false);
+                SetCardsDragAndDropEventEnable(player2HandCardList, false);
+            } else {
+                SetCardsDragAndDropEventEnable(player1FieldCardList, false);
+                SetCardsDragAndDropEventEnable(player1HandCardList, false);
+                SetCardsDragAndDropEventEnable(player2FieldCardList, true);
+                SetCardsDragAndDropEventEnable(player2HandCardList,true);
+            }
+        }
+
+        public void SetCardsDragAndDropEventEnable(CardController[] cardList, bool isEnable)
+            {
+                foreach (CardController card in cardList) {
+                    card.gameObject.GetComponent<CardMovement>().enabled = isEnable;
+                }
+        }
+
+
+        public void SetAllCardsInFieldCanAttack(Player player)
+        {
+            CardController[] fieldCardList = BattleViewController.Instance.GetFriendFieldCards(player);
+
+            UnityEngine.Debug.Log("SetAllCardsInFieldCanAttack");
+            // 攻撃表示の変更
+            if (player == Player.Player1) {
+                SetCardsInFieldCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero);
+                SetCardsInFieldCanAttack(fieldCardList, false, BattleViewController.Instance.player2Hero);
+            } else {
+                SetCardsInFieldCanAttack(fieldCardList, false, BattleViewController.Instance.player1Hero);
+                SetCardsInFieldCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero);
+            }
+        }
+
+        public void SetCardsInFieldCanAttack(CardController[] cardList, bool canAttack, HeroController hero)
+        {
+            foreach (CardController card in cardList) {
+                if (canAttack) {
+                    // フィールドに出ているカード（モンスターカード）はターン開始時に決定・手持ちで攻撃表示にできるのはスペルカードのみ
+                    if (!card.model.IsSpell() && card.IsFieldCard()) {
+                        card.SetAttackable(canAttack);
+                    }
+                }
+            }
+        }
+
 
         public void AddTurnNumber(HeroController hero)
         {

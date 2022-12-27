@@ -118,11 +118,11 @@ namespace TestUnityCardGame.Presenter.Battle
 
             // 以後HeroのMana Costを監視する
             player1Hero.model.GetManaCost()
-                .Subscribe(_ => UpdateCardSettings(Player.Player1))
+                .Subscribe(_ => UpdateCardSettingsWithManaCost(Player.Player1))
                 .AddTo(this);
 
             player2Hero.model.GetManaCost()
-                .Subscribe(_ => UpdateCardSettings(Player.Player2))
+                .Subscribe(_ => UpdateCardSettingsWithManaCost(Player.Player2))
                 .AddTo(this);
         }
 
@@ -255,53 +255,24 @@ namespace TestUnityCardGame.Presenter.Battle
             }
         }
         
-        public void UpdateCardSettings(Player player)
+        public void UpdateCardSettingsWithManaCost(Player player)
         {
-            SettingCardCanAttack(player);
-            SettingIsDraggableFromManaCost(player);
+            SetAllCardsInHandCanAttackWithManaCost(player);
+            SetAllCardsIsDraggableWithManaCost(player);
         }
 
-        public void SettingIsDraggableFromManaCost(Player player)
+        public void SetAllCardsIsDraggableWithManaCost(Player player)
         {
             CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
             if (player == Player.Player1) {
-                SettingIsDraggableFromManaCost(handCardList, player1Hero);
+                SetCardsIsDraggableWithManaCost(handCardList, player1Hero);
             } else {
-                SettingIsDraggableFromManaCost(handCardList, player2Hero);
+                SetCardsIsDraggableWithManaCost(handCardList, player2Hero);
             }
-        }
-
-        // カードのドラッグ&ドロップイベントをON/OFFする
-        public void SettingDragAndDropEventEnable()
-        {
-            CardController[] player1FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
-            CardController[] player1HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player1);
-            CardController[] player2FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
-            CardController[] player2HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player2);
-
- 
-            if (isPlayer1Turn) {
-                SettingCardListDragAndDropEventEnable(player1FieldCardList, true);
-                SettingCardListDragAndDropEventEnable(player1HandCardList, true);
-                SettingCardListDragAndDropEventEnable(player2FieldCardList, false);
-                SettingCardListDragAndDropEventEnable(player2HandCardList, false);
-            } else {
-                SettingCardListDragAndDropEventEnable(player1FieldCardList, false);
-                SettingCardListDragAndDropEventEnable(player1HandCardList, false);
-                SettingCardListDragAndDropEventEnable(player2FieldCardList, true);
-                SettingCardListDragAndDropEventEnable(player2HandCardList,true);
-            }
-        }
-
-        public void SettingCardListDragAndDropEventEnable(CardController[] cardList, bool isEnable)
-            {
-                foreach (CardController card in cardList) {
-                    card.gameObject.GetComponent<CardMovement>().enabled = isEnable;
-                }
         }
 
         // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する
-        public void SettingIsDraggableFromManaCost(CardController[] cardList, HeroController hero)
+        public void SetCardsIsDraggableWithManaCost(CardController[] cardList, HeroController hero)
         {
             foreach (CardController card in cardList) {
                 if (card.model.GetManaCost() <= hero.model.GetManaCost().Value && hero.model.GetManaCost().Value > 0) {
@@ -312,60 +283,48 @@ namespace TestUnityCardGame.Presenter.Battle
             }
         }
 
-        public void SettingCardCanAttack(Player player)
+        public void SetAllCardsInHandCanAttackWithManaCost(Player player)
         {
-            CardController[] fieldCardList = BattleViewController.Instance.GetFriendFieldCards(player);
             CardController[] handCardList = BattleViewController.Instance.GetMyHandCards(player);
 
-            UnityEngine.Debug.Log("SettingCardCanAttack");
+            UnityEngine.Debug.Log("SetAllCardsInHandCanAttackWithManaCost");
             // 攻撃表示の変更
             if (player == Player.Player1) {
-                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player1Hero, PlaceType.Field); 
-                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field); 
+                SetCardsInHandCanAttackWithManaCost(handCardList, true, BattleViewController.Instance.player1Hero);
+                SetCardsInHandCanAttackWithManaCost(handCardList, false, BattleViewController.Instance.player2Hero);
             } else {
-                SettingCardCanAttack(handCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, false, BattleViewController.Instance.player1Hero, PlaceType.Field); 
-                SettingCardCanAttack(handCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Hand);
-                SettingCardCanAttack(fieldCardList, true, BattleViewController.Instance.player2Hero, PlaceType.Field);
+                SetCardsInHandCanAttackWithManaCost(handCardList, false, BattleViewController.Instance.player1Hero);
+                SetCardsInHandCanAttackWithManaCost(handCardList, true, BattleViewController.Instance.player2Hero);
             }
         }
 
-        public void SettingCardCanAttack(CardController[] cardList, bool canAttack, HeroController hero, PlaceType placeType)
+        public void SetCardsInHandCanAttackWithManaCost(CardController[] cardList, bool isAttackable, HeroController hero)
         {
             foreach (CardController card in cardList) {
-                if (canAttack) {
-                    if (placeType == PlaceType.Field) {
-                        // フィールドに出ているカード（モンスターカード）はDraggableであれば必ず攻撃表示
-                        if (!card.model.IsSpell() && card.IsDraggable()) {
-                            card.SetCanAttack(canAttack);
-                        }
-                    } else if (placeType == PlaceType.Hand) {
-                        // 手持ちで攻撃表示にできるのはスペルカードのみ
-                        if (card.model.IsSpell()) {
-                            if (card.model.GetManaCost() <= hero.model.GetManaCost().Value && hero.model.GetManaCost().Value > 0) {
-                                CardController[] targetCards;
-                                switch (card.model.GetSpell()) {
-                                    case Spell.AttackEnemyCard:
-                                    case Spell.AttackEnemyCards:
-                                        targetCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
-                                        if (targetCards.Length > 0) {
-                                            card.SetCanAttack(canAttack);
-                                        }
-                                        break;
-                                    case Spell.HealFriendCard:
-                                    case Spell.HealFriendCards:
-                                        targetCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
-                                        if (targetCards.Length > 0) {
-                                            card.SetCanAttack(canAttack);
-                                        }
-                                        break;
-                                    case Spell.AttackEnemyHero:
-                                    case Spell.HealFriendHero:
-                                        card.SetCanAttack(canAttack);
-                                        break;
-                                }
+                if (isAttackable) {
+                    // フィールドに出ているカード（モンスターカード）はターン開始時に決定・手持ちで攻撃表示にできるのはスペルカードのみ
+                    if (card.model.IsSpell() && !card.IsFieldCard()) {
+                        if (card.model.GetManaCost() <= hero.model.GetManaCost().Value && hero.model.GetManaCost().Value > 0) {
+                            CardController[] targetCards;
+                            switch (card.model.GetSpell()) {
+                                case Spell.AttackEnemyCard:
+                                case Spell.AttackEnemyCards:
+                                    targetCards = BattleViewController.Instance.GetOpponentFieldCards(card.GetOwner());
+                                    if (targetCards.Length > 0) {
+                                        card.SetAttackable(isAttackable);
+                                    }
+                                    break;
+                                case Spell.HealFriendCard:
+                                case Spell.HealFriendCards:
+                                    targetCards = BattleViewController.Instance.GetFriendFieldCards(card.GetOwner());
+                                    if (targetCards.Length > 0) {
+                                        card.SetAttackable(isAttackable);
+                                    }
+                                    break;
+                                case Spell.AttackEnemyHero:
+                                case Spell.HealFriendHero:
+                                    card.SetAttackable(isAttackable);
+                                    break;
                             }
                         }
                     }

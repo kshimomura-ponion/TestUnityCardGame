@@ -39,7 +39,7 @@ namespace TestUnityCardGame.Presenter.Hero
             view.SetDamageInfoText("-" + attacker.model.GetAT().ToString());
             view.GetDamageInfo().SetActive(true);
             RefreshByDamage();
-            attacker.SetCanAttack(false);
+            attacker.SetAttackable(false);
         }
 
         public void Healed(CardController healer)

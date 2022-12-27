@@ -49,7 +49,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     enemyAIHero.ReduceManaCost(card.model.GetManaCost());
 
                     // 敵のカードがフィールドに出たことを明示する
-                    card.model.OnField();
+                    card.OnField();
                 }
                 yield return new WaitForSeconds(1.0f);
                 enemyAIHandCards = BattleViewController.Instance.GetMyHandCards(Player.Player2);
@@ -59,9 +59,9 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] enemyAIFieldCards = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
 
             // 攻撃② 攻撃可能カードがあれば攻撃を繰り返す
-            while (Array.Exists(enemyAIFieldCards, card => card.model.CanAttack())) {
+            while (Array.Exists(enemyAIFieldCards, card => card.IsAttackable())) {
                 // 攻撃③攻撃可能カードを取得検索：　Array.FindAll
-                CardController[] enemyCanAttackCards = Array.FindAll(enemyAIFieldCards, card => card.model.CanAttack());
+                CardController[] enemyCanAttackCards = Array.FindAll(enemyAIFieldCards, card => card.IsAttackable());
 
                 // 攻撃④ pick player's defender cards.
                 player1FieldCards = BattleViewController.Instance.GetOpponentFieldCards(Player.Player2);

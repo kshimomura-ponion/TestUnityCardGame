@@ -16,8 +16,6 @@ namespace TestUnityCardGame.Domain.Card
         private Sprite skillIcon;
 
         private bool isAlive;
-        private bool canAttack;
-        private bool isFieldCard;
 
         public CardModel(CardEntity cardEntity)
         {
@@ -29,17 +27,6 @@ namespace TestUnityCardGame.Domain.Card
             skill = cardEntity.skill;
             skillIcon = cardEntity.skillIcon;
             isAlive = true;
-            canAttack = false;
-            isFieldCard = false;
-        }
-
-        public void OnField()
-        {
-            isFieldCard = true;
-            // 速攻カードの場合
-            if (skill.GetAbility() == Ability.InitAttackable) {
-                SetCanAttack(true);
-            }
         }
 
         public void Damage(int dmg)
@@ -120,11 +107,6 @@ namespace TestUnityCardGame.Domain.Card
             }
         }
 
-        public bool IsFieldCard()
-        {
-            return isFieldCard;
-        }
-
         public void SetIsAlive(bool isAliveOrDead)
         {
             isAlive = isAliveOrDead;
@@ -132,15 +114,6 @@ namespace TestUnityCardGame.Domain.Card
         public bool IsAlive()
         {
             return isAlive;
-        }
-
-        public void SetCanAttack(bool isAttackable)
-        {
-            canAttack = isAttackable;
-        }
-        public bool CanAttack()
-        {
-            return canAttack;
         }
     }
 }

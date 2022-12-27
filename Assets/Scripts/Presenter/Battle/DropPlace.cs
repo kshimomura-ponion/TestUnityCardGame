@@ -26,7 +26,7 @@ namespace TestUnityCardGame.Presenter.Battle
                 }
 
                 // すでに場に出ているカードは動かせない
-                if (card.model.IsFieldCard()) {
+                if (card.IsFieldCard()) {
                     return;
                 }
 
@@ -73,7 +73,7 @@ namespace TestUnityCardGame.Presenter.Battle
                     card.movement.SetDefaultParent(this.transform);
 
                     // 自分のカードがフィールドに出たことを明示する
-                    card.model.OnField();
+                    card.OnField();
 
                     // 自分のカードを表示状態にする
                     card.view.SetActiveFrontPanel(true);
