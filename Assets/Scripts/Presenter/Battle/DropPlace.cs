@@ -32,10 +32,8 @@ namespace TestUnityCardGame.Presenter.Battle
 
                 // 敵のFieldに配置しないようにする
                 if (card.GetOwner() == Player.Player1 && this.transform != BattleViewController.Instance.GetPlayer1FieldTransform()) {
-                    UnityEngine.Debug.Log(card.GetOwner());
                     return;
                 } else if (card.GetOwner() == Player.Player2 && this.transform != BattleViewController.Instance.GetPlayer2FieldTransform()) {
-                    UnityEngine.Debug.Log(card.GetOwner());
                     return;
                 }
 

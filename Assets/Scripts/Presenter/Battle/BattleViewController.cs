@@ -47,6 +47,9 @@ namespace TestUnityCardGame.Presenter.Battle
         // 手札の保持数の最大値
         int maxHandCardNum = 5;
 
+        // プレイヤー1のターンかどうか識別する
+        [System.NonSerialized] public bool isPlayer1Turn;
+
         protected override void Awake()
         {
             // Viewの準備
@@ -73,7 +76,7 @@ namespace TestUnityCardGame.Presenter.Battle
             SettingInitHand(3);
 
             // ターン開始
-            turnController.isPlayer1Turn = true;
+            isPlayer1Turn = true;
             turnController.TurnStart();
         }
 
@@ -99,8 +102,8 @@ namespace TestUnityCardGame.Presenter.Battle
             player2Hero.Init(entitiesManager.GetHeroEntity(id2), player2Deck, Player.Player2);
 
             // 以後HeroのHPを監視する
-            player1Hero.reactiveHP.Where(x => x <= 0).Subscribe(_ => GameOver());
-            player2Hero.reactiveHP.Where(x => x <= 0).Subscribe(_ => GameOver());
+            player1Hero.reactiveHP.Where(x => x <= 0).Delay(TimeSpan.FromSeconds(1.0f)).Subscribe(_ => GameOver());
+            player2Hero.reactiveHP.Where(x => x <= 0).Delay(TimeSpan.FromSeconds(1.0f)).Subscribe(_ => GameOver());
 
             // 以後HeroのMana Costを監視する
             player1Hero.reactiveManaCost.Subscribe(_ => UpdateCardSettings(Player.Player1));
@@ -248,6 +251,37 @@ namespace TestUnityCardGame.Presenter.Battle
             } else {
                 SettingIsDraggableFromManaCost(handCardList, player2Hero);
             }
+        }
+
+        // カードのドラッグ&ドロップイベントをON/OFFする
+        public void SettingDragAndDropEventEnable()
+        {
+            CardController[] player1FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
+            CardController[] player1HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player1);
+            CardController[] player2FieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player2);
+            CardController[] player2HandCardList = BattleViewController.Instance.GetMyHandCards(Player.Player2);
+
+ 
+            if (isPlayer1Turn) {
+                SettingCardListDragAndDropEventEnable(player1FieldCardList, true);
+                SettingCardListDragAndDropEventEnable(player1HandCardList, true);
+                SettingCardListDragAndDropEventEnable(player2FieldCardList, false);
+                SettingCardListDragAndDropEventEnable(player2HandCardList, false);
+            } else {
+                SettingCardListDragAndDropEventEnable(player1FieldCardList, false);
+                SettingCardListDragAndDropEventEnable(player1HandCardList, false);
+                SettingCardListDragAndDropEventEnable(player2FieldCardList, true);
+                SettingCardListDragAndDropEventEnable(player2HandCardList,true);
+            }
+        }
+
+        public void SettingCardListDragAndDropEventEnable(CardController[] cardList, bool isEnable)
+            {
+                foreach (CardController card in cardList) {
+                    UnityEngine.Debug.Log(card.model.GetName());
+                     UnityEngine.Debug.Log(isEnable.ToString());
+                    card.gameObject.GetComponent<CardMovement>().enabled = isEnable;
+                }
         }
 
         // カードのコストとPlayerのMana Costを比較してドラッグ可能かどうか判定する

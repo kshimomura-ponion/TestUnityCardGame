@@ -18,9 +18,6 @@ namespace TestUnityCardGame.Presenter.Battle
         public Transform canvasTransform;  // canvas transform
         [System.NonSerialized] TurnInfoView turnInfoView;
 
-        // プレイヤー1のターンかどうか識別する
-        [System.NonSerialized] public bool isPlayer1Turn;
-
         // ターン終了までの時間管理
         [SerializeField] TextMeshProUGUI untilEndOfTurnText;
         private int maxSeconds = 10;
@@ -42,8 +39,11 @@ namespace TestUnityCardGame.Presenter.Battle
             // カウントダウン開始
             StopAllCoroutines();
             StartCoroutine(CountDown());
+
+            // ドラッグイベントそのものをON/OFFする
+            BattleViewController.Instance.SettingDragAndDropEventEnable();
             
-            if (isPlayer1Turn) {
+            if (BattleViewController.Instance.isPlayer1Turn) {
                 // ターン数を表示する
                 int turnNum = BattleViewController.Instance.player1Hero.GetTurnNumber();
                 turnInfoView.ShowTurnInfoView(turnNum);
@@ -107,7 +107,7 @@ namespace TestUnityCardGame.Presenter.Battle
             Cursor.visible = true;
 
             CardController[] fieldCardList;
-            if (isPlayer1Turn) {
+            if (BattleViewController.Instance.isPlayer1Turn) {
                 BattleViewController.Instance.player1Hero.view.SetActiveActivatedPanel(true);
                 fieldCardList = BattleViewController.Instance.GetFriendFieldCards(Player.Player1);
                 
@@ -181,9 +181,9 @@ namespace TestUnityCardGame.Presenter.Battle
             CardController[] player2FieldCardList = player2FieldTransform.GetComponentsInChildren<CardController>();
             BattleViewController.Instance.SettingCardCanAttack(player2FieldCardList, false, BattleViewController.Instance.player2Hero, PlaceType.Field);
 
-            isPlayer1Turn = !isPlayer1Turn;
+            BattleViewController.Instance.isPlayer1Turn = !(BattleViewController.Instance.isPlayer1Turn);
 
-            if (isPlayer1Turn) {
+            if (BattleViewController.Instance.isPlayer1Turn) {
                 // マナコストを+1してからターン開始
                 BattleViewController.Instance.player1Hero.AddManaCost(1);
                 

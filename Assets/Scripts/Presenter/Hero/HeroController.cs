@@ -59,17 +59,17 @@ namespace TestUnityCardGame.Presenter.Hero
         void RefreshByDamage()
         {
             DamageAnimation(view.GetDamageInfo().transform);
+            RefreshView();
             reactiveHP.Value = model.GetHP();
             reactiveManaCost.Value = model.GetManaCost();
-            RefreshView();
         }
 
         void DamageAnimation(Transform transform) {
             Sequence sequence = DOTween.Sequence();
             sequence.Append(transform.DOLocalMove(new Vector3(0f,20.0f,0f), 0.5f).SetEase(Ease.InOutQuart));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x + 50,0f,0f), 0.02f));
-            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.02f));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.2f));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x + 50,0f,0f), 0.2f));
+            sequence.Append(transform.DOLocalMove(new Vector3(transform.position.x - 25,0f,0f), 0.2f));
     
             RewindDamageInfo();
         }
