@@ -8,7 +8,8 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
-using TestUnityCardGame.Domain.Sound;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Domain.Service;
 using TestUnityCardGame.View.Title;
 
@@ -17,7 +18,8 @@ namespace TestUnityCardGame.Presenter.Title
     public class TitleViewController : SingletonMonoBehaviour<TitleViewController>
     {
         TitleView titleView;
-        [SerializeField] AudioManager audioManager; // Audio Manager
+
+        private SoundManager soundManager;
 
         // Start is called before the first frame update
         protected override void Awake()
@@ -31,7 +33,12 @@ namespace TestUnityCardGame.Presenter.Title
 
         public void Start()
         {
-            audioManager.PlayBGM(BGM.Title);
+
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
+
+            if (soundManager != null) soundManager.PlayBGM(BGM.Title);
+
             titleView.buttonEntry.OnClickAsObservable()
                 .First()
                 .Delay(TimeSpan.FromSeconds(0.6f))
@@ -52,7 +59,7 @@ namespace TestUnityCardGame.Presenter.Title
 
             // プッシュアクションのディスパッチ
             MiniUniduxService.Dispatch(pushToHeroSelectAction);
-            audioManager.StopBGM();    
+            soundManager.StopBGM();    
         }
     }
 }

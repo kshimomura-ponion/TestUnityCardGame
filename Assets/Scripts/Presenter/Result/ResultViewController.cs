@@ -7,16 +7,17 @@ using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
 using TestUnityCardGame.Domain.Service;
-using TestUnityCardGame.Domain.Sound;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.View.Result;
 
-namespace TestUnityCardGame
+namespace TestUnityCardGame.Presenter.Result
 {
     public class ResultViewController : SingletonMonoBehaviour<ResultViewController>
     {
         [System.NonSerialized] ResultView resultView;
 
-        [SerializeField] AudioManager audioManager; // Audio Manager
+        private SoundManager soundManager;
 
         // 前のページから受け渡されるデータ
         public ResultData resultData;
@@ -72,8 +73,11 @@ namespace TestUnityCardGame
                 })
                 .AddTo(this);  
 
+           // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
+
             // 音楽を再生
-            audioManager.PlayBGM(BGM.Result);
+            if (soundManager != null) soundManager.PlayBGM(BGM.Result);
 
             if (resultData.isPlayer1Win) {
                 resultView.SetResultText("Player1 WIN!");

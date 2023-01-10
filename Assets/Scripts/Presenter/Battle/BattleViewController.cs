@@ -12,8 +12,9 @@ using UniRx.Triggers;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
-using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Card;
 using TestUnityCardGame.View.Battle;
@@ -23,7 +24,8 @@ namespace TestUnityCardGame.Presenter.Battle
     public class BattleViewController: SingletonMonoBehaviour<BattleViewController>
     {
 
-        [SerializeField] AudioManager audioManager; // Audio Manager
+        private SoundManager soundManager;
+
         [SerializeField] EntitiesManager entitiesManager; // Entities Manager
 
         // ターンコントローラー
@@ -62,8 +64,11 @@ namespace TestUnityCardGame.Presenter.Battle
 
         void Start()
         {
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
+
             // 音楽を再生
-            audioManager.PlayBGM(BGM.Battle);
+            if (soundManager != null) soundManager.PlayBGM(BGM.Battle);
 
             StartBattle();
         }
@@ -196,7 +201,7 @@ namespace TestUnityCardGame.Presenter.Battle
         public void GameOver()
         {
             //音楽を停止
-            audioManager.StopBGM();
+            soundManager.StopBGM();
 
             StopAllCoroutines();
 

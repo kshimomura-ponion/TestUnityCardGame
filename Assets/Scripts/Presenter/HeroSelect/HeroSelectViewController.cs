@@ -13,8 +13,9 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
-using TestUnityCardGame.Domain.Sound;
 using TestUnityCardGame.Domain.Service;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.View.HeroSelect;
 
@@ -24,7 +25,9 @@ namespace TestUnityCardGame.Presenter.HeroSelect
     {
 
         HeroSelectView heroSelectView;
-        [SerializeField] AudioManager audioManager; // Audio Manager
+
+        private SoundManager soundManager;
+
         [SerializeField] EntitiesManager entitiesManager; // Entities Manager
 
         // 現在用意できているヒーロー、カードの種類の数
@@ -57,7 +60,10 @@ namespace TestUnityCardGame.Presenter.HeroSelect
 
         public void Start()
         {
-            audioManager.PlayBGM(BGM.SelectHero);
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
+
+            if (soundManager != null) soundManager.PlayBGM(BGM.SelectHero);
 
             for(int i = 1; i <= existHeroNum; i++) {
                 CreateHeroInfo(i, Player.Player1, player1SelectTransform, false);
@@ -139,7 +145,7 @@ namespace TestUnityCardGame.Presenter.HeroSelect
                     isPlayer2AI = true;
                 }
 
-                audioManager.StopBGM();
+                soundManager.StopBGM();
                 StopAllCoroutines();             
                 CleanUp();  // いらないオブジェクトの破棄
                 
