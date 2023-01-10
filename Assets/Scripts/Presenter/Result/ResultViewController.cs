@@ -16,7 +16,6 @@ namespace TestUnityCardGame.Presenter.Result
     public class ResultViewController : SingletonMonoBehaviour<ResultViewController>
     {
         [System.NonSerialized] ResultView resultView;
-
         private SoundManager soundManager;
 
         // 前のページから受け渡されるデータ
