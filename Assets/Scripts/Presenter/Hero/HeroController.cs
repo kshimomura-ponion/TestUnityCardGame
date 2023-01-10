@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using DG.Tweening;
-using TestUnityCardGame.Domain.Sound;
+using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Common;
 using TestUnityCardGame.Domain.Hero;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Presenter.Card;
 using TestUnityCardGame.View.Hero;
 
@@ -14,7 +16,8 @@ namespace TestUnityCardGame.Presenter.Hero
 {
     public class HeroController : MonoBehaviour
     {
-        [SerializeField] AudioManager audioManager;
+        private SoundManager soundManager;
+
         [System.NonSerialized] public HeroView view;
         [System.NonSerialized] public HeroModel model;
 
@@ -30,11 +33,14 @@ namespace TestUnityCardGame.Presenter.Hero
 
             // ターン数を1にセットする
             turnNumber = 1;
+
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
         }
 
         public void Attacked(CardController attacker)
         {
-            audioManager.PlaySE(SE.Attack);
+            if (soundManager != null) soundManager.PlaySE(SE.Attack);
             model.Damage(attacker.model.GetAT());
             view.SetDamageInfoText("-" + attacker.model.GetAT().ToString());
             view.GetDamageInfo().SetActive(true);
@@ -44,7 +50,7 @@ namespace TestUnityCardGame.Presenter.Hero
 
         public void Healed(CardController healer)
         {
-            audioManager.PlaySE(SE.Heal);
+            if (soundManager != null) soundManager.PlaySE(SE.Heal);
             model.Heal(healer.model.GetAT());
             view.SetDamageInfoText("+" + healer.model.GetAT().ToString());
             view.GetDamageInfo().SetActive(true);
@@ -57,7 +63,7 @@ namespace TestUnityCardGame.Presenter.Hero
             while(damageAnimation.MoveNext()) {}
             RefreshView();
             if (model.GetHP().Value <= 0) {
-                audioManager.PlaySE(SE.Died);
+                if (soundManager != null) soundManager.PlaySE(SE.Died);
             }
         }
 

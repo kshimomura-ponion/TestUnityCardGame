@@ -13,7 +13,7 @@ using UniRx;
 using MiniUnidux;
 using MiniUnidux.SceneTransition;
 using MiniUnidux.Util;
-using TestUnityCardGame.Domain.Sound;
+using TestUnityCardGame.Domain.Common;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.View.Alert;
 

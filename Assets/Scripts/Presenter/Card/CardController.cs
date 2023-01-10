@@ -6,7 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using TestUnityCardGame.Domain.Sound;
+using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.Battle;
 using TestUnityCardGame.Domain.Card;
@@ -16,7 +18,8 @@ namespace TestUnityCardGame.Presenter.Card
 {
     public class CardController : MonoBehaviour
     {
-        [SerializeField] AudioManager audioManager;
+        private SoundManager soundManager;
+
         [System.NonSerialized] public CardView view;
         [System.NonSerialized] public CardModel model;
         [System.NonSerialized] public CardMovement movement;
@@ -31,6 +34,9 @@ namespace TestUnityCardGame.Presenter.Card
             view = GetComponent<CardView>();
             movement = GetComponent<CardMovement>();
             isDraggable = false;
+
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
         }
 
         public void Init(CardEntity cardEntity, Player player)
@@ -51,7 +57,7 @@ namespace TestUnityCardGame.Presenter.Card
         }
         public int Attack(CardController enemyCard)
         {
-            audioManager.PlaySE(SE.Attack);
+            if (soundManager != null) soundManager.PlaySE(SE.Attack);
             int at = model.Attack(enemyCard);
             SetAttackable(false);
             return at;
@@ -59,7 +65,7 @@ namespace TestUnityCardGame.Presenter.Card
 
         public int Heal(CardController friendCard)
         {
-            audioManager.PlaySE(SE.Heal);
+            if (soundManager != null) soundManager.PlaySE(SE.Heal);
             int at = model.Heal(friendCard);
             friendCard.view.Refresh(model);
             return at;
@@ -120,7 +126,7 @@ namespace TestUnityCardGame.Presenter.Card
 
         IEnumerator DestroyCard()
         {
-            audioManager.PlaySE(SE.Died);
+            if (soundManager != null) soundManager.PlaySE(SE.Died);
             if (model.IsSpell()) {
                 Instantiate(view.explosionParticleSpell, transform.position, view.explosionParticleSpell.transform.rotation);
             } else {

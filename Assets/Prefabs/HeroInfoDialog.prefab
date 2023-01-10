@@ -925,7 +925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroInfoDialog: {fileID: 8165617843083924623}
-  audioManager: {fileID: 11400000, guid: ad9ceab63906248c0963412a1dcd29e5, type: 2}
+  audioSource: {fileID: 0}
   selectHeroIcon: {fileID: 8165617842590401951}
   selectHeroName: {fileID: 8165617842761217979}
   selectHeroInfo: {fileID: 8165617842797746137}
@@ -941,6 +941,7 @@ GameObject:
   - component: {fileID: 8165617843171038921}
   - component: {fileID: 8165617843171038922}
   - component: {fileID: 8165617843171038923}
+  - component: {fileID: 2654418240507088750}
   m_Layer: 5
   m_Name: SelectHeroCancelButton
   m_TagString: Untagged
@@ -1064,6 +1065,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2654418240507088750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165617843171038925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0e3cf98809e4501b32205b28f149b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEffect: 0
 --- !u!1 &8165617843965612510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,6 +1090,7 @@ GameObject:
   - component: {fileID: 8165617843965612506}
   - component: {fileID: 8165617843965612507}
   - component: {fileID: 8165617843965612508}
+  - component: {fileID: 6743697993264408948}
   m_Layer: 5
   m_Name: SelectHeroOKButton
   m_TagString: Untagged
@@ -1198,6 +1213,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6743697993264408948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165617843965612510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0e3cf98809e4501b32205b28f149b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEffect: 0
 --- !u!1 &8165617843989764000
 GameObject:
   m_ObjectHideFlags: 0
