@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using TestUnityCardGame.Domain.Sound;
+using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 using TestUnityCardGame.Presenter.Hero;
 using TestUnityCardGame.Presenter.HeroSelect;
 
@@ -13,7 +15,9 @@ namespace TestUnityCardGame.View.HeroSelect
     {
         [SerializeField] GameObject heroInfoDialog;
 
-        public AudioManager audioManager;
+        private SoundManager soundManager;
+        [SerializeField] AudioSource audioSource;
+        
         public Image selectHeroIcon;
         public TextMeshProUGUI selectHeroName;
         public TextMeshProUGUI selectHeroInfo;
@@ -26,17 +30,20 @@ namespace TestUnityCardGame.View.HeroSelect
         public void Awake()
         {
             heroInfoDialog.SetActive(false);
+
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
         }
 
         public void Hide()
         {
-            audioManager.PlaySE(SE.Cancel);
+            if (soundManager != null) soundManager.PlaySE(SE.Cancel);
             heroInfoDialog.SetActive(false);
         }
 
        public void PushedHeroInfoOKButton()
         {
-            audioManager.PlaySE(SE.OK);
+            if (soundManager != null) soundManager.PlaySE(SE.OK);
             HeroInfoController[] hero1InfoList = HeroSelectViewController.Instance.GetHeroInfoList(Player.Player1);
             foreach (HeroInfoController heroInfo in hero1InfoList) {
 
@@ -66,7 +73,7 @@ namespace TestUnityCardGame.View.HeroSelect
 
         public void Show(int heroID, Player player, Sprite icon, string name, string info)
         {
-            audioManager.PlaySE(SE.DialogOpen); // ダイアログが出たよという意味で
+            if (soundManager != null) soundManager.PlaySE(SE.DialogOpen); // ダイアログが出たよという意味で
 
             if (player == Player.Player1) {
                 this.hero1ID = heroID;

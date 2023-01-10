@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using TestUnityCardGame.Domain.Sound;
+using MiniUnidux.Util;
+using TestUnityCardGame.Domain.Common;
+using TestUnityCardGame.Presenter.Common;
 
 namespace TestUnityCardGame.View.Alert{
     public class AlertDialog : MonoBehaviour
     {
-        public AudioManager audioManager;
+        private SoundManager soundManager;
 
         [SerializeField] GameObject alertDialog;
         [SerializeField] TextMeshProUGUI alertText;
@@ -15,11 +17,14 @@ namespace TestUnityCardGame.View.Alert{
         private void Awake()
         {
             alertDialog.SetActive(false);
+
+            // CommonからSoundManagerを取得する
+            soundManager = (SoundManager)new CommonObjectGetUtil().GetCommonObject("SoundManager");
         }
 
         public void ShowAlertDialog(string message)
         {
-            audioManager.PlaySE(SE.DialogOpen); // ダイアログが出たよという意味で
+            if (soundManager != null) soundManager.PlaySE(SE.DialogOpen); // ダイアログが出たよという意味で
             alertText.text = message;
             alertDialog.SetActive(true);
         }
