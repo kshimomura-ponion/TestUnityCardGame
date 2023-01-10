@@ -25,7 +25,6 @@ namespace TestUnityCardGame.Presenter.Battle
     {
 
         private SoundManager soundManager;
-
         [SerializeField] EntitiesManager entitiesManager; // Entities Manager
 
         // ターンコントローラー
